@@ -27,12 +27,15 @@ void init() {}
 void tick() {
     track_validity();
 
+    // For testing
+    /*
     if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN){
         if(ball.banana_count == 0){
             if(currently_valid) ball.banana_count = 2;
             else ball.banana_count = 1;
         }
     }
+    */
 }
 
 } // namespace validate

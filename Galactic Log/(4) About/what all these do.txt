@@ -1,0 +1,35 @@
+Each sub-menu will just display a pure text box with only the
+ability to back-out (multiple pages if needed) to explain each
+concept:
+
+Unlocking bonus modes: Explain that unlocks are tied to specific
+achievements listed in that part of the Galactic log. maybe say
+what each one is so the player knows what to look for
+
+Stunt goals: Explain that there's a purple goal on every stage,
+and that all stunt goal completions are tracked as "Stunt Badges"
+for each stage in the "Story Mode" section of the Galactic Log
+
+Bunch Sweeps: Explain that getting every bunch on a stage and
+finishing will award a "Bunch sweep badge", which is also tracked
+in the "Story Mode" section of the galactic log
+
+Interstellar: BEFORE ITS UNLOCKED explain that its unlocked by
+the achievement for getting 1 stunt badge in each world, and progress
+can be seen in the "Story Mode" section of the galactic log
+AFTER ITS UNLOCKED explain that its a 10-stage bonus mode where u
+play 10 bonus stages in a row, and the goal is to get as many bananas
+as possible.
+On another page, explain that getting a "banana goal" will award 50
+bananas, but is a tradeoff cuz it ends ur attempt at that bonus stage
+early (The bonus stages will be VERY hard to perfect clear)
+On another page, explain that getting all bananas on an interstellar
+stage and finishing in the banana goal will award a "Sweep Bonus",
+which will award some bonus bananas based on the time left on the
+timer (I may do 1s = 5 extra bananas)
+
+Debug: BEFORE ITS UNLOCKED explain that its unlocked by the
+achievement for clearing story mode
+AFTER ITS UNLOCKED explain that its a fun collection of WIP-stages
+and random hot garbage I made during development, that I figured
+I'd make playable thru a challenge category

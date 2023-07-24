@@ -1,0 +1,26 @@
+About badges will explain that this section of the menu tracks
+badges for story mode stages including bonus content like
+stunt goals and bunch sweeps, which are explained further
+in the "About" section of the galactic log
+Include a Brief summary of the 3 types of badges with their symbols
+
+Each world page will bring up 10 rows, one for each stage in
+that world. A row will display
+- The stage name (1-1 Impression... etc)
+- The Clear Badge (Filled in if they have it)
+- The Stunt Badge (Filled in if they have it)
+- The Sweep Badge (Filled in if they have it)
+- MAYBE best time/score if they're not crazy hard to track
+
+Each of the 3 badges will show up as little circular images which
+I plan on hijacking part of a japanese characters texture for
+So one row may look roughly like this:
+
+1-1 Impression . . . . . ● ○ ●
+1-2 Leany Bridges  . . . ● ● ○
+1-3 Showerhead . . . . . ○ ○ ○
+
+Above all these I'll add a little key showing which symbol
+corresponds to which badge, as well as "empty" for un-filled-in
+badges
+

@@ -1,0 +1,9 @@
+The about sub-menu will take u to the about section that
+explains interstellar (see that txt document)
+
+The "Best run" submenu will only be accessible (or show at all)
+if the mode is unlocked
+I plan to save the banana count of the best interstellar run gotten
+and display it here, alongside a breakdown of how many bananas that
+run got on each stage, which ones got banana goal bonus and/or
+sweep bonus, etc.

@@ -1,0 +1,2 @@
+Display credits for ppl who contributed to the pack directly
+(Music, artwork, code)

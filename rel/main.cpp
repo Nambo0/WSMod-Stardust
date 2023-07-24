@@ -1,5 +1,6 @@
 #include "assembly.h"
 #include "big_bunch.h"
+#include "achievement.h"
 #include "config.h"
 #include "hardcode.h"
 #include "validate.h"
@@ -85,6 +86,7 @@ void init() {
     hardcode::tick();
     big_bunch::tick();
     validate::tick();
+    achievement::tick();
   });
 
   patch::hook_function(
@@ -115,6 +117,7 @@ void init() {
   hardcode::init();
   big_bunch::init();
   validate::init();
+  achievement::init();
 }
 
 /*

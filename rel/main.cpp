@@ -1,6 +1,7 @@
 #include "assembly.h"
 #include "big_bunch.h"
 #include "config.h"
+#include "hardcode.h"
 #include "heap.h"
 #include "modlink.h"
 #include "pad.h"
@@ -80,6 +81,8 @@ void init() {
     }
 
     pad::tick();
+    hardcode::tick();
+    big_bunch::tick();
   });
 
   patch::hook_function(
@@ -107,7 +110,7 @@ void init() {
           }
         }
       });
-
+  hardcode::init();
   big_bunch::init();
 }
 
@@ -127,7 +130,6 @@ void tick() {
       mkb::dip_switches &= ~(mkb::DIP_DEBUG | mkb::DIP_DISP);
   }*/
   pad::on_frame_start();
-  big_bunch::tick();
 }
 
 } // namespace main

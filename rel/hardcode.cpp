@@ -7,6 +7,7 @@ void init() {}
 void tick() {
   switch (mkb::g_current_stage_id) {
   // 5-4 Spleef
+  // Make the stunt goal activate when all 45 buttons are pressed
   case 31:
     // Count number of activated green buttons
     u32 deactivated_count = 0;

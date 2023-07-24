@@ -3218,7 +3218,8 @@ struct StagedefFallout {
 struct StagedefButton {
   struct Vec3f position;
   struct Vec3s rotation;
-  PlaybackState playback_state;
+  PlaybackState playback_state; // Refers to the button's static type, not the
+                                // anim_group's current state
   u16 anim_group_id;
   undefined2 padding;
 } __attribute__((__packed__));

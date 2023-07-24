@@ -12,14 +12,7 @@ void tick() {
     u32 activated_count = 0;
     for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
       u32 anim_id = mkb::stagedef->coli_header_list[i].anim_group_id;
-      if (((anim_id >= 3 && anim_id <= 5) || (anim_id >= 10 && anim_id <= 12) ||
-           (anim_id >= 15 && anim_id <= 35) ||
-           (anim_id >= 38 && anim_id <= 40) ||
-           (anim_id >= 45 && anim_id <= 47) ||
-           (anim_id >= 51 && anim_id <= 53) ||
-           (anim_id >= 56 && anim_id <= 58) ||
-           (anim_id >= 61 && anim_id <= 63) ||
-           (anim_id >= 66 && anim_id <= 68)) &&
+      if ((anim_id >= 1 && anim_id <= 45) &&
           mkb::itemgroups[i].anim_frame < 1) {
         activated_count++;
       }

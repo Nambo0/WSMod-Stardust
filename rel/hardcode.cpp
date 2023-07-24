@@ -10,23 +10,17 @@ void tick() {
   // Make the stunt goal activate when all 45 buttons are pressed
   case 31:
     // Count number of activated green buttons
-    u32 deactivated_count = 0;
+    u32 inactive_count = 0;
     for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
       u32 anim_id = mkb::stagedef->coli_header_list[i].anim_group_id;
       if ((anim_id >= 1 && anim_id <= 45) &&
           mkb::itemgroups[i].anim_frame < 1) {
-        deactivated_count++;
+        inactive_count++;
       }
     }
-    // for (u32 i = 0; i < mkb::stagedef->button_count; i++) {
-    //   mkb::StagedefButton button = mkb::stagedef->button_list[i];
-    //   if (button.anim_group_id < 1000 && button.playback_state == 1) {
-    //     deactivated_count++;
-    //   }
-    // }
 
     // If all 45 green buttons are activated, open stunt goal (id 69)
-    if (deactivated_count < 1) {
+    if (inactive_count < 1) {
       for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
         if (mkb::stagedef->coli_header_list[i].anim_group_id != 69) {
           continue;

@@ -2,6 +2,8 @@
 
 namespace hardcode {
 
+static bool flipped_yet = false;
+
 void init() {}
 
 void tick() {
@@ -54,6 +56,47 @@ void tick() {
         }
       }
     }
+    break;
+  }
+  // 10-8 Butterfly, 8-2 Leaning Tower
+  // Make wormhole not flip horizontal momentum
+  case 348:
+  case 50:
+  {
+    for (int i = 10; i < 74; i++) {
+        if(mkb::did_ball_enter_wormhole(&mkb::balls[mkb::curr_player_idx], &i)){
+            flipped_yet = true;
+            break;
+        }
+    }
+    if(flipped_yet){
+      mkb::balls[mkb::curr_player_idx].vel.x *= -1;
+      mkb::balls[mkb::curr_player_idx].pos.x *= -1;
+    }
+    flipped_yet = false;
+    break;
+  }
+  // 2-9 Pitfall
+  // Make wormholes not flip horizontal momentum
+  case 15:
+  {
+    int worm_id = 0;
+    for (int i = 1; i < 20; i++) {
+        if(mkb::did_ball_enter_wormhole(&mkb::balls[mkb::curr_player_idx], &i)){
+            flipped_yet = true;
+            worm_id = i;
+            break;
+        }
+    }
+    if(flipped_yet){
+      if(worm_id != 6 && worm_id != 14 && worm_id != 15 && worm_id != 18){
+        mkb::balls[mkb::curr_player_idx].vel.x *= -1;
+      }
+      else{
+        mkb::balls[mkb::curr_player_idx].vel.y *= -1;
+      }
+    }
+    flipped_yet = false;
     break;
   }
   }

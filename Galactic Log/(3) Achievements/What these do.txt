@@ -14,21 +14,20 @@ STUNT TRAINEE | Complete 1 stunt goal
 STUNT PILOT | Complete 1 stunt goal in each world  ~  (Unlocks Interstellar)
 STUNT SPECIALIST | Complete all 10 Stunt Goals in any world
 STUNT ACE | Complete all 100 Stunt Goals
-EATER OF SOULS | Obtain 5000 bananas in Story Mode
-EATER OF WORLDS | Obtain 7500 bananas in Story Mode
-DEVOURER OF GODS | Obtain 9999 bananas in Story Mode
+EATER OF SOULS | Obtain 5,000 bananas in Story Mode
+EATER OF WORLDS | Obtain 10,000 bananas in Story Mode
 
 = STAGE CHALLENGES =
-DOUBLE TAKE | 1-8 Double Time  -  Clear the stunt goal at both spinning speeds
+DOUBLE TAKE | 1-8 Double Time  -  Clear the stunt goal at both spinning speeds on back to back attempts
 UP, UP, AND AWAY | 2-6 Liftoff  -  Soar higher than the highest cloud onstage
 DEFUSED | 3-10 Detonation  -  Clear the blue goal without activating the bomb switch
 I WANNA BE THE STUNT GOAL | 4-9 Avoidance  -  Clear the stunt goal without hitting any bouncepads
-LOCKED DOORS | 5-6 Door Dash  -  Clear the blue goal without opening any doors
-MONOCHROMATIC | 6-1 Recolor  -  Clear any goal without entering a color-changing portal
+BEHIND LOCKED DOORS | 5-6 Door Dash  -  Clear the blue goal without opening any doors
+MONOCHROMATIC | 6-1 Recolor  -  Clear the stage without entering a color-changing portal
 TARGET MASTER | 7-10 Break the Targets  -  Break all 8 targets and finish with time bonus (150s)
-JUST HAD TO CHECK | 8-5 Raise the Roof  -  Click 3 different stunt goal buttons (across any number of attempts)
+POTASSIUM ALLERGY | 8-4 Frequencies  -  Clear the stage without collecting any bananas
 FLIP WIZARD | 9-3 Flip Switches  -  Clear the stage without flipping the switches once
-STARSTRUCK | 10-10 Impact  -  Finish in the stunt goal after it shoots into the sky
+STARSTRUCK | 10-10 Impact  -  Clear the stunt goal after it shoots into the sky
 
 = INTERSTELLAR =
 [NAME] | Get all 10 banana goals in 1 run
@@ -36,5 +35,7 @@ STARSTRUCK | 10-10 Impact  -  Finish in the stunt goal after it shoots into the 
 
 = SECRET =
 HEY GOOBZ PLAY DEBUG | Complete any of the debug sub-categories
-HAD TO SEE EVERYTHING | Complete every debug sub-category
+IVE SEEN IT ALL | Complete every debug sub-category
+AAAAAAAAAAAAAAAA | Travel fatser than 999mph
+AAAAAAAAAA-- IM OKAY! | Complete a stage after traveling faster than 999mph
 

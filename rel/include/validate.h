@@ -3,5 +3,5 @@
 namespace validate {
 void init();
 void tick();
-static bool currently_valid;
+bool is_currently_valid();
 } // namespace validate

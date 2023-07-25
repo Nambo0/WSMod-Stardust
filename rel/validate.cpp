@@ -2,8 +2,12 @@
 
 namespace validate {
 
-static bool currently_valid = false;
+bool currently_valid = false;
 static s16 last_frame = 0;
+
+bool is_currently_valid(){
+    return currently_valid;
+}
 
 static void track_validity() {
     //Invalidate non-continuous timers (catches practice mod savestates & frozen timers)

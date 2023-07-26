@@ -1,6 +1,7 @@
 #include "assembly.h"
 #include "big_bunch.h"
 #include "achievement.h"
+#include "pausecooldown.h"
 #include "config.h"
 #include "hardcode.h"
 #include "validate.h"
@@ -126,6 +127,7 @@ void init() {
   big_bunch::init();
   validate::init();
   achievement::init();
+  pausecooldown::init();
 }
 
 /*

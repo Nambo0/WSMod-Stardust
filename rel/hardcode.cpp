@@ -51,8 +51,8 @@ void flip_hardcoded_wormholes(int idx){
 void init() {
   patch::hook_function(s_teleport_through_wormhole_tramp, mkb::teleport_through_wormhole, [](int ball_idx, int wormhole_idx) {
     mkb::undefined8 result = s_teleport_through_wormhole_tramp.dest(ball_idx, wormhole_idx);
-      flip_hardcoded_wormholes(wormhole_idx + 1);
-      return result;
+    flip_hardcoded_wormholes(wormhole_idx + 1);
+    return result;
   });
 }
 

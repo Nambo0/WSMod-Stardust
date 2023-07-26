@@ -73,8 +73,8 @@ void tick() {
     if(flipped_yet){
       mkb::balls[mkb::curr_player_idx].vel.x *= -1;
       mkb::balls[mkb::curr_player_idx].pos.x *= -1;
-      mkb::cameras[0].rot.x *= -1;
-      mkb::cameras[0].rot.y *= -1;
+      mkb::cameras[mkb::curr_player_idx].rot.x *= -1;
+      mkb::cameras[mkb::curr_player_idx].rot.y *= -1;
     }
     flipped_yet = false;
     break;
@@ -93,7 +93,7 @@ void tick() {
     }
       if (flipped_yet) {
           auto ball_velocity = &mkb::balls[mkb::curr_player_idx].vel;
-          auto camera_rotation = &mkb::cameras[0].rot;
+          auto camera_rotation = &mkb::cameras[mkb::curr_player_idx].rot;
           if (worm_id != 5 && worm_id != 13 && worm_id != 16 && worm_id != 17) {
               ball_velocity->x *= -1;
               camera_rotation->x -= camera_rotation->x * 2;

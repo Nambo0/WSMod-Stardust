@@ -11,7 +11,7 @@ static u16 DT_last_completion_speed = 0; // For 1-8 Double Time
 static bool DT_back_to_back = false; // For 1-8 Double Time
 static bool flipped_yet = false; // For 9-3 Flip Switches
 
-static void claim_achievement(u16 achievement_id){
+void claim_achievement(int achievement_id){
     // This is for testing and will get replaced later
     if(ball.banana_count != achievement_id){
         ball.banana_count = achievement_id;
@@ -114,25 +114,7 @@ void tick() {
   break;
   }
   // MONOCHROMATIC | 6-1 Recolor  -  Clear any goal without entering a color-changing portal (ID: 6)
-  case 38:
-  {
-    for (int i = 0; i < 26; i++) {
-        if(mkb::did_ball_enter_wormhole(&mkb::balls[mkb::curr_player_idx], &i)){
-            flipped_yet = true;
-            break;
-        }
-    }
-    if(mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 1){
-        flipped_yet = false;
-    }
-    if((mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
-    mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) &&
-    validate::is_currently_valid() &&
-    !flipped_yet){
-        claim_achievement(6);
-    }
-  break;
-  }
+  // ^^^ included in hardcode.cpp for wormhole-tracking reasons
   // TARGET MASTER | 7-10 Break the Targets  -  Break all 8 targets and finish with time bonus (150s) (ID: 7)
   case 48:
   {

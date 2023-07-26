@@ -1,11 +1,60 @@
 #include "include/mkb.h"
 #include "include/pad.h"
+#include "include/patch.h"
+#include "include/achievement.h"
+#include "include/validate.h"
 
 namespace hardcode {
 
-static bool flipped_yet = false;
+static bool entered_wormhole = false;
 
-void init() {}
+static patch::Tramp<decltype(&mkb::teleport_through_wormhole)> s_teleport_through_wormhole_tramp;
+
+void flip_hardcoded_wormholes(int idx){
+  switch (mkb::g_current_stage_id) {
+    // Flip vertical wormhole exit direction
+    // for 2-9 Pitfall, 8-2 Leaning Tower, and 10-8 Butterfly
+    case 348:
+    case 50: {
+      mkb::balls[mkb::curr_player_idx].vel.x *= -1;
+      mkb::balls[mkb::curr_player_idx].pos.x *= -1;
+      mkb::cameras[mkb::curr_player_idx].rot.x *= -1;
+      mkb::cameras[mkb::curr_player_idx].rot.y *= -1;
+    break;
+    }
+    case 15: {
+      mkb::balls[mkb::curr_player_idx].banana_count = idx;
+      auto ball_velocity = &mkb::balls[mkb::curr_player_idx].vel;
+      auto camera_rotation = &mkb::cameras[mkb::curr_player_idx].rot;
+      if (idx != 5 && idx != 13 && idx != 16 && idx != 17) {
+          ball_velocity->x *= -1;
+          camera_rotation->x -= camera_rotation->x * 2;
+          camera_rotation->y -= camera_rotation->y * 2;
+      }
+      else {
+          ball_velocity->z *= -1;
+          // Rotate by 180deg to mirror across correct axis
+          camera_rotation->x += 32768;
+          camera_rotation->y += 32768;
+          camera_rotation->x -= camera_rotation->x * 2;
+          camera_rotation->y -= camera_rotation->y * 2;
+      }
+      break;
+    }
+    case 38: { // For 6-1 Recolor achievement
+      entered_wormhole = true;
+      break;
+    }
+  }
+}
+
+void init() {
+  patch::hook_function(s_teleport_through_wormhole_tramp, mkb::teleport_through_wormhole, [](int ball_idx, int wormhole_idx) {
+    mkb::undefined8 result = s_teleport_through_wormhole_tramp.dest(ball_idx, wormhole_idx);
+      flip_hardcoded_wormholes(wormhole_idx + 1);
+      return result;
+  });
+}
 
 void tick() {
   switch (mkb::g_current_stage_id) {
@@ -59,57 +108,19 @@ void tick() {
     }
     break;
   }
-  // 10-8 Butterfly, 8-2 Leaning Tower
-  // Make wormhole not flip horizontal momentum
-  case 348:
-  case 50:
+  // MONOCHROMATIC | 6-1 Recolor  -  Clear any goal without entering a color-changing portal (ID: 6)
+  case 38:
   {
-    for (int i = 10; i < 74; i++) {
-        if(mkb::did_ball_enter_wormhole(&mkb::balls[mkb::curr_player_idx], &i)){
-            flipped_yet = true;
-            break;
-        }
+    if(mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 1){
+        entered_wormhole = false;
     }
-    if(flipped_yet){
-      mkb::balls[mkb::curr_player_idx].vel.x *= -1;
-      mkb::balls[mkb::curr_player_idx].pos.x *= -1;
-      mkb::cameras[mkb::curr_player_idx].rot.x *= -1;
-      mkb::cameras[mkb::curr_player_idx].rot.y *= -1;
+    if((mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
+    mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) &&
+    validate::is_currently_valid() &&
+    !entered_wormhole){
+      achievement::claim_achievement(6);
     }
-    flipped_yet = false;
-    break;
-  }
-  // 2-9 Pitfall
-  // Make wormholes not flip horizontal momentum
-  case 15:
-  {
-    int worm_id = 0;
-    for (int i = 1; i < 20; i++) {
-        if(mkb::did_ball_enter_wormhole(&mkb::balls[mkb::curr_player_idx], &i)){
-            flipped_yet = true;
-            worm_id = i;
-            break;
-        }
-    }
-      if (flipped_yet) {
-          auto ball_velocity = &mkb::balls[mkb::curr_player_idx].vel;
-          auto camera_rotation = &mkb::cameras[mkb::curr_player_idx].rot;
-          if (worm_id != 5 && worm_id != 13 && worm_id != 16 && worm_id != 17) {
-              ball_velocity->x *= -1;
-              camera_rotation->x -= camera_rotation->x * 2;
-              camera_rotation->y -= camera_rotation->y * 2;
-          }
-          else {
-              ball_velocity->z *= -1;
-              // Rotate by 180deg to mirror across correct axis
-              camera_rotation->x += 32768;
-              camera_rotation->y += 32768;
-              camera_rotation->x -= camera_rotation->x * 2;
-              camera_rotation->y -= camera_rotation->y * 2;
-          }
-      }
-      flipped_yet = false;
-    break;
+  break;
   }
   }
 }

@@ -1,4 +1,5 @@
 #include "include/mkb.h"
+#include "include/pad.h"
 
 namespace hardcode {
 
@@ -72,6 +73,8 @@ void tick() {
     if(flipped_yet){
       mkb::balls[mkb::curr_player_idx].vel.x *= -1;
       mkb::balls[mkb::curr_player_idx].pos.x *= -1;
+      mkb::cameras[0].rot.x *= -1;
+      mkb::cameras[0].rot.y *= -1;
     }
     flipped_yet = false;
     break;
@@ -89,11 +92,16 @@ void tick() {
         }
     }
     if(flipped_yet){
-      if(worm_id != 6 && worm_id != 14 && worm_id != 15 && worm_id != 18){
+      if(worm_id != 5 && worm_id != 13 && worm_id != 16 && worm_id != 17){
         mkb::balls[mkb::curr_player_idx].vel.x *= -1;
+        mkb::cameras[0].rot.x *= -1;
+        mkb::cameras[0].rot.y *= -1;
       }
       else{
-        mkb::balls[mkb::curr_player_idx].vel.y *= -1;
+        mkb::balls[mkb::curr_player_idx].vel.z *= -1;
+        if(pad::button_down(mkb::PAD_BUTTON_A)) mkb::cameras[0].rot.x *= -1;
+        if(pad::button_down(mkb::PAD_BUTTON_B)) mkb::cameras[0].rot.y *= -1;
+        if(pad::button_down(mkb::PAD_BUTTON_DOWN)) mkb::cameras[0].rot.z *= -1;
       }
     }
     flipped_yet = false;

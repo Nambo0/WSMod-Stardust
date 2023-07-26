@@ -4,6 +4,7 @@
 #include "config.h"
 #include "hardcode.h"
 #include "validate.h"
+#include "badge.h"
 #include "heap.h"
 #include "modlink.h"
 #include "pad.h"
@@ -20,6 +21,7 @@ static patch::Tramp<decltype(&mkb::draw_debugtext)> s_draw_debugtext_tramp;
 static patch::Tramp<decltype(&mkb::process_inputs)> s_process_inputs_tramp;
 static patch::Tramp<decltype(&mkb::load_additional_rel)>
     s_load_additional_rel_tramp;
+static patch::Tramp<decltype(&mkb::smd_game_goal_init)> s_smd_game_goal_init_tramp;
 
 bool debug_mode_enabled = false;
 
@@ -102,6 +104,12 @@ void init() {
               relpatches::patches[i].main_game_init_func();
             }
           }
+
+          // On-goal-entry functions
+          patch::hook_function(s_smd_game_goal_init_tramp, mkb::smd_game_goal_init, []() {
+            s_smd_game_goal_init_tramp.dest();
+            badge::on_goal();
+          });
         }
 
         // Sel_ngc init functions

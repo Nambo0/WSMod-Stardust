@@ -91,20 +91,24 @@ void tick() {
             break;
         }
     }
-    if(flipped_yet){
-      if(worm_id != 5 && worm_id != 13 && worm_id != 16 && worm_id != 17){
-        mkb::balls[mkb::curr_player_idx].vel.x *= -1;
-        mkb::cameras[0].rot.x *= -1;
-        mkb::cameras[0].rot.y *= -1;
+      if (flipped_yet) {
+          auto ball_velocity = &mkb::balls[mkb::curr_player_idx].vel;
+          auto camera_rotation = &mkb::cameras[0].rot;
+          if (worm_id != 5 && worm_id != 13 && worm_id != 16 && worm_id != 17) {
+              ball_velocity->x *= -1;
+              camera_rotation->x -= camera_rotation->x * 2;
+              camera_rotation->y -= camera_rotation->y * 2;
+          }
+          else {
+              ball_velocity->z *= -1;
+              // Rotate by 180deg to mirror across correct axis
+              camera_rotation->x += 32768;
+              camera_rotation->y += 32768;
+              camera_rotation->x -= camera_rotation->x * 2;
+              camera_rotation->y -= camera_rotation->y * 2;
+          }
       }
-      else{
-        mkb::balls[mkb::curr_player_idx].vel.z *= -1;
-        if(pad::button_down(mkb::PAD_BUTTON_A)) mkb::cameras[0].rot.x *= -1;
-        if(pad::button_down(mkb::PAD_BUTTON_B)) mkb::cameras[0].rot.y *= -1;
-        if(pad::button_down(mkb::PAD_BUTTON_DOWN)) mkb::cameras[0].rot.z *= -1;
-      }
-    }
-    flipped_yet = false;
+      flipped_yet = false;
     break;
   }
   }

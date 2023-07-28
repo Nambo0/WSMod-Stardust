@@ -2,34 +2,81 @@ Each sub-menu will just display a pure text box with only the
 ability to back-out (multiple pages if needed) to explain each
 concept:
 
-Unlocking bonus modes: Explain that unlocks are tied to specific
-achievements listed in that part of the Galactic log. maybe say
-what each one is so the player knows what to look for
+========================================================================
+Unlocking Bonus Modes:
+Bonus modes can be unlocked by completing specific [GOLD]achievements\
 
-Stunt goals: Explain that there's a purple goal on every stage,
-and that all stunt goal completions are tracked as "Stunt Badges"
-for each stage in the "Story Mode" section of the Galactic Log
+[GOLD]STUNT PILOT\ | Complete 1 [PURP]stunt goal\ in each world  ~  (Unlocks Interstellar)
+[GOLD]STUNT SPECIALIST\ | Complete all 10 Stunt Goals in any world  ~  (Unlocks Debug stages)
 
-Bunch Sweeps: Explain that getting every bunch on a stage and
-finishing will award a "Bunch sweep badge", which is also tracked
-in the "Story Mode" section of the galactic log
+More info on [GOLD]achievements\ can be found in that section of the
+Galactic log.
 
-Interstellar: BEFORE ITS UNLOCKED explain that its unlocked by
-the achievement for getting 1 stunt badge in each world, and progress
-can be seen in the "Story Mode" section of the galactic log
-AFTER ITS UNLOCKED explain that its a 10-stage bonus mode where u
-play 10 bonus stages in a row, and the goal is to get as many bananas
-as possible.
-On another page, explain that getting a "banana goal" will award 50
-bananas, but is a tradeoff cuz it ends ur attempt at that bonus stage
-early (The bonus stages will be VERY hard to perfect clear)
-On another page, explain that getting all bananas on an interstellar
-stage and finishing in the banana goal will award a "Sweep Bonus",
-which will award some bonus bananas based on the time left on the
-timer (I may do 1s = 5 extra bananas)
+========================================================================
+Stunt Goals:
+Every stage in Story Mode has a purple [PURP]Stunt Goal\ in a
+particularly hard to reach spot (sometimes multiple spots). Clearing
+one in Story or Practice Mode will award that stage's [PURP]Stunt Badge\[ICON].
+Badges on every stage can be found in the [BLUE]Story Mode\ section of the
+Galactic log.
 
-Debug: BEFORE ITS UNLOCKED explain that its unlocked by the
-achievement for clearing story mode
-AFTER ITS UNLOCKED explain that its a fun collection of WIP-stages
-and random hot garbage I made during development, that I figured
-I'd make playable thru a challenge category
+========================================================================
+Bunch Sweeps:
+Various types of [YELLOW]banana bunches\ can be found in Story Mode.
+
+[YELLOW]Normal Bunches\ award 10 bananas
+[GREEN]Green Super Bunches\ award 20 bananas
+[BLUE]Blue Super Bunches\ award 30 bananas
+[PURPLE]Purple Super Bunches\ award 50 bananas
+
+Collecting every single bunch on a stage will award that stage's
+[YELOW]Sweep Badge\[ICON]. Badges on every stage can be found in the
+[BLUE]Story Mode\ section of the Galactic log.
+
+========================================================================
+Interstellar: [BEFORE UNLOCK]
+Unlock this bonus mode by claiming the following achievement:
+
+[GOLD]STUNT PILOT\ | Complete 1 [PURP]stunt goal\ in each world  ~  (Unlocks Interstellar)
+
+You can check which [PURP]stunt goals\ you've completed by looking for
+[PURP]Stunt Badges\[ICON] in the [BLUE]Story Mode\ section of the Galactic log.
+
+Interstellar: [AFTER UNLOCK]
+Interstellar is a bonus mode with 10 massive bonus stages played
+back-to-back. You have one shot to collect as many [YELLOW]bananas\
+as possible on all 10 stages, and at the end your total banana count
+will be ranked. High score runs can be viewed in the Interstellar section
+of the [BLUE]Galactic log\
+
+[PAGE 2]
+Each stage has a [YELLOW]banana goal\ which will award 50 bananas upon
+completion. Remember that it will bring you to the next stage, so only
+go for the goal once you're satisfied with your banana count!
+
+Collecting every bunch AND finishing in the banana goal on one stage
+will award a [YELLOW]Sweep Bonus\, which will give 5 extra bananas for
+every second left on the timer.
+========================================================================
+Debug: [BEFORE UNLOCK]
+Unlock this bonus mode by claiming the following achievement:
+
+[GOLD]STUNT SPECIALIST\ | Complete all 10 Stunt Goals in any world  ~  (Unlocks Debug stages)
+
+You can check which [PURP]stunt goals\ you've completed by looking for
+[PURP]Stunt Badges\[ICON] in the [BLUE]Story Mode\ section of the Galactic log.
+
+Debug[AFTER UNLOCK]
+Debug is a bonus mode made up of unfinished concepts, outdated prototypes,
+and silly joke stages. The category is split up into 4 sub-sections:
+
+HOT GARBAGE | Joke/troll stages that I made for fun
+VERSION 0's | Old revisions of stages that got heavily changed or completely re-made
+UNUSED CONCEPTS | Stage concepts that never got fully realized into fully-fledged stages
+THE UNPLAYABLE ZONE | Concepts or joke stages that are either STUPIDLY hard, or straight up impossible
+    * In all modes, stages can be skipped by holding DPAD DOWN for 3 seconds.
+
+PLEASE NOTE: This mode is meant to be a silly showcase of the inner
+workings of this pack's development. I'm fully aware that these stages
+are bad. [GREEN]That's why they are here.\ I hope you enjoy how broken
+they are \o/

@@ -9,10 +9,10 @@ Each sub-menu brings up the list of achievements in that category
 Here's all the achievements I have planned so far |
 
 = STORY MODE =
-BEAT THE GAME | Complete story mode  ~  (Unlocks Debug stages)
+BEAT THE GAME | Complete story mode
 STUNT TRAINEE | Complete 1 stunt goal
 STUNT PILOT | Complete 1 stunt goal in each world  ~  (Unlocks Interstellar)
-STUNT SPECIALIST | Complete all 10 Stunt Goals in any world
+STUNT SPECIALIST | Complete all 10 Stunt Goals in any world  ~  (Unlocks Debug stages)
 STUNT ACE | Complete all 100 Stunt Goals
 EATER OF SOULS | Obtain 5,000 bananas in Story Mode
 EATER OF WORLDS | Obtain 10,000 bananas in Story Mode

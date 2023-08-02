@@ -44,12 +44,15 @@ You can check which [PURP]stunt goals\ you've completed by looking for
 
 Interstellar: [AFTER UNLOCK]
 Interstellar is a bonus mode with 10 massive bonus stages played
-back-to-back. You have one shot to collect as many [YELLOW]bananas\
-as possible on all 10 stages, and at the end your total banana count
-will be ranked. High score runs can be viewed in the Interstellar section
-of the [BLUE]Galactic log\
+back-to-back. You have 300 seconds (or 60 in Blitz Mode) to collect as many
+[YELLOW]bananas\ as possible on all 10 stages, and at the end your total
+banana count will be ranked. High score runs can be viewed in the Interstellar
+section of the [BLUE]Galactic log\
 
-[PAGE 2]
+[PENALTIES & BONUSES]
+Falling out does NOT reset the timer or bunches collected. Instead, you
+will incur a 20 second penalty each time you fall out.
+
 Each stage has a [YELLOW]banana goal\ which will award 50 bananas upon
 completion. Remember that it will bring you to the next stage, so only
 go for the goal once you're satisfied with your banana count!

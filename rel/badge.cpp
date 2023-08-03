@@ -18,6 +18,19 @@ int stage_id_to_stage_number(int stage_id){
     }
 }
 
+bool detect_sweep(){
+    for (u32 i = 0; i < mkb::item_pool_info.upper_bound; i++) {
+        if (mkb::item_pool_info.status_list[i] == 0) continue; // skip if its inactive
+        mkb::Item &item = mkb::items[i]; // shorthand: current item in the list = "item"
+        if (item.coin_type != 1) continue; // skip if its not a bunch
+        if(item.g_some_flag == 0 && item.g_some_bitfield & 1 && item.g_some_bitfield & 0xfffffffd){ // True if banana is gone
+            continue;
+        }
+        else return false; // Returns false if any bunches are un-collected
+    }
+    return true;
+}
+
 void on_goal(){
     mkb::balls[mkb::curr_player_idx].banana_count = stage_id_to_stage_number(mkb::g_current_stage_id);
 }

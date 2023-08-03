@@ -1,6 +1,7 @@
 #include "include/mkb.h"
 #include "include/mkb2_ghidra.h"
 #include "include/patch.h"
+#include "include/badge.h"
 
 namespace interstellar {
 
@@ -61,21 +62,25 @@ void tick(){
 }
 
 void on_goal(){
-    ball.banana_count += 50;
-    // Display "+50" below the banana counter!
+    if(stage_id_is_stellar(mkb::g_current_stage_id)){
+        // Goal Bonus
+        ball.banana_count += 50;
+        // TODO: Display "+50" below the banana counter!
+
+        // Sweep Bonus
+        if(badge::detect_sweep()){
+            u32 seconds_remaining = mkb::mode_info.stage_time_frames_remaining / 60;
+            u32 bonus_total = seconds_remaining * 5;
+            ball.banana_count += bonus_total;
+            // TODO: Display "Sweep Bonus: # seconds = +###[banana icon]"
+        }
+    }
 }
 
 void remove_banana(mkb::Item &item){
     item.g_some_flag = 0;
     item.g_some_bitfield = item.g_some_bitfield | 1;
     item.g_some_bitfield = item.g_some_bitfield & 0xfffffffd;
-}
-
-bool banana_is_gone(mkb::Item &item){
-    if(item.g_some_flag == 0 && item.g_some_bitfield & 1 && item.g_some_bitfield & 0xfffffffd){
-        return true;
-    }
-    else return false;
 }
 
 void on_fallout(){
@@ -91,12 +96,11 @@ void on_fallout(){
             // Display "-20" below the timer!
 
             // Save banana state
-            
             for (u32 i = 0; i < mkb::item_pool_info.upper_bound; i++) {
                 if (mkb::item_pool_info.status_list[i] == 0) continue; // skip if its inactive
                 mkb::Item &item = mkb::items[i]; // shorthand: current item in the list = "item"
                 if (item.coin_type != 1) continue; // skip if its not a bunch
-                if(banana_is_gone(item)){
+                if(item.g_some_flag == 0 && item.g_some_bitfield & 1 && item.g_some_bitfield & 0xfffffffd){ // True if banana is gone
                     u32 array_index = i / 32; // Determine the index of the array element containing the i'th bit
                     u32 bit_offset = i % 32;    // Determine the bit offset within the array element
                     bunches_gone[array_index] |= 1 << bit_offset;

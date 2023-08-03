@@ -2,6 +2,7 @@
 #include "big_bunch.h"
 #include "achievement.h"
 #include "pausecooldown.h"
+#include "interstellar.h"
 #include "config.h"
 #include "hardcode.h"
 #include "validate.h"
@@ -86,9 +87,10 @@ void init() {
     }
 
     pad::tick();
-    hardcode::tick();
     big_bunch::tick();
     validate::tick();
+    hardcode::tick();
+    interstellar::tick();
     achievement::tick();
   });
 
@@ -110,6 +112,7 @@ void init() {
           patch::hook_function(s_smd_game_goal_init_tramp, mkb::smd_game_goal_init, []() {
             s_smd_game_goal_init_tramp.dest();
             badge::on_goal();
+            interstellar::on_goal();
           });
         }
 
@@ -127,6 +130,7 @@ void init() {
   big_bunch::init();
   validate::init();
   achievement::init();
+  interstellar::init();
   pausecooldown::init();
 }
 

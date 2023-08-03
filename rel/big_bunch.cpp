@@ -153,6 +153,7 @@ void init() {
             mkb::stagedef->coli_header_list[item->itemgroup_idx]
                     .anim_group_id <= 12000) {
           item->scale = 5;
+          item->shadow_intensity = 0;
         }
       });
   //   // patch::write_branch_bl(reinterpret_cast<void*>(0x80316c9c),

@@ -11,10 +11,10 @@ static u16 DT_last_completion_speed = 0; // For 1-8 Double Time
 static bool DT_back_to_back = false; // For 1-8 Double Time
 static bool flipped_yet = false; // For 9-3 Flip Switches
 
-void claim_achievement(int achievement_id){
+void claim_achievement(int id){
     // This is for testing and will get replaced later
-    if(ball.banana_count != achievement_id){
-        ball.banana_count = achievement_id;
+    if(ball.banana_count != id){
+        ball.banana_count = id;
     }
 }
 
@@ -92,10 +92,15 @@ void tick() {
     }
   break;
   }
-  // I WANNA BE THE STUNT GOAL | 4-9 Avoidance  -  Clear the stunt goal without hitting any bouncepads (ID: 4)
+  // I WANNA BE THE BACK GOAL | 4-9 Avoidance  -  Enter the blue goal from the back side (ID: 4)
   case 26:
   {
-
+    if(mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT &&
+    validate::is_currently_valid() &&
+    mkb::mode_info.entered_goal_type == 0 &&
+    ball.vel.z > 0){
+        claim_achievement(4);
+    }
   break;
   }
   // BEHIND LOCKED DOORS | 5-6 Door Dash  -  Clear the blue goal without opening any doors (ID: 5)

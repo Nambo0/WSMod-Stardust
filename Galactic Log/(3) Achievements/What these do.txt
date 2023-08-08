@@ -21,7 +21,7 @@ EATER OF WORLDS | Obtain 10,000 bananas in Story Mode
 DOUBLE TAKE | 1-8 Double Time  -  Clear the stunt goal at both spinning speeds on back to back attempts
 UP, UP, AND AWAY | 2-6 Liftoff  -  Soar higher than the highest cloud onstage
 DEFUSED | 3-10 Detonation  -  Clear the blue goal without activating the bomb switch
-I WANNA BE THE STUNT GOAL | 4-9 Avoidance  -  Clear the stunt goal without hitting any bouncepads
+I WANNA BE THE BACK GOAL | 4-9 Avoidance  -  Enter the blue goal from the back side
 BEHIND LOCKED DOORS | 5-6 Door Dash  -  Clear the blue goal without opening any doors
 MONOCHROMATIC | 6-1 Recolor  -  Clear the stage without entering a color-changing portal
 TARGET MASTER | 7-10 Break the Targets  -  Break all 8 targets and finish with time bonus (150s)

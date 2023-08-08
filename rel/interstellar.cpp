@@ -8,6 +8,8 @@ namespace interstellar {
 static bool blitz_mode = false;
 static u16 frames_left = 300*60;
 static u32 bunches_gone[] = {0,0,0, 0}; // Bitfield array for keeping track of which bunches on a stage were collected between attempts
+static u32 anim_states = 0; // Bitfield array for keeping track of which play-once anims were activated between attempts
+// NOTE: Only tracks anim IDs 1-32, so I gotta remember to have all fallout-sustained switches be anim ID 1-32
 
 //Makes ball.whatever easier to use
 mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];
@@ -93,7 +95,7 @@ void on_fallout(){
             else{
                 mkb::mode_info.ball_mode |= 1 << 6;
             }
-            // Display "-20" below the timer!
+            // TO-DO: Display "-20" below the timer!
 
             // Save banana state
             for (u32 i = 0; i < mkb::item_pool_info.upper_bound; i++) {
@@ -104,6 +106,16 @@ void on_fallout(){
                     u32 array_index = i / 32; // Determine the index of the array element containing the i'th bit
                     u32 bit_offset = i % 32;    // Determine the bit offset within the array element
                     bunches_gone[array_index] |= 1 << bit_offset;
+                }
+            }
+
+            // Save play-once animation states 
+            anim_states = 0;
+            for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
+                if(mkb::stagedef->coli_header_list[i].anim_group_id >= 1
+                && mkb::stagedef->coli_header_list[i].anim_group_id <= 32
+                && mkb::itemgroups[i].anim_frame > 1){
+                    anim_states |= 1 << mkb::stagedef->coli_header_list[i].anim_group_id;
                 }
             }
         }
@@ -129,6 +141,13 @@ void on_spin_in(){
                 u32 array_index = i / 32; // Determine the index of the array element containing the i'th bit
                 u32 bit_offset = i % 32;    // Determine the bit offset within the array element
                 if(bunches_gone[array_index] & (1 << bit_offset)) remove_banana(item);
+            }
+
+            // Renew play-once animation states from previous attempt
+            for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
+                if(anim_states & (1 << mkb::stagedef->coli_header_list[i].anim_group_id)){
+                    mkb::itemgroups[i].playback_state = 0;
+                }
             }
 
         }

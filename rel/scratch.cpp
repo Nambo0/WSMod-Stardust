@@ -1,12 +1,10 @@
-#include "include/scratch.h"
-#include "include/mkb.h"
+#include "scratch.h"
 
-namespace scratch
-{
+namespace scratch {
 
-void init() {}
-void tick() {
+void init() {
 }
+void tick() {}
 void disp() {}
 
-}
+}// namespace scratch

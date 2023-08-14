@@ -34,7 +34,7 @@ constexpr size_t PATCH_CAPACITY = 32;
 struct Tickable {
     const char* name;
     const char* description;
-    bool enabled;
+    bool enabled = false;
     etl::optional<int> active_value;
     etl::optional<int> lower_bound;
     etl::optional<int> upper_bound;
@@ -43,6 +43,7 @@ struct Tickable {
     void (*init_sel_ngc)() = nullptr;
     void (*disp)() = nullptr;
     void (*tick)() = nullptr;
+    void (*on_goal)() = nullptr;
 };
 
 // Manages all tickables

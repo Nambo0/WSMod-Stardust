@@ -1,6 +1,18 @@
-#include "include/mkb.h"
+#include "validate.h"
+
+#include "mkb/mkb.h"
+#include "internal/tickable.h"
 
 namespace validate {
+
+// Patch is enabled by default
+TICKABLE_DEFINITION((
+.name = "stardust-validate",
+.description = "Validate",
+.enabled = true,
+.init_main_loop = init,
+.tick = tick,
+))
 
 bool currently_valid = false;
 static s16 last_frame = 0;

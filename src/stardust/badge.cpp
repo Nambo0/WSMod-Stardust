@@ -1,9 +1,20 @@
-#include "include/mkb.h"
-#include "include/mkb2_ghidra.h"
-#include "include/validate.h"
-#include "include/patch.h"
+#include "badge.h"
+
+#include "mkb/mkb.h"
+#include "mkb/mkb2_ghidra.h"
+#include "stardust/validate.h"
+#include "internal/patch.h"
+#include "internal/tickable.h"
 
 namespace badge {
+
+// Patch is enabled by default
+TICKABLE_DEFINITION((
+.name = "stardust-badge",
+.description = "Badges",
+.enabled = true,
+.on_goal = on_goal,
+))
 
 int stage_id_to_stage_number(int stage_id){
     switch (stage_id) {

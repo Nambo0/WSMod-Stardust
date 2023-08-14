@@ -1,10 +1,22 @@
-#include "include/mkb.h"
-#include "include/pad.h"
-#include "include/patch.h"
-#include "include/achievement.h"
-#include "include/validate.h"
+#include "hardcode.h"
+
+#include "mkb/mkb.h"
+#include "internal/pad.h"
+#include "internal/patch.h"
+#include "stardust/achievement.h"
+#include "stardust/validate.h"
+#include "internal/tickable.h"
 
 namespace hardcode {
+
+// Patch is enabled by default
+TICKABLE_DEFINITION((
+.name = "stardust-hardcode",
+.description = "Hardcoded features",
+.enabled = true,
+.init_main_loop = init,
+.tick = tick,
+))
 
 static bool entered_wormhole = false;
 

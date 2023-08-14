@@ -1,8 +1,20 @@
-#include "include/mkb.h"
-#include "include/validate.h"
-#include "include/patch.h"
+#include "achievement.h"
+
+#include "mkb/mkb.h"
+#include "stardust/validate.h"
+#include "internal/patch.h"
+#include "internal/tickable.h"
 
 namespace achievement {
+
+// Patch is enabled by default
+TICKABLE_DEFINITION((
+    .name = "stardust-achievements",
+    .description = "Achievements",
+    .enabled = true,
+    .init_main_loop = init,
+    .tick = tick,
+))
 
 //Makes ball.whatever easier to use
 mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];

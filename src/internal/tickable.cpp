@@ -20,6 +20,7 @@ const TickableManager::TickableVec& TickableManager::get_tickables() const {
 void TickableManager::init() const {
     static patch::Tramp<decltype(&mkb::draw_debugtext)> s_draw_debugtext_tramp;
     static patch::Tramp<decltype(&mkb::load_additional_rel)> s_load_additional_rel_tramp;
+    static patch::Tramp<decltype(&mkb::smd_game_goal_init)> s_smd_game_goal_init_tramp;
 
     // Hook for mkb::draw_debugtext
     patch::hook_function(s_draw_debugtext_tramp, mkb::draw_debugtext, []() {
@@ -46,9 +47,20 @@ void TickableManager::init() const {
             if (STREQ(rel_filepath, "mkb2.main_game.rel")) {
                 for (const auto& tickable: get_tickable_manager().get_tickables()) {
                     if (tickable->enabled && tickable->init_main_game) {
-                        mkb::OSReport("Calling init_main_game\n");
+                        mkb::OSReport("Calling init_main_game for: %s\n", tickable->name);
                         (*tickable->init_main_game)();
                     }
+
+                    // On-goal-entry functions
+                    patch::hook_function(s_smd_game_goal_init_tramp, mkb::smd_game_goal_init, []() {
+                        s_smd_game_goal_init_tramp.dest();
+
+                        for (const auto& tickable: get_tickable_manager().get_tickables()) {
+                            if (tickable->enabled && tickable->on_goal) {
+                                (*tickable->on_goal)();
+                            }
+                        }
+                    });
                 }
             }
 
@@ -65,7 +77,7 @@ void TickableManager::init() const {
 }
 
 bool TickableManager::get_tickable_status(const char* name) const {
-    for (const auto& t : m_tickables) {
+    for (const auto& t: m_tickables) {
         if (strcmp(t->name, name) == 0) {
             return t->enabled;
         }

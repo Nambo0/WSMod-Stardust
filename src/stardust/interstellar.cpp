@@ -1,9 +1,22 @@
-#include "include/mkb.h"
-#include "include/mkb2_ghidra.h"
-#include "include/patch.h"
-#include "include/badge.h"
+#include "interstellar.h"
+
+#include "mkb/mkb.h"
+#include "mkb/mkb2_ghidra.h"
+#include "internal/patch.h"
+#include "stardust/badge.h"
+#include "internal/tickable.h"
 
 namespace interstellar {
+
+// Patch is enabled by default
+TICKABLE_DEFINITION((
+                        .name = "stardust-interstellar",
+                        .description = "Interstellar",
+                        .enabled = true,
+                        .init_main_loop = init,
+                        .tick = tick,
+                        .on_goal = on_goal,
+                    ))
 
 static bool blitz_mode = false;
 static u16 frames_left = 300*60;

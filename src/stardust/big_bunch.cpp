@@ -1,9 +1,19 @@
-#include "include/big_bunch.h"
-#include "include/mkb.h"
-#include "include/patch.h"
-#include "include/utils.h"
+#include "stardust/big_bunch.h"
+#include "mkb/mkb.h"
+#include "internal/patch.h"
+#include "internal/utils.h"
+#include "internal/tickable.h"
 
 namespace big_bunch {
+
+// Patch is enabled by default
+TICKABLE_DEFINITION((
+.name = "stardust-big-bunch",
+.description = "Big bunches",
+.enabled = true,
+.init_main_loop = init,
+.tick = tick,
+))
 
 void tick() {
 
@@ -27,13 +37,13 @@ static patch::Tramp<decltype(&mkb::item_coin_disp)> s_item_coin_disp_tramp;
 
 void remove_closest_bunch_indicator() {
   u32 closest_dist = 1000000;
-  Vec3f ball_pos = mkb::balls[mkb::curr_player_idx].pos;
+  Vec ball_pos = mkb::balls[mkb::curr_player_idx].pos;
   u32 this_dist = 0;
   u32 closest_id = 1000000;
   for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
     if (mkb::stagedef->coli_header_list[i].anim_group_id != 12001)
       continue;
-    Vec3f ig_pos = mkb::stagedef->coli_header_list[i].origin;
+    Vec ig_pos = mkb::stagedef->coli_header_list[i].origin;
     this_dist = VEC_DIST_SQ(ball_pos, ig_pos);
     if (this_dist < closest_dist) {
       closest_dist = this_dist;
@@ -87,7 +97,7 @@ void new_item_coin_coli(mkb::Item *item, mkb::PhysicsBall *phys_ball) {
       item->g_some_flag = 0;
       item->g_some_bitfield = item->g_some_bitfield | 1;
       item->g_some_bitfield = item->g_some_bitfield & 0xfffffffd;
-      memset(&effect, 0, 0xb0);
+      mkb::memset(&effect, 0, 0xb0);
       effect.type = mkb::EFFECT_HOLDING_BANANA;
       effect.g_ball_idx = (short)(char)mkb::current_ball->idx;
       mkb::mtxa_from_mtx(
@@ -109,7 +119,7 @@ void new_item_coin_coli(mkb::Item *item, mkb::PhysicsBall *phys_ball) {
               11000 &&
           mkb::stagedef->coli_header_list[item->itemgroup_idx].anim_group_id <=
               12000) {
-        effect.g_scale = Vec3f{2.0, 2.0, 2.0};
+        effect.g_scale = Vec{2.0, 2.0, 2.0};
         big_bunch::remove_closest_bunch_indicator(); // REMOVES THE INDICATOR
       }
       spawn_effect(&effect);

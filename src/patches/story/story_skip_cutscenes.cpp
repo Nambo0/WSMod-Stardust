@@ -58,6 +58,7 @@ void dmd_scen_sceneplay_init_patch() {
         mkb::mode_flags = mkb::mode_flags | 0x100000;
         patch::write_word(reinterpret_cast<void*>(0x8054dbdc), 0xffffffff);
         mkb::scen_info.mode = mkb::DMD_SCEN_GAME_CLEAR_INIT;
+        mkb::unlock_info.g_movies_watched = 0x0fff;
     }
 
     // If we're in 'world 12', initialize the name entry sequence.

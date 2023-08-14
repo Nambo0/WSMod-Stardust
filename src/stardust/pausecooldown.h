@@ -2,4 +2,4 @@
 
 namespace pausecooldown {
 void init();
-} // namespace pausecooldown
+}// namespace pausecooldown

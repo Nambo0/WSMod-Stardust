@@ -81,18 +81,18 @@ void TickableManager::init() const {
                         //mkb::OSReport("Running init_main_game for %s\n", tickable->name);
                         (*tickable->init_main_game)();
                     }
-
-                    // On-goal-entry functions
-                    patch::hook_function(s_smd_game_goal_init_tramp, mkb::smd_game_goal_init, []() {
-                        s_smd_game_goal_init_tramp.dest();
-
-                        for (const auto& tickable: get_tickable_manager().get_tickables()) {
-                            if (tickable->enabled && tickable->on_goal) {
-                                (*tickable->on_goal)();
-                            }
-                        }
-                    });
                 }
+
+                // On-goal-entry functions
+                patch::hook_function(s_smd_game_goal_init_tramp, mkb::smd_game_goal_init, []() {
+                  s_smd_game_goal_init_tramp.dest();
+
+                  for (const auto& tickable: get_tickable_manager().get_tickables()) {
+                      if (tickable->enabled && tickable->on_goal) {
+                          (*tickable->on_goal)();
+                      }
+                  }
+                });
             }
 
             // Functions that need to be initialized when mkb2.sel_ngc.rel is loaded

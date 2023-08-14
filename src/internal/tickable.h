@@ -32,8 +32,8 @@ constexpr size_t PATCH_CAPACITY = 32;
 
 // Represents a patch, or code that ticks every frame
 struct Tickable {
-    const char* name;
-    const char* description;
+    const char* name = nullptr;
+    const char* description = nullptr;
     bool enabled = false;
     etl::optional<int> active_value;
     etl::optional<int> lower_bound;

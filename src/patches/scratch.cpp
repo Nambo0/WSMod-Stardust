@@ -104,7 +104,41 @@ void tick() {
         mkb::call_SoundReqID_arg_2(10);
         mkb::OSReport("free: %d\n", heap::get_free_space());
 
-        // Things go here
+        auto& mgr_ref = ui::get_widget_manager();
+
+        constexpr Vec2d center = Vec2d{640/2, 480/2};
+        constexpr Vec2d box_size = Vec2d{300, 220};
+        constexpr Vec2d computed_center = Vec2d{center.x-(box_size.x/2), center.y-(box_size.y)/2};
+        auto window = etl::unique_ptr<ui::Window>(new ui::Window(computed_center, box_size));
+        auto container_txt = etl::unique_ptr<ui::Container>(new ui::Container(computed_center, box_size));
+        auto container = etl::unique_ptr<ui::Container>(new ui::Container(computed_center, box_size));
+
+        auto hello_world = [](){ mkb::call_SoundReqID_arg_2(0x6e); };
+        auto close = [&window](){ mkb::call_SoundReqID_arg_2(0x6e);
+            for (auto& w : ui::get_widget_manager().get_widgets()) {
+                w->set_visible(false);
+        } };
+
+        auto text = etl::unique_ptr<ui::Text>(new ui::Text(Vec2d{center.x, center.y-82}, "Galactic Log"));
+        text->set_m_font_style(0x5);
+        text->set_scale(Vec2d{1.0, 1.0});
+        auto btn1 = etl::unique_ptr<ui::Button>(new ui::Button(Vec2d{center.x, center.y-45}, "Story Mode", hello_world));
+        auto btn2 = etl::unique_ptr<ui::Button>(new ui::Button(Vec2d{center.x, center.y-20}, "Interstellar", hello_world));
+        auto btn3 = etl::unique_ptr<ui::Button>(new ui::Button(Vec2d{center.x, center.y+5}, "Achievements", hello_world));
+        auto btn4 = etl::unique_ptr<ui::Button>(new ui::Button(Vec2d{center.x, center.y+30}, "About", hello_world));
+        auto btn5 = etl::unique_ptr<ui::Button>(new ui::Button(Vec2d{center.x, center.y+55}, "Credit & Special Thanks", hello_world));
+        auto btn6 = etl::unique_ptr<ui::Button>(new ui::Button(Vec2d{center.x, center.y+80}, "Close", close));
+
+        container_txt->add_child(std::move(text));
+        container->add_child(std::move(btn1));
+        container->add_child(std::move(btn2));
+        container->add_child(std::move(btn3));
+        container->add_child(std::move(btn4));
+        container->add_child(std::move(btn5));
+        container->add_child(std::move(btn6));
+        window->add_child(std::move(container));
+        window->add_child(std::move(container_txt));
+        mgr_ref.push(std::move(window));
 
         mkb::OSReport("free: %d\n", heap::get_free_space());
         sent = true;

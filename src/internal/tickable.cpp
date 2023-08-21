@@ -5,6 +5,7 @@
 #include "log.h"
 
 #define STREQ(x, y) (mkb::strcmp(const_cast<char*>(x), const_cast<char*>(y)) == 0)
+#define DEBUG_LOGGING 0
 
 namespace tickable {
 
@@ -23,7 +24,7 @@ void TickableManager::init() const {
     static patch::Tramp<decltype(&mkb::smd_game_goal_init)> s_smd_game_goal_init_tramp;
 
     // Call init_main_loop on all tickables that have been enabled
-    for (const auto& tickable : m_tickables) {
+    for (const auto& tickable: m_tickables) {
         // Print a message to our log on load
         if (tickable->description != nullptr) {
             // Has a custom value that was set during config load
@@ -48,7 +49,7 @@ void TickableManager::init() const {
 
         // Execute the main_loop init func, if it exists
         if (tickable->enabled && tickable->init_main_loop) {
-           //mkb::OSReport("Running init_main_loop for %s\n", tickable->name);
+            // mkb::OSReport("Running init_main_loop for %s\n", tickable->name);
             (*tickable->init_main_loop)();
         }
     }
@@ -61,7 +62,9 @@ void TickableManager::init() const {
         // Disp functions (REL patches)
         for (const auto& tickable: get_tickable_manager().get_tickables()) {
             if (tickable->enabled && tickable->disp) {
-                //mkb::OSReport("Running disp for %s\n", tickable->name);
+#if DEBUG_LOGGING == 1
+                mkb::OSReport("Running disp for %s\n", tickable->name);
+#endif
                 (*tickable->disp)();
             }
         }
@@ -78,7 +81,9 @@ void TickableManager::init() const {
             if (STREQ(rel_filepath, "mkb2.main_game.rel")) {
                 for (const auto& tickable: get_tickable_manager().get_tickables()) {
                     if (tickable->enabled && tickable->init_main_game) {
-                        //mkb::OSReport("Running init_main_game for %s\n", tickable->name);
+#if DEBUG_LOGGING == 1
+                        mkb::OSReport("Running init_main_game for %s\n", tickable->name);
+#endif
                         (*tickable->init_main_game)();
                     }
                 }
@@ -99,7 +104,9 @@ void TickableManager::init() const {
             else if (STREQ(rel_filepath, "mkb2.sel_ngc.rel")) {
                 for (const auto& tickable: get_tickable_manager().get_tickables()) {
                     if (tickable->enabled && tickable->init_sel_ngc) {
-                        //mkb::OSReport("Running init_sel_ngc for %s\n", tickable->name);
+#if DEBUG_LOGGING == 1
+                        mkb::OSReport("Running init_sel_ngc for %s\n", tickable->name);
+#endif
                         (*tickable->init_sel_ngc)();
                     }
                 }

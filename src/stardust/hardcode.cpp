@@ -34,7 +34,6 @@ void flip_hardcoded_wormholes(int idx) {
             break;
         }
         case 15: {
-            mkb::balls[mkb::curr_player_idx].banana_count = idx;
             auto ball_velocity = &mkb::balls[mkb::curr_player_idx].vel;
             auto camera_rotation = &mkb::cameras[mkb::curr_player_idx].rot;
             if (idx != 5 && idx != 13 && idx != 16 && idx != 17) {
@@ -134,6 +133,24 @@ void tick() {
                 validate::is_currently_valid() &&
                 !entered_wormhole) {
                 achievement::claim_achievement(6);
+            }
+            break;
+        }
+        // Interstellar 4 Deep Space
+        // Hardcoded giant vertical wormhole
+        case 224: {
+            if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
+                if(mkb::balls[mkb::curr_player_idx].pos.x > -500 &&
+                   mkb::balls[mkb::curr_player_idx].pos.x < 500 &&
+                   mkb::balls[mkb::curr_player_idx].pos.z > -500 &&
+                   mkb::balls[mkb::curr_player_idx].pos.z < 500){
+                    if(mkb::balls[mkb::curr_player_idx].pos.y < 0){
+                        mkb::balls[mkb::curr_player_idx].pos.y += 650;
+                    }
+                    if(mkb::balls[mkb::curr_player_idx].pos.y > 650){
+                        mkb::balls[mkb::curr_player_idx].pos.y -= 650;
+                    }
+                }
             }
             break;
         }

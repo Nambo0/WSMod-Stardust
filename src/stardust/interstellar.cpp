@@ -100,13 +100,13 @@ void on_fallout() {
     if (stage_id_is_stellar(mkb::g_current_stage_id)) {
         if (mkb::main_game_mode == mkb::CHALLENGE_MODE) {
             // Fallout Timer Penalty
-            if (mkb::mode_info.stage_time_frames_remaining > 20 * 60) {
-                frames_left = mkb::mode_info.stage_time_frames_remaining - 20 * 60;
+            if (mkb::mode_info.stage_time_frames_remaining > 15 * 60) {
+                frames_left = mkb::mode_info.stage_time_frames_remaining - 15 * 60;
             }
             else {
                 mkb::mode_info.ball_mode |= 1 << 6;
             }
-            // TO-DO: Display "-20" below the timer!
+            // TO-DO: Display "-15" below the timer!
 
             // Save banana state
             for (u32 i = 0; i < mkb::item_pool_info.upper_bound; i++) {

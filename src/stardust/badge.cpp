@@ -56,7 +56,6 @@ bool detect_sweep() {
 }
 
 void on_goal() {
-    mkb::balls[mkb::curr_player_idx].banana_count = stage_id_to_stage_number(mkb::g_current_stage_id);
 }
 
 }// namespace badge

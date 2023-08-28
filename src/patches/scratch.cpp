@@ -1,5 +1,6 @@
 #include "scratch.h"
 #include "internal/heap.h"
+#include "internal/log.h"
 #include "internal/pad.h"
 #include "internal/tickable.h"
 #include "internal/ui/ui_manager.h"
@@ -7,6 +8,7 @@
 #include "internal/ui/widget_text.h"
 #include "internal/ui/widget_window.h"
 #include "widget_button.h"
+#include "widget_sprite.h"
 
 namespace scratch {
 
@@ -102,41 +104,94 @@ void init() {
 void tick() {
     if (pad::button_pressed(mkb::PAD_TRIGGER_Z) && !sent) {
         mkb::call_SoundReqID_arg_2(10);
-        mkb::OSReport("free: %dkb\n", heap::get_free_space() / 1024);
+        LOG_DEBUG("free: %dkb", heap::get_free_space() / 1024);
 
         constexpr Vec2d center = Vec2d{640 / 2, 480 / 2};
-        constexpr Vec2d box_size = Vec2d{300, 220};
+        constexpr Vec2d box_size = Vec2d{450, 220};
         constexpr Vec2d computed_center = Vec2d{center.x - (box_size.x / 2), center.y - (box_size.y) / 2};
 
         auto& ui = ui::get_widget_manager();
-        ui::Window& window = ui.add(new ui::Window(computed_center, box_size));
-        ui::Container& container = window.add(new ui::Container(computed_center, box_size));
-        ui::Container& container_txt = window.add(new ui::Container(computed_center, box_size));
+        ui::Window& galactic_log_menu = ui.add(new ui::Window(computed_center, box_size));
+        ui::Container& galactic_log_container = galactic_log_menu.add(new ui::Container(computed_center, Vec2d{box_size.x - 5, box_size.y}));
 
-        auto hello_world = []() { mkb::call_SoundReqID_arg_2(0x6e); };
-        auto close = [&window]() { mkb::call_SoundReqID_arg_2(0x6e);
+        auto hello_world = []() {};
+        auto close = []() {
             for (auto& w : ui::get_widget_manager().get_widgets()) {
                 w->set_visible(false);
         } };
 
-        ui::Text& text = container.add(new ui::Text("Galactic Log"));
-        text.set_m_font_style(0x5);
-        text.set_scale(Vec2d{1.0, 1.0});
-        container.add(new ui::Button("Story Mode", hello_world));
-        container.add(new ui::Button("Interstellar", hello_world));
-        container.add(new ui::Button("Achievements", hello_world));
-        container.add(new ui::Button("About", hello_world));
-        container.add(new ui::Button("Credit & Special Thanks", hello_world));
-        container.add(new ui::Button("Close", close));
+        ui::Text& galatic_log_title = galactic_log_container.add(new ui::Text("Galactic Log", galactic_log_container.get_dimensions()));
+        galatic_log_title.set_font_style(mkb::STYLE_TEGAKI);
 
-        mkb::OSReport("free: %dkb\n", heap::get_free_space() / 1024);
+        // Credits screen test
+        mkb::load_bmp_by_id(0xc);// TODO: do not rely on this, this wastes memory
+
+        auto& credits_menu_screen = ui.add(new ui::Sprite(0x4b, Vec2d{0, 0}, Vec2d{64, 64}));
+        credits_menu_screen.set_scale(Vec2d{300, 200});
+        credits_menu_screen.set_alpha(0.6666f);
+        credits_menu_screen.set_mult_color({0xff, 0x00, 0xff});// magenta
+        credits_menu_screen.set_depth(0.02);
+
+        auto& title_box = credits_menu_screen.add(new ui::Window(Vec2d{128, 8}, Vec2d{384, 64}));
+        auto& title_text_container = title_box.add(new ui::Container(title_box.get_pos(), title_box.get_dimensions()));// TODO: make windows containers so we don't need to do this
+        auto& title_text = title_text_container.add(new ui::Text("Credits & Special Thanks", title_box.get_dimensions()));
+        title_text.set_font_style(mkb::STYLE_TEGAKI);
+
+        // Back arrow
+        credits_menu_screen.add(new ui::Sprite(0xc27, Vec2d{48, 36}, Vec2d{64, 64}));
+
+        // Next arrow
+        auto& next_arrow = credits_menu_screen.add(new ui::Sprite(0xc27, Vec2d{640 - 48, 36}, Vec2d{64, 64}));
+        next_arrow.set_mirror(true);
+
+        auto& credits_container = credits_menu_screen.add(new ui::Container(Vec2d{16 - (304), 60}, Vec2d{640 - 32, 480 - 80 - 32}));
+        auto& credits_text = credits_container.add(new ui::Text(
+            "It's the credits & special thanks page! Here are the credits and the special thanks.\n"
+            "...no credits list yet.\n"
+            "But here's some indented stuff.\n"
+            "    - Indented stuff here\n"
+            "Did you know that text containers automatically scale text horizontally/vertically\n"
+            "if the text is larger than the container's dimensions?\n",
+            credits_container.get_dimensions()));
+
+        credits_text.set_alignment(mkb::ALIGN_UPPER_RIGHT);
+        credits_text.set_drop_shadow(false);
+        credits_text.set_color({0x00, 0x00, 0x00});
+
+        auto close_credits = [&credits_menu_screen]() {
+            auto& w = ui::get_widget_manager().get_widgets();
+            w.back()->set_visible(false);// TODO: hack. need to fix this
+            w.front()->set_visible(true);
+        };
+
+        auto& close_handler = credits_menu_screen.add(new ui::Button("", Vec2d{0, 0}, close_credits));// TODO: generic input handler widget
+        close_handler.set_active(true);
+        close_handler.set_input(mkb::PAD_BUTTON_B);
+
+        credits_menu_screen.set_visible(false);// not visible by default, needs to be opened
+
+        // Back to menu test
+        auto open_credits = [&]() {
+            auto& w = ui::get_widget_manager().get_widgets();
+            w.back()->set_visible(true);// TODO: hack. need to fix this
+            w.front()->set_visible(false);
+        };
+
+        galactic_log_container.add(new ui::Button("Story Mode", galactic_log_container.get_dimensions(), hello_world));
+        galactic_log_container.add(new ui::Button("Interstellar", galactic_log_container.get_dimensions(), hello_world));
+        galactic_log_container.add(new ui::Button("Achievements", galactic_log_container.get_dimensions(), hello_world));
+        galactic_log_container.add(new ui::Button("About", galactic_log_container.get_dimensions(), hello_world));
+        galactic_log_container.add(new ui::Button("Credit & Special Thanks", galactic_log_container.get_dimensions(), open_credits));
+        galactic_log_container.add(new ui::Button("Close", galactic_log_container.get_dimensions(), close));
+
+        LOG_DEBUG("free: %dkb", heap::get_free_space() / 1024);
         sent = true;
     }
 
     if (pad::button_pressed(mkb::PAD_BUTTON_Y) && !sent2) {
-        mkb::OSReport("free: %dkb\n", heap::get_free_space() / 1024);
+        LOG_DEBUG("free: %dkb", heap::get_free_space() / 1024);
         ui::get_widget_manager().clear();
-        mkb::OSReport("free: %dkb\n", heap::get_free_space() / 1024);
+        LOG_DEBUG("free: %dkb", heap::get_free_space() / 1024);
         sent = false;
     }
 

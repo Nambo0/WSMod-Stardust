@@ -1,4 +1,5 @@
-#include "stardust/big_bunch.h"
+#include "big_bunch.h"
+
 #include "internal/patch.h"
 #include "internal/tickable.h"
 #include "internal/utils.h"
@@ -11,11 +12,11 @@ TICKABLE_DEFINITION((
         .name = "stardust-big-bunch",
         .description = "Big bunches",
         .enabled = true,
-        .init_main_loop = init,
+        .init_main_loop = init_main_loop,
+        .init_main_game = init_main_game,
         .tick = tick, ))
 
 void tick() {
-
     for (u32 i = 0; i < mkb::item_pool_info.upper_bound; i++) {
         if (mkb::item_pool_info.status_list[i] == 0)
             continue;// skip if its inactive
@@ -146,7 +147,51 @@ void new_item_coin_coli(mkb::Item* item, mkb::PhysicsBall* phys_ball) {
     }
 }
 
-void init() {
+void new_view_stage_draw_bananas(void) {
+    bool bonus;
+    int iVar1;
+    int iVar2;
+    u32 banana_count;
+    mkb::StagedefBanana* banana_list;
+    mkb::GmaModel* banana_models[2];
+    mkb::undefined4 banana_rotation_speeds[4];
+
+    banana_rotation_speeds[0] = 0x400;
+    banana_rotation_speeds[1] = 0x300;
+    if (((mkb::main_game_mode != mkb::COMPETITION_MODE) ||
+         (bonus = mkb::is_bonus_stage((int) mkb::current_stage_id), bonus)) ||
+        ((mkb::mode_flags & mkb::MG_G_NO_BANANAS) != mkb::MF_NONE)) {
+        banana_models[0] = mkb::init_common_gma->model_entries[0x41].model;
+        banana_models[1] = mkb::init_common_gma->model_entries[0x44].model;
+        for (iVar2 = 0; iVar2 < (int) mkb::stagedef->coli_header_count; iVar2 = iVar2 + 1) {
+            banana_list = mkb::stagedef->coli_header_list[iVar2].banana_list;
+            banana_count = mkb::stagedef->coli_header_list[iVar2].banana_count;
+            for (iVar1 = 0; iVar1 < (int) banana_count; iVar1 = iVar1 + 1) {
+                mkb::mtxa_from_mtx((mkb::Mtx*) mkb::itemgroups[iVar2].transform);
+                mkb::mtxa_translate(&banana_list->position);
+                mkb::mtxa_sq_from_identity();
+                mkb::mtxa_rotate_y(mkb::view_stage_timer * (short) banana_rotation_speeds[banana_list->type]);
+                if (banana_list->type == mkb::BANANA_BUNCH &&
+                    mkb::stagedef->coli_header_list[iVar2].anim_group_id >= 11000 &&
+                    mkb::stagedef->coli_header_list[iVar2].anim_group_id <= 12000) {
+                    mkb::mtxa_scale_s(2.5f); //unsure if this is exactly the same, but close enough
+                }
+                mkb::mtxa_mult_left(&mkb::mtxa[1]);
+                mkb::load_gx_pos_nrm_mtx(mkb::mtxa, 0);
+                mkb::avdisp_draw_model_culled_sort_auto(banana_models[banana_list->type]);
+                banana_list = banana_list + 1;
+            }
+        }
+    }
+    return;
+}
+
+void init_main_game() {
+    // View stage fix
+    patch::hook_function(mkb::view_stage_draw_bananas, new_view_stage_draw_bananas);
+}
+
+void init_main_loop() {
     patch::hook_function(
         s_item_coin_disp_tramp, mkb::item_coin_disp, [](mkb::Item* item) {
             if (item->coin_type == 1 &&

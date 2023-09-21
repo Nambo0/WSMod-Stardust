@@ -135,6 +135,25 @@ void on_fallout() {
     }
 }
 
+bool read_bool_from_array(u8* array, u8 slot){
+    u32 array_index = slot / 8;
+    u32 bit_offset = slot % 8;
+    if (array[array_index] & (1 << bit_offset)) return true;
+    else return false;
+}
+
+void write_bool_to_array(u8* array, u8 slot, bool value_to_write){
+    u32 array_index = slot / 8;
+    u32 bit_offset = slot % 8;
+    if(value_to_write){
+        array[array_index] |= 1 << bit_offset;
+    }
+    else{
+        array[array_index] |= 0 << bit_offset;
+    }
+}
+
+
 void on_spin_in() {
     if (stage_id_is_stellar(mkb::g_current_stage_id)) {
         mkb::mode_info.stage_time_limit = 2;// Prevents replay-memory crashes

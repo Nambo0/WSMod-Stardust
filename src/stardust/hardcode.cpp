@@ -154,6 +154,14 @@ void tick() {
             }
             break;
         }
+        // Debug Stellar W2 Draft
+        // Frozen timer
+        case 267: {
+            if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
+                mkb::mode_info.stage_time_frames_remaining = 2;
+            }
+            break;
+        }
     }
 }
 }// namespace hardcode

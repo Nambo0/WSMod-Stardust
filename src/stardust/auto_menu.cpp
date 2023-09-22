@@ -9,6 +9,7 @@ namespace auto_menu {
 
 u8 auto_mode = 1; // 0 = none, 1 = all, 2 = stunt only
 bool trigger_retry = true;
+u8 fade_frame = 0;
 
 // Patch is enabled by default
 TICKABLE_DEFINITION((
@@ -21,6 +22,11 @@ TICKABLE_DEFINITION((
 
 // Makes ball.whatever easier to use
 mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];
+
+void begin_stage_select_fade(){
+    if(fade_frame == 0) fade_frame = 1;
+    mkb::fade_screen_to_color(0x101,0xffffff,15);
+}
 
 void force_stage_select(){
     mkb::mode_info.ball_mode = mkb::mode_info.ball_mode & ~mkb::BALLMODE_IN_REPLAY;
@@ -35,18 +41,29 @@ void force_stage_select(){
 }
 
 void tick() {
-    // Auto Retry
-    if((mkb::sub_mode == mkb::SMD_GAME_READY_MAIN) && (auto_mode > 0) && trigger_retry){
-        mkb::sub_mode_request = mkb::SMD_GAME_READY_INIT;
-        trigger_retry = false;
-    }
+    if (mkb::main_game_mode == mkb::STORY_MODE){
+        // Auto Retry
+        if((mkb::sub_mode == mkb::SMD_GAME_READY_MAIN) && (auto_mode > 0) && trigger_retry){
+            mkb::sub_mode_request = mkb::SMD_GAME_READY_INIT;
+            trigger_retry = false;
+        }
 
-    // Dpad Down to switch modes
-    if (pad::button_pressed(mkb::PAD_BUTTON_DOWN)){
-        auto_mode += 1;
-        if(auto_mode > 2) auto_mode = 0;
+        // Dpad Down to switch modes
+        if (pad::button_pressed(mkb::PAD_BUTTON_DOWN)){
+            auto_mode += 1;
+            if(auto_mode > 2) auto_mode = 0;
 
-        ball.banana_count = auto_mode;
+            ball.banana_count = auto_mode;
+        }
+
+        // Auto Stage Select
+        if(fade_frame > 0){
+            if(fade_frame > 15){
+                force_stage_select();
+                fade_frame = 0;
+            }
+            else fade_frame += 1;
+        }
     }
 }
 
@@ -55,17 +72,19 @@ void init() {
 }
 
 void on_goal(){
-    // Auto Stage Select
-    trigger_retry = true;
-    switch (auto_mode) {
-        case 0:
+    if (mkb::main_game_mode == mkb::STORY_MODE){
+        // Auto Stage Select
+        trigger_retry = true;
+        switch (auto_mode) {
+            case 0:
+                return;
+            case 1:
+                begin_stage_select_fade();
+                return;
+            case 2:
+                if(mkb::mode_info.entered_goal_type == 2) begin_stage_select_fade();
             return;
-        case 1:
-            force_stage_select();
-            return;
-        case 2:
-            if(mkb::mode_info.entered_goal_type == 2) force_stage_select();
-        return;
+        }
     }
 }
 

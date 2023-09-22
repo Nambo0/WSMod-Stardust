@@ -172,6 +172,56 @@ void tick() {
             }
             break;
         }
+        // Interstellar 5 Singularity
+        // Typewriter buttons
+        case 225: {
+            if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
+                // Count number of activated purple/green buttons
+                u8 purple_inactive_count = 0;
+                u8 green_inactive_count = 0;
+                u8 indicator_inactive_count = 0;
+                for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
+                    u32 anim_id = mkb::stagedef->coli_header_list[i].anim_group_id;
+                    if ((anim_id >= 11 && anim_id <= 13) &&
+                        mkb::itemgroups[i].anim_frame < 1) {
+                        purple_inactive_count++;
+                    }
+                    if ((anim_id >= 14 && anim_id <= 16) &&
+                        mkb::itemgroups[i].anim_frame < 1) {
+                        green_inactive_count++;
+                    }
+                    if ((anim_id == 12001) &&
+                        mkb::itemgroups[i].anim_frame < 1) {
+                        indicator_inactive_count++;
+                    }
+                }
+
+                // If all 3 purple buttons are activated, activate 'bunch' animation (id 11005)
+                if (purple_inactive_count < 1 && indicator_inactive_count < 1) {
+                    for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
+                        switch(mkb::stagedef->coli_header_list[i].anim_group_id){
+                            case 11005:
+                                mkb::itemgroups[i].playback_state = 0;
+                                break;
+                            case 12001:
+                                if(mkb::itemgroups[i].anim_frame > 1) mkb::itemgroups[i].playback_state = 2; // Reverse bunch indicator anims
+                                break;
+                        }
+                    }
+                }
+                // If all 3 green buttons are activated, activate 'bounce' animation (id 20)
+                if (green_inactive_count < 1) {
+                    for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
+                        if (mkb::stagedef->coli_header_list[i].anim_group_id != 20) {
+                            continue;
+                        }
+                        mkb::itemgroups[i].playback_state = 0;
+                    }
+                }
+            }
+            break;
+        }
+
         // Debug Stellar W2 Draft
         // Frozen timer
         case 267: {

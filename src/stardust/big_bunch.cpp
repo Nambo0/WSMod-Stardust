@@ -81,14 +81,8 @@ void new_item_coin_coli(mkb::Item* item, mkb::PhysicsBall* phys_ball) {
                     11000 &&
                 mkb::stagedef->coli_header_list[item->itemgroup_idx].anim_group_id <=
                     12000) {
-                bananas_to_add = (mkb::stagedef->coli_header_list[item->itemgroup_idx]
-                                      .anim_group_id -
-                                  11000) *
-                                 10;
-                score_to_add = (mkb::stagedef->coli_header_list[item->itemgroup_idx]
-                                    .anim_group_id -
-                                11000) *
-                               1000;
+                bananas_to_add = (mkb::stagedef->coli_header_list[item->itemgroup_idx].anim_group_id - 11000) % 100 * 10;
+                score_to_add = (mkb::stagedef->coli_header_list[item->itemgroup_idx].anim_group_id - 11000) % 100 * 1000;
             }
             mkb::add_bananas(bananas_to_add);
             mkb::increment_score(
@@ -120,7 +114,7 @@ void new_item_coin_coli(mkb::Item* item, mkb::PhysicsBall* phys_ball) {
                 mkb::stagedef->coli_header_list[item->itemgroup_idx].anim_group_id <=
                     12000) {
                 effect.g_scale = Vec{2.0, 2.0, 2.0};
-                big_bunch::remove_closest_bunch_indicator();// REMOVES THE INDICATOR
+                if(mkb::stagedef->coli_header_list[item->itemgroup_idx].anim_group_id != 11001) big_bunch::remove_closest_bunch_indicator();// REMOVES THE INDICATOR
             }
             spawn_effect(&effect);
         }

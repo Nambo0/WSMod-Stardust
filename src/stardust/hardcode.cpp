@@ -136,8 +136,26 @@ void tick() {
             }
             break;
         }
+        // Interstellar 3 Solar Orbit
+        // Animations retain from attempt to attempt 
+        case 223: {
+            if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT && mkb::main_game_mode == mkb::CHALLENGE_MODE) {
+                for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
+                    u32 anim_id = mkb::stagedef->coli_header_list[i].anim_group_id;
+                    if (anim_id == 11002) {
+                        mkb::itemgroups[i].anim_frame = (300*60 - mkb::mode_info.stage_time_frames_remaining) % 100*60;
+                        continue;
+                    }
+                    if (anim_id == 11003) {
+                        mkb::itemgroups[i].anim_frame = (300*60 - mkb::mode_info.stage_time_frames_remaining) % 50*60;
+                        continue;
+                    }
+                }
+            }
+            break;
+        }
         // Interstellar 4 Deep Space
-        // Hardcoded giant vertical wormhole
+        // Giant vertical wormhole
         case 224: {
             if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
                 if(mkb::balls[mkb::curr_player_idx].pos.x > -500 &&

@@ -142,7 +142,7 @@ void tick() {
             if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT && mkb::main_game_mode == mkb::CHALLENGE_MODE) {
                 for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
                     u32 anim_id = mkb::stagedef->coli_header_list[i].anim_group_id;
-                    if (anim_id == 11002) {
+                    if (anim_id == 11101) {
                         mkb::itemgroups[i].anim_frame = (300*60 - mkb::mode_info.stage_time_frames_remaining) % 100*60;
                         continue;
                     }
@@ -221,7 +221,33 @@ void tick() {
             }
             break;
         }
-
+        // Interstellar 6 Glitch Anomaly
+        // Giant flipper wormhole
+        case 226: {
+            if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
+                if(((mkb::balls[mkb::curr_player_idx].pos.x > -260 - 600 &&
+                   mkb::balls[mkb::curr_player_idx].pos.x < 260 - 600) ||
+                   (mkb::balls[mkb::curr_player_idx].pos.x > -260 + 600 &&
+                   mkb::balls[mkb::curr_player_idx].pos.x < 260 + 600)) &&
+                   mkb::balls[mkb::curr_player_idx].pos.z > -260 &&
+                   mkb::balls[mkb::curr_player_idx].pos.z < 260){
+                    if(mkb::balls[mkb::curr_player_idx].pos.y < 0){
+                        // Flip ball
+                        mkb::balls[mkb::curr_player_idx].pos.y = 0;
+                        mkb::balls[mkb::curr_player_idx].pos.x *= -1;
+                        mkb::balls[mkb::curr_player_idx].vel.y *= -1;
+                        mkb::balls[mkb::curr_player_idx].vel.y += 0.1; // Add some velocity to prevent getting stuck
+                        mkb::balls[mkb::curr_player_idx].vel.x *= -1;
+                        // Flip camera
+                        auto camera_rotation = &mkb::cameras[mkb::curr_player_idx].rot;
+                        camera_rotation->x -= camera_rotation->x * 2;
+                        camera_rotation->y -= camera_rotation->y * 2;
+                        camera_rotation->z += 32768; // 180deg rotation
+                    }
+                }
+            }
+            break;
+        }
         // Debug Stellar W2 Draft
         // Frozen timer
         case 267: {
@@ -231,5 +257,15 @@ void tick() {
             break;
         }
     }
+    
+    // Special hardcode for Interstellar 6 big wormholes
+    if (mkb::current_stage_id == 226) {
+        patch::write_word(reinterpret_cast<void*>(0x803de6f8), 0x41400000); // 12.0
+        patch::write_word(reinterpret_cast<void*>(0x803e65b0), 0x40c00000); // 6.0
+    }
+    else { 
+        patch::write_word(reinterpret_cast<void*>(0x803de6f8), 0x40800000); // 4.0 (default)
+        patch::write_word(reinterpret_cast<void*>(0x803e65b0), 0x40000000); // 2.0 (default)
+}
 }
 }// namespace hardcode

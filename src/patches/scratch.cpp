@@ -102,7 +102,7 @@ void init() {
 }
 
 void tick() {
-    if (pad::button_pressed(mkb::PAD_TRIGGER_Z) && !sent) {
+    if (pad::button_pressed(mkb::PAD_TRIGGER_Z) && pad::button_down(mkb::PAD_BUTTON_B) && !sent) {
         mkb::call_SoundReqID_arg_2(10);
         LOG_DEBUG("free: %dkb", heap::get_free_space() / 1024);
 

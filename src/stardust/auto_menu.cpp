@@ -7,7 +7,7 @@
 
 namespace auto_menu {
 
-u8 auto_mode = 1; // 0 = none, 1 = all, 2 = stunt only
+u8 auto_mode = 1; // 0 = none, 1 = all, 2 = hold A
 bool trigger_retry = true;
 u8 fade_frame = 0;
 
@@ -82,7 +82,7 @@ void on_goal(){
                 begin_stage_select_fade();
                 return;
             case 2:
-                if(mkb::mode_info.entered_goal_type == 2) begin_stage_select_fade();
+                if(pad::button_down(mkb::PAD_BUTTON_A)) begin_stage_select_fade();
             return;
         }
     }

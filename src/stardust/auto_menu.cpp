@@ -41,21 +41,18 @@ void force_stage_select(){
 }
 
 void tick() {
+    // Dpad Down to switch modes
+    if (pad::button_pressed(mkb::PAD_BUTTON_DOWN)){
+        auto_mode += 1;
+        if(auto_mode > 2) auto_mode = 0;
+        // Fast spin-in (Only set this before story entry!)
+        if(auto_mode == 0) patch::write_word(reinterpret_cast<void*>(0x808f4a3c), 0x2c000001);
+        if(auto_mode > 0) patch::write_word(reinterpret_cast<void*>(0x808f4a3c), 0x2c00ff01);
+
+        ball.banana_count = auto_mode;
+    }
+
     if (mkb::main_game_mode == mkb::STORY_MODE){
-        // Auto Retry
-        if((mkb::sub_mode == mkb::SMD_GAME_READY_MAIN) && (auto_mode > 0) && trigger_retry){
-            mkb::sub_mode_request = mkb::SMD_GAME_READY_INIT;
-            trigger_retry = false;
-        }
-
-        // Dpad Down to switch modes
-        if (pad::button_pressed(mkb::PAD_BUTTON_DOWN)){
-            auto_mode += 1;
-            if(auto_mode > 2) auto_mode = 0;
-
-            ball.banana_count = auto_mode;
-        }
-
         // Auto Stage Select
         if(fade_frame > 0){
             if(fade_frame > 15){

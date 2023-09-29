@@ -200,7 +200,7 @@ void tick() {
                 if (purple_inactive_count < 1 && indicator_inactive_count < 1) {
                     for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
                         switch(mkb::stagedef->coli_header_list[i].anim_group_id){
-                            case 11005:
+                            case 11003:
                                 mkb::itemgroups[i].playback_state = 0;
                                 break;
                             case 12001:
@@ -266,6 +266,11 @@ void tick() {
     else { 
         patch::write_word(reinterpret_cast<void*>(0x803de6f8), 0x40800000); // 4.0 (default)
         patch::write_word(reinterpret_cast<void*>(0x803e65b0), 0x40000000); // 2.0 (default)
+
+    // Special hardcode for W4 & W6 snow particle rates
+    patch::write_nop(reinterpret_cast<void*>(0x802f4ef4));
+    if(mkb::world_theme == 0x00120000) patch::write_word(reinterpret_cast<void*>(0x802f4eac), 0xc07f001c);
+    else patch::write_word(reinterpret_cast<void*>(0x802f4eac), 0xc07f0038);
 }
 }
 }// namespace hardcode

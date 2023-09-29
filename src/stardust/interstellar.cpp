@@ -68,7 +68,7 @@ void tick() {
             }
             frames_left = mkb::mode_info.stage_time_frames_remaining;
         }
-        if (mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::mode_info.stage_time_frames_remaining <= 20 * 60) {
+        if (mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::mode_info.stage_time_frames_remaining <= 15 * 60) {
             mkb::mode_info.ball_mode |= 1 << 6;
         }
     }
@@ -206,4 +206,4 @@ void init() {
 // Goal bonus (Goal = +50 bananas, show little indicator under banana counter like how warp goal score bonuses work)
 // Sweep bonus (All bananas collected + goal = 5 bananas per second left on the timer, also show a little indicator when this happens)
 // End screen (Show total banana count, breakdown of banana count on each stage, and some kinda "Rank" based on how high the score is)
-// Custom timer (max 2 frames, 100 or 300 depending on blitz mode, 20s penalty on death)
+// Custom timer (max 2 frames, 100 or 300 depending on blitz mode, 15s penalty on death)

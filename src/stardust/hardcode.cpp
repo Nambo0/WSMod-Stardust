@@ -6,6 +6,7 @@
 #include "mkb/mkb.h"
 #include "stardust/achievement.h"
 #include "stardust/validate.h"
+#include "stardust/badge.h"
 
 namespace hardcode {
 
@@ -253,6 +254,49 @@ void tick() {
         case 267: {
             if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
                 mkb::mode_info.stage_time_frames_remaining = 2;
+            }
+            break;
+        }
+        // Monuments
+        // Show Galactic Log progress
+        case 74: {
+            if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
+                for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
+                    u32 anim_id = mkb::stagedef->coli_header_list[i].anim_group_id;
+                    switch(anim_id){
+                        // Claimed badges
+                        case 0 ... 309: {
+                            if (savedata::bitfield_true_in_slot(anim_id)) {
+                                mkb::itemgroups[i].position.y = 0;
+                            }
+                            break;
+                        }
+
+                        // Interstellar Rank Medallion
+                        // These positions are variable so they all need separate cases
+                        case 400: if (savedata::best_stellar_rank() == 0) mkb::itemgroups[i].position.y = 90; break;
+                        case 401: if (savedata::best_stellar_rank() == 1) mkb::itemgroups[i].position.y = 100; break;
+                        case 402: if (savedata::best_stellar_rank() == 2) mkb::itemgroups[i].position.y = 110; break;
+                        case 403: if (savedata::best_stellar_rank() == 3) mkb::itemgroups[i].position.y = 120; break;
+                        case 404: if (savedata::best_stellar_rank() == 4) mkb::itemgroups[i].position.y = 136; break;
+                        
+                        // World sweep statue decorations
+                        case 500 ... 519:{
+                            if (memsave::bitfield_10_true_from_slot((anim_id - 500)*10 + 100)) {
+                                mkb::itemgroups[i].position.y = 0;
+                            }
+                            break;
+                        }
+
+                        // Story sweep statues
+                        case 600: case 601:{
+                            if (memsave::bitfield_100_true_from_slot((anim_id - 600)*100 + 100)) {
+                                mkb::itemgroups[i].position.y = 0;
+                            }
+                            break;
+                        }
+                    }
+                }
             }
             break;
         }

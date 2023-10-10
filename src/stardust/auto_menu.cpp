@@ -62,6 +62,14 @@ void tick() {
             else fade_frame += 1;
         }
     }
+
+    if (mkb::main_game_mode == mkb::STORY_MODE){
+        // Bufferable A press on story select screen
+        if (pad::button_down(mkb::PAD_BUTTON_A) && mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_IDLE){
+            mkb::g_storymode_stageselect_state = 5; // 5 is unlabeled "STAGE_SELECTED_INIT"
+            mkb::call_SoundReqID_arg_2(0x6e); // Plays the menu sound
+        }
+    }
 }
 
 void init() {

@@ -37,7 +37,7 @@ Collecting every single bunch on a stage will award that stage's
 Interstellar: [BEFORE UNLOCK]
 Unlock this bonus mode by claiming the following achievement:
 
-[GOLD]STUNT PILOT\ | Complete 1 [PURP]stunt goal\ in each world  ~  (Unlocks Interstellar)
+[GOLD]STUNT PILOT\ | Complete 1 [PURP]stunt goal\ in each world  ~  (Unlocks All Bonus Modes)
 
 You can check which [PURP]stunt goals\ you've completed by looking for
 [PURP]Stunt Badges\[ICON] in the [BLUE]Story Mode\ section of the Galactic log.
@@ -56,20 +56,16 @@ will incur a 20 second penalty each time you fall out.
 Each stage has a [YELLOW]banana goal\ which will award 50 bananas upon
 completion. Remember that it will bring you to the next stage, so only
 go for the goal once you're satisfied with your banana count!
-
-Collecting every bunch AND finishing in the banana goal on one stage
-will award a [YELLOW]Sweep Bonus\, which will give 5 extra bananas for
-every second left on the timer.
 ========================================================================
 Debug: [BEFORE UNLOCK]
 Unlock this bonus mode by claiming the following achievement:
 
-[GOLD]STUNT SPECIALIST\ | Complete all 10 Stunt Goals in any world  ~  (Unlocks Debug stages)
+[GOLD]STUNT PILOT\ | Complete 1 [PURP]stunt goal\ in each world  ~  (Unlocks All Bonus Modes)
 
 You can check which [PURP]stunt goals\ you've completed by looking for
 [PURP]Stunt Badges\[ICON] in the [BLUE]Story Mode\ section of the Galactic log.
 
-Debug[AFTER UNLOCK]
+Debug: [AFTER UNLOCK]
 Debug is a bonus mode made up of unfinished concepts, outdated prototypes,
 and silly joke stages. The category is split up into 4 sub-sections:
 
@@ -83,3 +79,22 @@ PLEASE NOTE: This mode is meant to be a silly showcase of the inner
 workings of this pack's development. I'm fully aware that these stages
 are bad. [GREEN]That's why they are here.\ I hope you enjoy how broken
 they are \o/
+========================================================================
+Monuments: [BEFORE UNLOCK]
+Unlock this bonus mode by claiming the following achievement:
+
+[GOLD]STUNT PILOT\ | Complete 1 [PURP]stunt goal\ in each world  ~  (Unlocks All Bonus Modes)
+
+Monuments: [AFTER UNLOCK]
+Monuments is a trophy room for some of this pack's bonus goals. The circle of smaller statues
+each represents one world, and avove that world you can see which clear, stunt, and sweep
+badges you have completed, along with the stage challenge achievement above those 3 rows.
+
+If you get all 10 stunt goals or sweep badges in any world, that world's statue will be given
+a special effect!
+
+If you get all 100 stung goals or sweep badges in story, something special will appear on the
+giant empty pedestals outside the circle
+
+The center of the stage has a spinning medallion representing your best interstellar rank!
+(For more info, check the Interstellar section of the Galactic Log)

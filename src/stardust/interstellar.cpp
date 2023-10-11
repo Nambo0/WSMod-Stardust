@@ -80,13 +80,13 @@ void on_goal() {
         ball.banana_count += 50;
         // TODO: Display "+50" below the banana counter!
 
-        // Sweep Bonus
+        /* Sweep Bonus (NOT BEING USED ANYMORE)
         if (badge::detect_sweep()) {
             u32 seconds_remaining = mkb::mode_info.stage_time_frames_remaining / 60;
             u32 bonus_total = seconds_remaining * 5;
             ball.banana_count += bonus_total;
             // TODO: Display "Sweep Bonus: # seconds = +###[banana icon]"
-        }
+        } */
     }
 }
 
@@ -204,6 +204,5 @@ void init() {
 
 // no 1-ups
 // Goal bonus (Goal = +50 bananas, show little indicator under banana counter like how warp goal score bonuses work)
-// Sweep bonus (All bananas collected + goal = 5 bananas per second left on the timer, also show a little indicator when this happens)
 // End screen (Show total banana count, breakdown of banana count on each stage, and some kinda "Rank" based on how high the score is)
 // Custom timer (max 2 frames, 100 or 300 depending on blitz mode, 15s penalty on death)

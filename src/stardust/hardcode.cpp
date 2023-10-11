@@ -1,9 +1,9 @@
 #include "hardcode.h"
 
-#include "internal/pad.h"
-#include "internal/patch.h"
-#include "internal/tickable.h"
-#include "mkb/mkb.h"
+#include "../internal/pad.h"
+#include "../internal/patch.h"
+#include "../internal/tickable.h"
+#include "../mkb/mkb.h"
 #include "stardust/achievement.h"
 #include "stardust/validate.h"
 #include "stardust/badge.h"
@@ -19,6 +19,59 @@ TICKABLE_DEFINITION((
         .tick = tick, ))
 
 static bool entered_wormhole = false;
+
+// Dummy vars & functions for testing purposes
+bool read_bool_from_array(u8* array, u16 slot){
+    u32 array_index = slot / 8;
+    u32 bit_offset = slot % 8;
+    if (array[array_index] & (1 << bit_offset)) return true;
+    else return false;
+}
+void write_bool_to_array(u8* array, u16 slot, bool value_to_write){
+    u32 array_index = slot / 8;
+    u32 bit_offset = slot % 8;
+    if(value_to_write){
+        array[array_index] |= 1 << bit_offset;
+    }
+    else{
+        array[array_index] |= 0 << bit_offset;
+    }
+}
+static u8 savedata[] = {0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                        0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                        0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0x00, 0x00,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                        0x00, 0x00, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10};
+bool savedata_bitfield_true_in_slot(u16 slot){
+    return read_bool_from_array(savedata, slot);
+}
+bool savedata_bitfield_10_true_from_slot(u16 slot){
+    for(int i = slot; i < slot + 10; i++){
+        if(!read_bool_from_array(savedata, i)) return false;
+    }
+    return true;
+}
+bool savedata_bitfield_100_true_from_slot(u16 slot){
+    for(int i = slot; i < slot + 100; i++){
+        if(!read_bool_from_array(savedata, i)) return false;
+    }
+    return true;
+}
+u8 savedata_best_stellar_rank(){
+    u16 stellar_total = savedata[52] + savedata[53] + savedata[54] + savedata[55] + savedata[56] + savedata[57] + savedata[58] + savedata[59];
+    switch(stellar_total){
+        case 0 ... 99: return 0;
+        case 100 ... 199: return 1;
+        case 200 ... 299: return 2;
+        case 300 ... 399: return 3;
+        case 400 ... 499: return 4;
+    }
+    return 5;
+}
+void test(int num){
+    mkb::balls[mkb::curr_player_idx].banana_count = num;
+}
 
 static patch::Tramp<decltype(&mkb::teleport_through_wormhole)> s_teleport_through_wormhole_tramp;
 
@@ -259,39 +312,43 @@ void tick() {
         }
         // Monuments
         // Show Galactic Log progress
-        case 74: {
+        case 230: {
             if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
                 for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
                     u32 anim_id = mkb::stagedef->coli_header_list[i].anim_group_id;
                     switch(anim_id){
                         // Claimed badges
                         case 0 ... 309: {
-                            if (savedata::bitfield_true_in_slot(anim_id)) {
-                                mkb::itemgroups[i].position.y = 0;
+                            if (savedata_bitfield_true_in_slot(anim_id)) {
+                                test(30);
+                                mkb::itemgroups[i].playback_state = 0;
+                                mkb::itemgroups[i].anim_frame = 2;
                             }
                             break;
                         }
 
                         // Interstellar Rank Medallion
                         // These positions are variable so they all need separate cases
-                        case 400: if (savedata::best_stellar_rank() == 0) mkb::itemgroups[i].position.y = 90; break;
-                        case 401: if (savedata::best_stellar_rank() == 1) mkb::itemgroups[i].position.y = 100; break;
-                        case 402: if (savedata::best_stellar_rank() == 2) mkb::itemgroups[i].position.y = 110; break;
-                        case 403: if (savedata::best_stellar_rank() == 3) mkb::itemgroups[i].position.y = 120; break;
-                        case 404: if (savedata::best_stellar_rank() == 4) mkb::itemgroups[i].position.y = 136; break;
+                        case 400: if (savedata_best_stellar_rank() == 1) mkb::itemgroups[i].playback_state = 0; break;
+                        case 401: if (savedata_best_stellar_rank() == 2) mkb::itemgroups[i].playback_state = 0; break;
+                        case 402: if (savedata_best_stellar_rank() == 3) mkb::itemgroups[i].playback_state = 0; break;
+                        case 403: if (savedata_best_stellar_rank() == 4) mkb::itemgroups[i].playback_state = 0; break;
+                        case 404: if (savedata_best_stellar_rank() == 5) mkb::itemgroups[i].playback_state = 0; break;
                         
                         // World sweep statue decorations
                         case 500 ... 519:{
-                            if (memsave::bitfield_10_true_from_slot((anim_id - 500)*10 + 100)) {
-                                mkb::itemgroups[i].position.y = 0;
+                            if (savedata_bitfield_10_true_from_slot((anim_id - 500)*10 + 100)) {
+                                mkb::itemgroups[i].playback_state = 0;
+                                mkb::itemgroups[i].anim_frame = 2;
                             }
                             break;
                         }
 
                         // Story sweep statues
                         case 600: case 601:{
-                            if (memsave::bitfield_100_true_from_slot((anim_id - 600)*100 + 100)) {
-                                mkb::itemgroups[i].position.y = 0;
+                            if (savedata_bitfield_100_true_from_slot((anim_id - 600)*100 + 100)) {
+                                mkb::itemgroups[i].playback_state = 0;
+                                mkb::itemgroups[i].anim_frame = 2;
                             }
                             break;
                         }

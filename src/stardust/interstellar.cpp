@@ -1,8 +1,9 @@
 #include "interstellar.h"
 
-#include "internal/patch.h"
-#include "internal/tickable.h"
-#include "mkb/mkb.h"
+#include "../internal/patch.h"
+#include "../internal/pad.h"
+#include "../internal/tickable.h"
+#include "../mkb/mkb.h"
 #include "stardust/badge.h"
 
 namespace interstellar {
@@ -17,6 +18,8 @@ TICKABLE_DEFINITION((
         .on_goal = on_goal, ))
 
 static bool blitz_mode = false;
+static u8 goal_bonus_effect = 0;
+bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
 static u16 frames_left = 300 * 60;
 static u32 bunches_gone[] = {0, 0, 0, 0};// Bitfield array for keeping track of which bunches on a stage were collected between attempts
 static u32 anim_states = 0;              // Bitfield array for keeping track of which play-once anims were activated between attempts
@@ -40,6 +43,41 @@ static bool stage_id_is_stellar(u32 stage_id) {
         default: {
             return false;
         }
+    }
+}
+
+static void spawn_banana_effect(){
+    mkb::Effect effect;
+    mkb::Ball ball = mkb::balls[mkb::curr_player_idx];
+    mkb::Item& dummy_item = mkb::items[1]; 
+    for (u32 i = 0; i < mkb::item_pool_info.upper_bound; i++) {
+        if (mkb::item_pool_info.status_list[i] == 0) continue; // skip if its inactive
+        mkb::Item& item = mkb::items[i];                       // shorthand: current item in the list = "item"
+        if (item.coin_type != 1) continue;                     // skip if its not a bunch
+        dummy_item = item;
+        break;
+    }
+    mkb::memset(&effect, 0, 0xb0);
+    effect.type = mkb::EFFECT_HOLDING_BANANA;
+    effect.g_ball_idx = (short) (char) mkb::current_ball->idx;
+    effect.g_pos = ball.pos;
+    effect.g_some_vec = ball.vel;
+    effect.g_some_rot = dummy_item.rotation;
+    effect.g_pointer_to_some_struct = (s32) mkb::g_something_with_coins(
+        (int**) dummy_item.g_something_with_gma_model);
+    effect.g_scale.x =
+        (1.0 / *(float*) (effect.g_pointer_to_some_struct + 0x14)) *
+        1.5;
+    effect.g_scale.y = effect.g_scale.x;
+    effect.g_scale.z = effect.g_scale.x;
+    spawn_effect(&effect);
+    // Sounds
+    mkb::call_SoundReqID_arg_0(0x39);
+    if (((mkb::mode_info.ball_mode & mkb::BALLMODE_IN_TUTORIAL_SEQUENCE) !=
+            mkb::BALLMODE_NONE) ||
+        ((mkb::mode_info.ball_mode & mkb::BALLMODE_IN_REPLAY) ==
+            mkb::BALLMODE_NONE)) {
+        mkb::call_SoundReqID_arg_0(0x2820);
     }
 }
 
@@ -72,12 +110,23 @@ void tick() {
             mkb::mode_info.ball_mode |= 1 << 6;
         }
     }
+
+    if(goal_bonus_effect > 0 && !paused_now){
+        goal_bonus_effect++;
+        if(goal_bonus_effect % 6 == 0){
+            spawn_banana_effect();
+        }
+        if(goal_bonus_effect > 30){
+            goal_bonus_effect = 0;
+        }
+    }
 }
 
 void on_goal() {
     if (stage_id_is_stellar(mkb::g_current_stage_id)) {
         // Goal Bonus
         ball.banana_count += 50;
+        goal_bonus_effect = 1;
         // TODO: Display "+50" below the banana counter!
 
         /* Sweep Bonus (NOT BEING USED ANYMORE)

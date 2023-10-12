@@ -373,5 +373,22 @@ void tick() {
     if(mkb::world_theme == 0x00120000) patch::write_word(reinterpret_cast<void*>(0x802f4eac), 0xc07f001c);
     else patch::write_word(reinterpret_cast<void*>(0x802f4eac), 0xc07f0038);
 }
+    // Hurry up removal for frozen/count-up timers
+    if ((mkb::main_game_mode == mkb::PRACTICE_MODE && (mkb::curr_difficulty == 0x00000000)) || (mkb::current_stage_id == 267) || (mkb::current_stage_id == 230)) {
+        patch::write_nop(reinterpret_cast<void*>(0x80339da0));
+        patch::write_nop(reinterpret_cast<void*>(0x80339f14));
+        patch::write_word(reinterpret_cast<void*>(0x808f5108), 0x2c00ff01);
+        patch::write_word(reinterpret_cast<void*>(0x808f50b4), 0x2c00ff01);
+        patch::write_word(reinterpret_cast<void*>(0x808f4ff8), 0x2c00ff01);
+        patch::write_nop(reinterpret_cast<void*>(0x808f5044));
+        patch::write_nop(reinterpret_cast<void*>(0x808f508c));
+        patch::write_nop(reinterpret_cast<void*>(0x808f50f8));
+        patch::write_nop(reinterpret_cast<void*>(0x808f514c));
+        patch::write_nop(reinterpret_cast<void*>(0x808f5004));
+    }
+    else {
+        patch::write_word(reinterpret_cast<void*>(0x80339da0), 0x901d004c);
+        patch::write_word(reinterpret_cast<void*>(0x80339f14), 0x2c000258);
+    }
 }
 }// namespace hardcode

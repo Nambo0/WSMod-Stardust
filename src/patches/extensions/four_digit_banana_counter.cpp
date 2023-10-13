@@ -111,4 +111,4 @@ void init_main_loop() {
                       reinterpret_cast<void *>(create_new_banana_counter_sprites));
 }
 
-}// namespace death_counter
+}// namespace four_digit_banana_counter

@@ -192,10 +192,11 @@ void init_main_loop() {
 
 // The SEL_NGC check fixes less being visible vertically when playing in widescreen.
 // It only activates when we're not in menus as calibration breaks visually otherwise.
-// The MD_GAME check fixes the View Stage aspect ratio when in widescreen, and the 
-// rest changes the JUMP TO STAGE and continues remaining sprite position pointers 
-// and values in widescreen since there's not enough space in their create functions 
-// to add a widescreen translation field
+// The MD_GAME check fixes the View Stage aspect ratio when in widescreen. The STORY_MODE
+// check nulls out the FINAL STAGE text for the load-in to prevent it from displaying
+// when one-stage difficulties are present and the rest changes the JUMP TO STAGE and 
+// continues remaining sprite position pointers and values in widescreen since there's 
+// not enough space in their create functions to add a widescreen translation field
 
 void tick() {
     if (mkb::sub_mode == mkb::SMD_SEL_NGC_MAIN) {
@@ -211,6 +212,12 @@ void tick() {
         else {
             patch::write_word(reinterpret_cast<void*>(0x809155fc), (0x3fe38e3b));
         }
+    }
+    if (mkb::main_game_mode == mkb::STORY_MODE) {
+        patch::write_word(reinterpret_cast<void*>(0x8047f7d0), (0x00000000));
+    }
+    else {
+        patch::write_word(reinterpret_cast<void*>(0x8047f7d0), (0x46494e41));
     }
     if (mkb::widescreen_mode == 0) {
             patch::write_word(reinterpret_cast<void*>(0x8032e048), (0xc01f0038));

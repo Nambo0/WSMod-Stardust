@@ -122,11 +122,54 @@ void tick() {
     }
 }
 
+void goal_bonus_sprite_tick(u8* status, mkb::Sprite *sprite) {
+    sprite->alpha += 0.05;
+    if (sprite->alpha > 1){
+        sprite->alpha = 1;
+    }
+}
+
+void create_goal_bonus_sprite() {
+
+  mkb::Sprite* sprite = mkb::create_sprite();
+  if (sprite != (mkb::Sprite *)0x0) {
+    sprite->pos.x = 320.0;
+    sprite->pos.y = 240.0;
+    sprite->font = mkb::FONT_JAP_24x24_2;
+    sprite->alignment = mkb::ALIGN_CENTER;
+    sprite->mult_color.red = 0xff;
+    sprite->mult_color.green = 0xff;
+    sprite->mult_color.blue = 0x00;
+    sprite->alpha = 0.0;
+    sprite->g_flags1 = 0x1000000;
+    sprite->widescreen_translation_x = 0x140;
+    sprite->tick_func = goal_bonus_sprite_tick;
+    mkb::strcpy(sprite->text, "BONUS  +50");
+  }
+  sprite = mkb::create_sprite();
+   if (sprite != (mkb::Sprite *)0x0) {
+    sprite->type = mkb::SPRT_BMP;
+    sprite->pos.x = 340.0;
+    sprite->pos.y = 240.0;
+    sprite->alignment = mkb::ALIGN_CENTER;
+    sprite->bmp = 0xc;
+    sprite->alpha = 0.0;
+    sprite->g_flags1 = 0x1000000;
+    sprite->width = 0.3;
+    sprite->height = 0.3;
+    sprite->widescreen_translation_x = 0x140;
+    sprite->tick_func = goal_bonus_sprite_tick;
+    mkb::strcpy(sprite->text, "bonus banana");
+  }
+  return;
+}
+
 void on_goal() {
     if (stage_id_is_stellar(mkb::g_current_stage_id)) {
         // Goal Bonus
         ball.banana_count += 50;
         goal_bonus_effect = 1;
+        create_goal_bonus_sprite();
         // TODO: Display "+50" below the banana counter!
 
         /* Sweep Bonus (NOT BEING USED ANYMORE)

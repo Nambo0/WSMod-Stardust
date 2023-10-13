@@ -200,6 +200,43 @@ void remove_banana(mkb::Item& item) {
     item.g_some_bitfield = item.g_some_bitfield & 0xfffffffd;
 }
 
+void create_penalty_sprite() {
+
+  mkb::Sprite* sprite = mkb::create_sprite();
+  if (sprite != (mkb::Sprite *)0x0) {
+    sprite->pos.x = 320.0;
+    sprite->pos.y = 240.0;
+    sprite->font = mkb::FONT_JAP_24x24_2;
+    sprite->alignment = mkb::ALIGN_CENTER;
+    sprite->mult_color.red = 0xff;
+    sprite->mult_color.green = 0x80;
+    sprite->mult_color.blue = 0x00;
+    sprite->alpha = 0.0;
+    sprite->g_counter = 300;
+    sprite->g_flags1 = 0x1000000;
+    sprite->widescreen_translation_x = 0x140;
+    sprite->tick_func = goal_bonus_sprite_tick;
+    mkb::strcpy(sprite->text, "PENALTY  -15");
+  }
+  sprite = mkb::create_sprite();
+   if (sprite != (mkb::Sprite *)0x0) {
+    sprite->type = mkb::SPRT_BMP;
+    sprite->pos.x = 367.0;
+    sprite->pos.y = 240.0;
+    sprite->alignment = mkb::ALIGN_CENTER;
+    sprite->bmp = 0x510;
+    sprite->alpha = 0.0;
+    sprite->g_counter = 300;
+    sprite->g_flags1 = 0x1000000;
+    sprite->width = 0.75;
+    sprite->height = 0.75;
+    sprite->widescreen_translation_x = 0x140;
+    sprite->tick_func = goal_bonus_sprite_tick;
+    mkb::strcpy(sprite->text, "penalty time");
+  }
+  return;
+}
+
 void on_fallout() {
     if (stage_id_is_stellar(mkb::g_current_stage_id)) {
         if (mkb::main_game_mode == mkb::CHALLENGE_MODE) {
@@ -210,6 +247,7 @@ void on_fallout() {
             else {
                 mkb::mode_info.ball_mode |= 1 << 6;
             }
+            create_penalty_sprite();
             // TO-DO: Display "-15" below the timer!
 
             // Save banana state

@@ -123,9 +123,19 @@ void tick() {
 }
 
 void goal_bonus_sprite_tick(u8* status, mkb::Sprite *sprite) {
-    sprite->alpha += 0.05;
-    if (sprite->alpha > 1){
+    if (sprite->g_counter > 0){
+        sprite->alpha += 0.05;
+        if (sprite->alpha > 1){
         sprite->alpha = 1;
+    }
+    }
+    sprite->g_counter -= 1;
+    if (sprite->g_counter < 0){
+        sprite->g_counter = 0;
+        sprite->alpha -= 0.05;
+        if (sprite->alpha < 0){
+        sprite->alpha = 0;
+    }
     }
 }
 
@@ -141,6 +151,7 @@ void create_goal_bonus_sprite() {
     sprite->mult_color.green = 0xff;
     sprite->mult_color.blue = 0x00;
     sprite->alpha = 0.0;
+    sprite->g_counter = 300;
     sprite->g_flags1 = 0x1000000;
     sprite->widescreen_translation_x = 0x140;
     sprite->tick_func = goal_bonus_sprite_tick;
@@ -154,6 +165,7 @@ void create_goal_bonus_sprite() {
     sprite->alignment = mkb::ALIGN_CENTER;
     sprite->bmp = 0xc;
     sprite->alpha = 0.0;
+    sprite->g_counter = 300;
     sprite->g_flags1 = 0x1000000;
     sprite->width = 0.3;
     sprite->height = 0.3;

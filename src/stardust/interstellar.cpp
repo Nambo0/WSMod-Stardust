@@ -144,7 +144,7 @@ void create_goal_bonus_sprite() {
   mkb::Sprite* sprite = mkb::create_sprite();
   if (sprite != (mkb::Sprite *)0x0) {
     sprite->pos.x = 320.0;
-    sprite->pos.y = 240.0;
+    sprite->pos.y = 380.0;
     sprite->font = mkb::FONT_JAP_24x24_2;
     sprite->alignment = mkb::ALIGN_CENTER;
     sprite->mult_color.red = 0xff;
@@ -161,7 +161,7 @@ void create_goal_bonus_sprite() {
    if (sprite != (mkb::Sprite *)0x0) {
     sprite->type = mkb::SPRT_BMP;
     sprite->pos.x = 340.0;
-    sprite->pos.y = 240.0;
+    sprite->pos.y = 380.0;
     sprite->alignment = mkb::ALIGN_CENTER;
     sprite->bmp = 0xc;
     sprite->alpha = 0.0;
@@ -205,7 +205,7 @@ void create_penalty_sprite() {
   mkb::Sprite* sprite = mkb::create_sprite();
   if (sprite != (mkb::Sprite *)0x0) {
     sprite->pos.x = 320.0;
-    sprite->pos.y = 240.0;
+    sprite->pos.y = 380.0;
     sprite->font = mkb::FONT_JAP_24x24_2;
     sprite->alignment = mkb::ALIGN_CENTER;
     sprite->mult_color.red = 0xff;
@@ -222,7 +222,7 @@ void create_penalty_sprite() {
    if (sprite != (mkb::Sprite *)0x0) {
     sprite->type = mkb::SPRT_BMP;
     sprite->pos.x = 367.0;
-    sprite->pos.y = 240.0;
+    sprite->pos.y = 380.0;
     sprite->alignment = mkb::ALIGN_CENTER;
     sprite->bmp = 0x510;
     sprite->alpha = 0.0;

@@ -80,6 +80,10 @@ void tick() {
             }
         }
     }
+    if (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_MAIN) {
+        mkb::sel_menu_info.menu_stack_ptr = 1;
+        mkb::sel_menu_info.menu_stack[1] = 7;
+    }
 }
 
 }// namespace story_char_select

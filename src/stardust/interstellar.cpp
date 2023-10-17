@@ -182,15 +182,6 @@ void on_goal() {
         ball.banana_count += 50;
         goal_bonus_effect = 1;
         create_goal_bonus_sprite();
-        // TODO: Display "+50" below the banana counter!
-
-        /* Sweep Bonus (NOT BEING USED ANYMORE)
-        if (badge::detect_sweep()) {
-            u32 seconds_remaining = mkb::mode_info.stage_time_frames_remaining / 60;
-            u32 bonus_total = seconds_remaining * 5;
-            ball.banana_count += bonus_total;
-            // TODO: Display "Sweep Bonus: # seconds = +###[banana icon]"
-        } */
     }
 }
 
@@ -248,7 +239,6 @@ void on_fallout() {
                 mkb::mode_info.ball_mode |= 1 << 6;
             }
             create_penalty_sprite();
-            // TO-DO: Display "-15" below the timer!
 
             // Save banana state
             for (u32 i = 0; i < mkb::item_pool_info.upper_bound; i++) {
@@ -344,7 +334,4 @@ void init() {
 
 }// namespace interstellar
 
-// no 1-ups
-// Goal bonus (Goal = +50 bananas, show little indicator under banana counter like how warp goal score bonuses work)
-// End screen (Show total banana count, breakdown of banana count on each stage, and some kinda "Rank" based on how high the score is)
-// Custom timer (max 2 frames, 100 or 300 depending on blitz mode, 15s penalty on death)
+// TODO: End screen (Show total banana count, breakdown of banana count on each stage, and some kinda "Rank" based on how high the score is)

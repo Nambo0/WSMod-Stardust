@@ -112,6 +112,10 @@ void tick() {
         if (mkb::main_game_mode == mkb::PRACTICE_MODE &&
             (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN)) {
             if (mkb::mode_info.stage_time_frames_remaining == frames_left - 1) {
+                if(frames_left == 540*60){
+                    // Loop timer to 0 at 540
+                    mkb::mode_info.stage_time_frames_remaining = 0;
+                }
                 mkb::mode_info.stage_time_frames_remaining += 2;
                 frames_left = mkb::mode_info.stage_time_frames_remaining;
             }

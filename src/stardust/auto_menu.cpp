@@ -3,7 +3,7 @@
 #include "internal/patch.h"
 #include "internal/tickable.h"
 #include "internal/pad.h"
-#include "mkb/mkb.h"
+#include "../mkb/mkb.h"
 
 namespace auto_menu {
 

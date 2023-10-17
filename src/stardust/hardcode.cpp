@@ -389,5 +389,5 @@ void tick() {
         patch::write_word(reinterpret_cast<void*>(0x80339da0), 0x901d004c);
         patch::write_word(reinterpret_cast<void*>(0x80339f14), 0x2c000258);
     }
-}
+}// void tick
 }// namespace hardcode

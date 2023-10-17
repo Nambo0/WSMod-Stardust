@@ -2,6 +2,7 @@
 #include "internal/heap.h"
 #include "internal/log.h"
 #include "internal/pad.h"
+#include "../internal/patch.h"
 #include "internal/tickable.h"
 #include "internal/ui/ui_manager.h"
 #include "internal/ui/widget_container.h"
@@ -98,11 +99,21 @@ void sprite_disp(mkb::Sprite* sprite) {
 }
 
 */
+
+bool open_galactic_log = false;
+static patch::Tramp<decltype(&mkb::g_create_how_to_sprite)> s_g_create_how_to_sprite_tramp;
+
 void init() {
+    patch::hook_function(s_g_create_how_to_sprite_tramp, mkb::g_create_how_to_sprite, [](void) {
+        open_galactic_log = true;
+        return;
+    });
 }
 
 void tick() {
-    if (pad::button_pressed(mkb::PAD_TRIGGER_Z) && pad::button_down(mkb::PAD_BUTTON_B) && !sent) {
+    if (open_galactic_log && !sent) {
+        open_galactic_log = false;
+        
         mkb::call_SoundReqID_arg_2(10);
         LOG_DEBUG("free: %dkb", heap::get_free_space() / 1024);
 
@@ -144,14 +155,24 @@ void tick() {
         auto& next_arrow = credits_menu_screen.add(new ui::Sprite(0xc27, Vec2d{640 - 48, 36}, Vec2d{64, 64}));
         next_arrow.set_mirror(true);
 
+        // Credits Page 1
         auto& credits_container = credits_menu_screen.add(new ui::Container(Vec2d{16 - (304), 60}, Vec2d{640 - 32, 480 - 80 - 32}));
         auto& credits_text = credits_container.add(new ui::Text(
-            "It's the credits & special thanks page! Here are the credits and the special thanks.\n"
-            "...no credits list yet.\n"
-            "But here's some indented stuff.\n"
-            "    - Indented stuff here\n"
-            "Did you know that text containers automatically scale text horizontally/vertically\n"
-            "if the text is larger than the container's dimensions?\n",
+            "/bcFFFFFF/NOTE: Anything marked in /bc008CFF/blue/bcFFFFFF/ means you can find\n"
+            "a relevant link in the Credits file which came downloaded with the iso\n"
+            "/bcC800FF/DIRECT CONTRIBUTIONS:/bcFFFFFF/\n"
+            "/bc7E00A1/||   Original Soundtrack   ||/bcFFFFFF/\n"
+            "(>^^)> Walkr_ (/bc008CFF/Hear their music/bcFFFFFF/)\n"
+            "(>^^)> Relayer (/bc008CFF/Hear their music/bcFFFFFF/)\n"
+            "Song Credits:\n"
+            "Title/Debug | quasar 3, by Walkr\n"
+            "Menu | quasar 2, by Walkr\n"
+            "World 1 | Bubblegum Dream, by Relayer\n"
+            "World 2 | Cloudscape, by Walkr\n"
+            "World 3 | Solar Orbit, by Relayer\n"
+            "World 4 | Deep Space, by Walkr\n"
+            "World 5 | Dark Generator, by Relayer\n"
+            "",
             credits_container.get_dimensions()));
 
         credits_text.set_alignment(mkb::ALIGN_UPPER_RIGHT);

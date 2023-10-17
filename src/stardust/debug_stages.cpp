@@ -18,6 +18,7 @@ TICKABLE_DEFINITION((
 
 u8 button_b_frames = 0;
 
+/*
 static void skip_countdown_sprite_tick(u8* status, mkb::Sprite *sprite) {
     if (sprite->g_counter > 0){
         sprite->alpha = 1;
@@ -55,10 +56,13 @@ static void create_skip_countdown_sprite() {
 }
 
 static void skip_stage(){
-    mkb::sub_mode = mkb::SMD_GAME_GOAL_INIT;
+    mkb::g_set_goaled();
+    mkb::g_handle_goal();
 }
+*/
 
 void tick(){
+    /*
     if(mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::curr_difficulty == mkb::DIFF_ADVANCED &&
     (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN)){
         if(pad::button_down(mkb::PAD_BUTTON_B)){
@@ -74,7 +78,7 @@ void tick(){
         }
         else button_b_frames = 0;
 
-    }
+    } */
 }
 
 void on_goal() {

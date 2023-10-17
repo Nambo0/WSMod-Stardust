@@ -95,15 +95,24 @@ void on_stage_load(u32 stage_id) {
         }
     }
 
-    // Allow timer to freeze at 0 for frozen hardcoded timers
-    if((mkb::main_game_mode == mkb::PRACTICE_MODE && stage_id_is_stellar(stage_id))
-    || stage_id == 267 || stage_id == 77){
+    // Handle frozen & increasing timers
+    if(mkb::main_game_mode == mkb::PRACTICE_MODE && stage_id_is_stellar(stage_id)){
         // time over at -60 frames (so timer is able to stop at 0.00)
         *reinterpret_cast<u32*>(0x80297548) = 0x2c00ffa0;
+        // Add 1 to the timer each frame (increasing)
+        patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030001);
+    }
+    else if(stage_id == 267 || stage_id == 77){
+        // time over at -60 frames (so timer is able to stop at 0.00)
+        *reinterpret_cast<u32*>(0x80297548) = 0x2c00ffa0;
+        // add 0 to the timer each frame (frozen)
+        patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030000);
     }
     else {
         // time over at 0 frames
         *reinterpret_cast<u32*>(0x80297548) = 0x2c000000;
+        // add -1 to timer each frame (counting down, normal)
+        patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x3803ffff);
     }
 }
 
@@ -111,15 +120,10 @@ void tick() {
     if (stage_id_is_stellar(mkb::g_current_stage_id)) {
         if (mkb::main_game_mode == mkb::PRACTICE_MODE &&
             (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN)) {
-            if (mkb::mode_info.stage_time_frames_remaining == frames_left - 1) {
-                if(frames_left == 540*60){
-                    // Loop timer to 0 at 540
-                    mkb::mode_info.stage_time_frames_remaining = 0;
-                }
-                mkb::mode_info.stage_time_frames_remaining += 2;
-                frames_left = mkb::mode_info.stage_time_frames_remaining;
+            if(mkb::mode_info.stage_time_frames_remaining == 540*60){
+                // Loop timer to 0 at 540
+                mkb::mode_info.stage_time_frames_remaining = 0;
             }
-            frames_left = mkb::mode_info.stage_time_frames_remaining;
         }
         if (mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::mode_info.stage_time_frames_remaining <= 15 * 60) {
             mkb::mode_info.ball_mode |= 1 << 6;
@@ -275,10 +279,6 @@ void on_fallout() {
                     anim_states |= 1 << mkb::stagedef->coli_header_list[i].anim_group_id;
                 }
             }
-        }
-        if (mkb::main_game_mode == mkb::PRACTICE_MODE) {
-            frames_left = 2;
-            mkb::mode_info.stage_time_frames_remaining = 2;
         }
     }
 }

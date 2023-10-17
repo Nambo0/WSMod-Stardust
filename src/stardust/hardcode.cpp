@@ -302,11 +302,14 @@ void tick() {
             }
             break;
         }
-        // Debug Stellar W2 Draft
+        // Debug Stellar W2 Draft & Monuments
         // Frozen timer
-        case 267: {
+        case 267: case 77: {
+            if (mkb::sub_mode == mkb::SMD_GAME_READY_INIT || mkb::sub_mode == mkb::SMD_GAME_READY_MAIN){
+                mkb::mode_info.stage_time_frames_remaining = 0;
+            }
             if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
-                mkb::mode_info.stage_time_frames_remaining = 2;
+                mkb::mode_info.stage_time_frames_remaining = 1;
             }
             break;
         }

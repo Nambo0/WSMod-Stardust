@@ -94,6 +94,17 @@ void on_stage_load(u32 stage_id) {
             }
         }
     }
+
+    // Allow timer to freeze at 0 for frozen hardcoded timers
+    if((mkb::main_game_mode == mkb::PRACTICE_MODE && stage_id_is_stellar(stage_id))
+    || stage_id == 267 || stage_id == 77){
+        // time over at -60 frames (so timer is able to stop at 0.00)
+        *reinterpret_cast<u32*>(0x80297548) = 0x2c00ffa0;
+    }
+    else {
+        // time over at 0 frames
+        *reinterpret_cast<u32*>(0x80297548) = 0x2c000000;
+    }
 }
 
 void tick() {
@@ -312,8 +323,8 @@ void on_spin_in() {
             }
         }
         if (mkb::main_game_mode == mkb::PRACTICE_MODE) {
-            frames_left = 2;
-            mkb::mode_info.stage_time_frames_remaining = 2;
+            frames_left = 0;
+            mkb::mode_info.stage_time_frames_remaining = 0;
         }
     }
 }

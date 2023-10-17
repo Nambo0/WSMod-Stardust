@@ -56,8 +56,11 @@ static void create_skip_countdown_sprite() {
 }
 
 static void skip_stage(){
+    // Cause a bonus finish
     mkb::mode_info.ball_mode |= 1 << 6;
     mkb::mode_info.stage_time_frames_remaining = 1;
+    // Special case for Stellar W2 draft's frozen timer
+    if(mkb::g_current_stage_id == 267) mkb::mode_info.stage_time_frames_remaining = -100;
 }
 
 void tick(){

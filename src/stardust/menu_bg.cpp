@@ -18,7 +18,15 @@ TICKABLE_DEFINITION((
 mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];
 
 void tick() {
-
+    // Decides which BG to display (World of first occupied story save, 0 = w1)
+    u8 world = 0;
+    for (u8 i = 0; i < 3; i++){
+        if(mkb::storymode_save_files[i].is_valid){
+            world = mkb::storymode_save_files[i].current_world;
+            break;
+        }
+    }
+    // ball.banana_count = world;
 }
 
 // static patch::Tramp<decltype(&mkb::g_load_stage_for_menu_bg)> s_g_load_stage_for_menu_bg_tramp;

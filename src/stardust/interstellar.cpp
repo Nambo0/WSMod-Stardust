@@ -236,6 +236,7 @@ void on_fallout() {
                 frames_left = mkb::mode_info.stage_time_frames_remaining - 15 * 60;
             }
             else {
+                // Cause bonus finish if time is over
                 mkb::mode_info.ball_mode |= 1 << 6;
             }
             create_penalty_sprite();

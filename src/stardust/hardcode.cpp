@@ -279,12 +279,12 @@ void tick() {
         // Giant flipper wormhole
         case 226: case 227: {
             if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
-                if(((mkb::balls[mkb::curr_player_idx].pos.x > -260 - 600 &&
-                   mkb::balls[mkb::curr_player_idx].pos.x < 260 - 600) ||
-                   (mkb::balls[mkb::curr_player_idx].pos.x > -260 + 600 &&
-                   mkb::balls[mkb::curr_player_idx].pos.x < 260 + 600)) &&
-                   mkb::balls[mkb::curr_player_idx].pos.z > -260 &&
-                   mkb::balls[mkb::curr_player_idx].pos.z < 260){
+                if(((mkb::balls[mkb::curr_player_idx].pos.x > -270 - 600 &&
+                   mkb::balls[mkb::curr_player_idx].pos.x < 270 - 600) ||
+                   (mkb::balls[mkb::curr_player_idx].pos.x > -270 + 600 &&
+                   mkb::balls[mkb::curr_player_idx].pos.x < 270 + 600)) &&
+                   mkb::balls[mkb::curr_player_idx].pos.z > -270 &&
+                   mkb::balls[mkb::curr_player_idx].pos.z < 270){
                     if(mkb::balls[mkb::curr_player_idx].pos.y < 0){
                         // Flip ball
                         mkb::balls[mkb::curr_player_idx].pos.y = 0;

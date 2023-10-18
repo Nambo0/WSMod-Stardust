@@ -75,6 +75,9 @@ void init_main_game() {
 void init_sel_ngc() {
     // Patches the 'next screen ID' for the 'STORY MODE' button in the Mode Select screen
     mkb::menu_main_game_select_entries[0].next_screen_id = mkb::MENUSCREEN_CHARACTER_SELECT_2;
+    mkb::menu_main_game_select_entries[0].description_en = "Play Stardust's 10 world campaign!\n"
+                                                           "Collect bananas and /bcb300ff/stunt goals/bcffff00/ for\n"
+                                                           "extra swag.";
     for (int i = 0; i < 4; i++) {
         // Patches each of the character button's 'next screen ID' in the character select screen
         mkb::menu_character_select_2_entries[i].next_screen_id = mkb::MENUSCREEN_STORY_MODE_SELECTED;

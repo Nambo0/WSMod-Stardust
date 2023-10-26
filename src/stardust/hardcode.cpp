@@ -351,10 +351,15 @@ void tick() {
         }
     }
     
-    // Special hardcode for Interstellar 6 big wormholes
+    // Special hardcode for Interstellar 6 size-3 wormholes
     if (mkb::current_stage_id == 226) {
         patch::write_word(reinterpret_cast<void*>(0x803de6f8), 0x41400000); // 12.0
         patch::write_word(reinterpret_cast<void*>(0x803e65b0), 0x40c00000); // 6.0
+    }
+    // Special hardcode for Interstellar 9 size-6 big wormholes
+    if (mkb::current_stage_id == 229) {
+        patch::write_word(reinterpret_cast<void*>(0x803de6f8), 0x41c00000); // 24.0
+        patch::write_word(reinterpret_cast<void*>(0x803e65b0), 0x41400000); // 12.0
     }
     else { 
         patch::write_word(reinterpret_cast<void*>(0x803de6f8), 0x40800000); // 4.0 (default)

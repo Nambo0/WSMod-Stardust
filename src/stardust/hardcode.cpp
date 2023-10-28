@@ -4,6 +4,7 @@
 #include "../internal/patch.h"
 #include "../internal/tickable.h"
 #include "../mkb/mkb.h"
+#include "../utils/vecutil.h"
 #include "stardust/achievement.h"
 #include "stardust/validate.h"
 #include "stardust/badge.h"
@@ -272,6 +273,26 @@ void tick() {
                         mkb::itemgroups[i].playback_state = 0;
                     }
                 }
+                // Fix bunch indicators on challenge retry
+                for (u32 i = 0; i < mkb::item_pool_info.upper_bound; i++) {
+                    if (mkb::item_pool_info.status_list[i] == 0) continue;                                       // skip if its inactive
+                    mkb::Item& item = mkb::items[i];                                                             // shorthand: current item in the list = "item"
+                    if (item.coin_type != 1) continue;                                                           // skip if its not a bunch
+                    if (item.g_some_flag == 0 && item.g_some_bitfield & 1 && item.g_some_bitfield & 0xfffffffd) {// True if banana is gone
+                        for (u32 j = 0; j < mkb::stagedef->coli_header_count; j++) {
+                            Vec diff = {mkb::stagedef->coli_header_list[j].origin.x - item.position.x,
+                                        mkb::stagedef->coli_header_list[j].origin.y - item.position.y,
+                                        mkb::stagedef->coli_header_list[j].origin.z - item.position.z,};
+                            if(mkb::stagedef->coli_header_list[j].anim_group_id == 12001
+                            && diff.x < 1    // Check if an indicator is in the same place
+                            && diff.y < 1    // as a bunch
+                            && diff.z < 1){
+                                mkb::itemgroups[j].playback_state = 0;
+                                mkb::itemgroups[j].anim_frame = 2;
+                            }
+                        }
+                    }
+                }
             }
             break;
         }
@@ -304,7 +325,7 @@ void tick() {
         }
         // Monuments
         // Show Galactic Log progress
-        case 230: {
+        case 77: {
             if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
                 for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
                     u32 anim_id = mkb::stagedef->coli_header_list[i].anim_group_id;
@@ -345,6 +366,9 @@ void tick() {
                             break;
                         }
                     }
+                    if(anim_id > 399 && anim_id < 405 && mkb::itemgroups[i].anim_frame > 1198){
+                        mkb::itemgroups[i].anim_frame = 2;
+                    }
                 }
             }
             break;
@@ -357,7 +381,7 @@ void tick() {
         patch::write_word(reinterpret_cast<void*>(0x803e65b0), 0x40c00000); // 6.0
     }
     // Special hardcode for Interstellar 9 size-6 big wormholes
-    if (mkb::current_stage_id == 229) {
+    else if (mkb::current_stage_id == 229) {
         patch::write_word(reinterpret_cast<void*>(0x803de6f8), 0x41c00000); // 24.0
         patch::write_word(reinterpret_cast<void*>(0x803e65b0), 0x41400000); // 12.0
     }
@@ -370,7 +394,7 @@ void tick() {
     if(mkb::world_theme == 0x00120000) patch::write_word(reinterpret_cast<void*>(0x802f4eac), 0xc07f001c);
     else patch::write_word(reinterpret_cast<void*>(0x802f4eac), 0xc07f0038);
     // Hurry up removal for frozen/count-up timers
-    if ((mkb::main_game_mode == mkb::PRACTICE_MODE && (mkb::curr_difficulty == mkb::DIFF_BEGINNER)) || (mkb::current_stage_id == 267) || (mkb::current_stage_id == 230)) {
+    if ((mkb::main_game_mode == mkb::PRACTICE_MODE && (mkb::curr_difficulty == mkb::DIFF_BEGINNER)) || (mkb::current_stage_id == 267) || (mkb::current_stage_id == 77)) {
         patch::write_nop(reinterpret_cast<void*>(0x80339da0));
         patch::write_nop(reinterpret_cast<void*>(0x80339f14));
         patch::write_word(reinterpret_cast<void*>(0x808f5108), 0x2c00ff01);

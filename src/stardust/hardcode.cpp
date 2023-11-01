@@ -381,7 +381,7 @@ void tick() {
         patch::write_word(reinterpret_cast<void*>(0x803e65b0), 0x40c00000); // 6.0
     }
     // Special hardcode for Interstellar 9 size-6 big wormholes
-    else if (mkb::current_stage_id == 229) {
+    else if (mkb::current_stage_id == 229 || mkb::current_stage_id == 230) {
         patch::write_word(reinterpret_cast<void*>(0x803de6f8), 0x41c00000); // 24.0
         patch::write_word(reinterpret_cast<void*>(0x803e65b0), 0x41400000); // 12.0
     }

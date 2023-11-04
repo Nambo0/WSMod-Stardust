@@ -297,7 +297,7 @@ void write_bool_to_array(u8* array, u8 slot, bool value_to_write){
         array[array_index] |= 1 << bit_offset;
     }
     else{
-        array[array_index] |= 0 << bit_offset;
+        array[array_index] &= ~(1 << bit_offset);
     }
 }
 

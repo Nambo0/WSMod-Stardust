@@ -15,7 +15,7 @@ TICKABLE_DEFINITION((
         .init_main_loop = init,
         .tick = tick, ))
 
-u16 stage_id = 0;
+u16 stage_id = 381;
 
 void tick() {
     if (mkb::main_mode == mkb::MD_GAME) {

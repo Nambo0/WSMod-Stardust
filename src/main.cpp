@@ -8,12 +8,16 @@
 #include "internal/tickable.h"
 #include "internal/ui/ui_manager.h"
 #include "internal/version.h"
+#include "internal/cardio.h"
 #include "mkb/mkb.h"
+#include "stardust/savedata.h"
 
 namespace main {
 static patch::Tramp<decltype(&mkb::process_inputs)> s_process_inputs_tramp;
 
 bool debug_mode_enabled = false;
+
+static bool memcard_loaded = false;
 
 static void perform_assembly_patches() {
     // Inject the run function at the start of the main game loop
@@ -54,6 +58,13 @@ void init() {
             // to ensure lowest input delay
 
             pad::tick();
+            cardio::tick();
+            if (!memcard_loaded) {
+                s32 result = savedata::init();
+                if (result == 0 || result == -4) {
+                    memcard_loaded = true;
+                }
+            }
 
             // Tick functions (REL patches)
             for (const auto& tickable: tickable::get_tickable_manager().get_tickables()) {
@@ -64,6 +75,7 @@ void init() {
 
             ui::get_widget_manager().tick();
         });
+    savedata::init();
 }
 
 /*

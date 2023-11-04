@@ -6,11 +6,26 @@
 
 namespace savedata {
 
+/* SAVEDATA u8 ARRAY FORMAT:
+60 u8’s = 480 bits
+000-099 = clear badges
+100-199 = stunt badges
+200-299 = sweep badges
+300-309 = stage challenges
+310-379 = other achievements
+380-399 = misc bools
+400-479 = 10 u8’s for interstellar best run (starts at u8 #52)
+
+Specific Values:
+380 = Widescreen (for widescreen_title_fix)
+*/
+
+
 static u8 savedata[] = { 0xFF,  0xFF,  0xFF,  0xFF,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,
                         0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                         0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0x00, 0x00,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x00, 0x00,
                         0x00, 0x00, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10};
 
 /* static u8 savedata[] = { 0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,
@@ -60,14 +75,22 @@ static void to_buffer() {
 
 // load save file with no completions
 void load_default_save() {
-    /*
     for (u32 i = 0; i < 60; i++){
         savedata[i] = 0x00;
     }
-    */
+}
+
+void update_special_bools() {
+    if(mkb::widescreen_mode == mkb::NORMAL){
+        write_bool_to_slot(savedata::WIDESCREEN_MODE, false);
+    }
+    if(mkb::widescreen_mode != mkb::NORMAL){
+        write_bool_to_slot(savedata::WIDESCREEN_MODE, true);
+    }
 }
 
 void save() {
+    update_special_bools();
     to_buffer();
     cardio::write_file(FILENAME, card_buffer, sizeof(card_buffer),
                        [](mkb::CARDResult res) -> void {
@@ -119,11 +142,13 @@ u8 best_stellar_rank(){
     }
     return 5;
 }
+
+void write_bool_to_slot(u16 slot, bool value){
+    write_bool_to_array(savedata, slot, value);
+}
 // =============================================================================================
 
 s32 init() {
-    load_default_save();
-
     FileHeader* header = nullptr;
     s32 result = cardio::read_file(FILENAME, reinterpret_cast<void**>(&header));
     if (result == mkb::CARD_RESULT_READY) {

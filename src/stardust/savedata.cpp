@@ -84,7 +84,7 @@ void update_special_bools() {
     if(mkb::widescreen_mode == mkb::NORMAL){
         write_bool_to_slot(savedata::WIDESCREEN_MODE, false);
     }
-    if(mkb::widescreen_mode != mkb::NORMAL){
+    else if(mkb::widescreen_mode != mkb::NORMAL){
         write_bool_to_slot(savedata::WIDESCREEN_MODE, true);
     }
 }
@@ -115,7 +115,7 @@ void write_bool_to_array(u8* array, u16 slot, bool value_to_write){
         array[array_index] |= 1 << bit_offset;
     }
     else{
-        array[array_index] |= 0 << bit_offset;
+        array[array_index] &= ~(1 << bit_offset);
     }
 }
 

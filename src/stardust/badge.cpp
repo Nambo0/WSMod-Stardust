@@ -1,9 +1,10 @@
 #include "badge.h"
 
-#include "internal/patch.h"
-#include "internal/tickable.h"
+#include "../internal/patch.h"
+#include "../internal/tickable.h"
 #include "mkb/mkb.h"
-#include "stardust/validate.h"
+#include "../stardust/validate.h"
+#include "../stardust/savedata.h"
 
 namespace badge {
 
@@ -55,7 +56,48 @@ bool detect_sweep() {
     return true;
 }
 
+void claim_blue_goal(u16 stage_number){
+    if(stage_number == 0) return;
+    u32 claimed_slot = stage_number - 1;
+    if(!savedata::true_in_slot(claimed_slot)){
+        savedata::write_bool_to_slot(claimed_slot, true);
+        savedata::save();
+    }
+}
+
+void claim_stunt_goal(u16 stage_number){
+    if(stage_number == 0) return;
+    u32 claimed_slot = 100 + stage_number - 1;
+    if(!savedata::true_in_slot(claimed_slot)){
+        savedata::write_bool_to_slot(claimed_slot, true);
+        savedata::save();
+    }
+}
+
+void claim_sweep(u16 stage_number){
+    if(stage_number == 0) return;
+    u32 claimed_slot = 200 + stage_number - 1;
+    if(!savedata::true_in_slot(claimed_slot)){
+        savedata::write_bool_to_slot(claimed_slot, true);
+        savedata::save();
+    }
+}
+
 void on_goal() {
+    if(validate::is_currently_valid()){
+        if(mkb::mode_info.entered_goal_type == mkb::Blue){
+            claim_blue_goal(stage_id_to_stage_number(mkb::g_current_stage_id));
+        }
+        else if(mkb::mode_info.entered_goal_type == mkb::Red){
+            claim_stunt_goal(stage_id_to_stage_number(mkb::g_current_stage_id));
+        }
+        if(detect_sweep()){
+            claim_sweep(stage_id_to_stage_number(mkb::g_current_stage_id));
+        }
+    }
+    else{
+        // TODO: Error message
+    }
 }
 
 }// namespace badge

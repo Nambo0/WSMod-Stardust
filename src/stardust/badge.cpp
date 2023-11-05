@@ -39,7 +39,7 @@ int stage_id_to_stage_number(int stage_id) {
             return stage_id - 250;
             break;
         default:
-            return 0;
+            return 0; // Any non-story mode stage
     }
 }
 
@@ -57,8 +57,8 @@ bool detect_sweep() {
 }
 
 void claim_blue_goal(u16 stage_number){
-    if(stage_number == 0) return;
-    u32 claimed_slot = stage_number - 1;
+    if(stage_number == 0) return; // Don't try to claim anything if we're not on a story mode stage
+    u32 claimed_slot = stage_number - 1; // Blue goals start at slot 0
     if(!savedata::true_in_slot(claimed_slot)){
         savedata::write_bool_to_slot(claimed_slot, true);
         savedata::save();
@@ -66,8 +66,8 @@ void claim_blue_goal(u16 stage_number){
 }
 
 void claim_stunt_goal(u16 stage_number){
-    if(stage_number == 0) return;
-    u32 claimed_slot = 100 + stage_number - 1;
+    if(stage_number == 0) return; // Don't try to claim anything if we're not on a story mode stage
+    u32 claimed_slot = 100 + stage_number - 1; // Stunt goals start at slot 100
     if(!savedata::true_in_slot(claimed_slot)){
         savedata::write_bool_to_slot(claimed_slot, true);
         savedata::save();
@@ -75,8 +75,8 @@ void claim_stunt_goal(u16 stage_number){
 }
 
 void claim_sweep(u16 stage_number){
-    if(stage_number == 0) return;
-    u32 claimed_slot = 200 + stage_number - 1;
+    if(stage_number == 0) return; // Don't try to claim anything if we're not on a story mode stage
+    u32 claimed_slot = 200 + stage_number - 1; // Sweep badges start at slot 200
     if(!savedata::true_in_slot(claimed_slot)){
         savedata::write_bool_to_slot(claimed_slot, true);
         savedata::save();

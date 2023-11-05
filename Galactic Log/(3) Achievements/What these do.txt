@@ -9,28 +9,29 @@ Each sub-menu brings up the list of achievements in that category
 Here's all the achievements I have planned so far |
 
 = STORY MODE =
-BEAT THE GAME | Complete story mode
-STUNT TRAINEE | Complete 1 stunt goal
-STUNT PILOT | Complete 1 stunt goal in each world  ~  (Unlocks All Bonus Modes)
-STUNT SPECIALIST | Complete all 10 Stunt Goals in any world
-STUNT ACE | Complete all 100 Stunt Goals
-EATER OF SOULS | Obtain 5,000 bananas in Story Mode
-EATER OF WORLDS | Obtain 10,000 bananas in Story Mode
+11) BEAT THE GAME | Complete story mode
+12) FEELING BLUE | Complete all 100 blue goals
+13) STUNT TRAINEE | Complete 1 stunt goal
+14) STUNT PILOT | Complete 1 stunt goal in each world  ~  (Unlocks All Bonus Modes)
+15) STUNT SPECIALIST | Complete all 10 Stunt Goals in any world
+16) STUNT ACE | Complete all 100 Stunt Goals
+17) EATER OF SOULS | Obtain 5,000 bananas in Story Mode
+18) EATER OF WORLDS | Obtain 9,999 bananas in Story Mode
 
 = STAGE CHALLENGES =
-DOUBLE TAKE | 1-8 Double Time  -  Clear the stunt goal at both spinning speeds on back to back attempts
-UP, UP, AND AWAY | 2-6 Liftoff  -  Soar higher than the highest cloud onstage
-DEFUSED | 3-10 Detonation  -  Clear the blue goal without activating the bomb switch
-I WANNA BE THE BACK GOAL | 4-9 Avoidance  -  Enter the blue goal from the back side
-BEHIND LOCKED DOORS | 5-6 Door Dash  -  Clear the blue goal without opening any doors
-MONOCHROMATIC | 6-1 Recolor  -  Clear the stage without entering a color-changing portal
-TARGET MASTER | 7-10 Break the Targets  -  Break all 8 targets and finish with time bonus (150s)
-POTASSIUM ALLERGY | 8-4 Frequencies  -  Clear the stage without collecting any bananas
-FLIP WIZARD | 9-3 Flip Switches  -  Clear the stage without flipping the switches once
-STARSTRUCK | 10-10 Impact  -  Clear the stunt goal after it shoots into the sky
+1) DOUBLE TAKE | 1-8 Double Time  -  Clear the stunt goal at both spinning speeds on back to back attempts
+2) UP, UP, AND AWAY | 2-6 Liftoff  -  Soar higher than the highest cloud onstage
+3) DEFUSED | 3-10 Detonation  -  Clear the blue goal without activating the bomb switch
+4) I WANNA BE THE BACK GOAL | 4-9 Avoidance  -  Enter the blue goal from the back side
+5) BEHIND LOCKED DOORS | 5-6 Door Dash  -  Clear the blue goal without opening any doors
+6) MONOCHROMATIC | 6-1 Recolor  -  Clear the stage without entering a color-changing portal
+7) TARGET MASTER | 7-10 Break the Targets  -  Break all 8 targets and finish with time bonus (150s)
+8) POTASSIUM ALLERGY | 8-4 Frequencies  -  Clear the stage without collecting any bananas
+9) FLIP WIZARD | 9-3 Flip Switches  -  Clear the stage without flipping the switches once
+10) STARSTRUCK | 10-10 Impact  -  Clear the stunt goal after it shoots into the sky
 
 = INTERSTELLAR =
-GOAL HUNTER | Get all 10 banana goals in a blitz run without falling out
+19) GOAL HUNTER | Get all 10 banana goals without falling out
 
 = SECRET =
 HEY GOOBZ PLAY DEBUG | Complete or skip through any of the debug sub-categories

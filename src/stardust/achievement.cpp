@@ -1,9 +1,10 @@
 #include "achievement.h"
 
-#include "internal/patch.h"
-#include "internal/tickable.h"
+#include "../internal/patch.h"
+#include "../internal/tickable.h"
 #include "mkb/mkb.h"
-#include "stardust/validate.h"
+#include "../stardust/validate.h"
+#include "../stardust/savedata.h"
 
 namespace achievement {
 
@@ -23,9 +24,11 @@ static bool DT_back_to_back = false;    // For 1-8 Double Time
 static bool flipped_yet = false;        // For 9-3 Flip Switches
 
 void claim_achievement(int id) {
-    // This is for testing and will get replaced later
-    if (ball.banana_count != id) {
-        ball.banana_count = id;
+    // ID 1 = Slot 300, and so on
+    u32 claimed_slot = 300 + id - 1;
+    if(!savedata::true_in_slot(claimed_slot)){
+        savedata::write_bool_to_slot(claimed_slot, true);
+        savedata::save();
     }
 }
 
@@ -49,7 +52,7 @@ void tick() {
                 if ((mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
                      mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) &&
                     validate::is_currently_valid() &&
-                    mkb::mode_info.entered_goal_type == 2) {
+                    mkb::mode_info.entered_goal_type == mkb::Red) {
                     if (mkb::itemgroups[3].playback_state == 0) {// IG #3 is one of the animated ones, playback state 0 is 1x speed
                         if (DT_last_completion_speed == 2) {
                             claim_achievement(1);
@@ -94,7 +97,7 @@ void tick() {
                 if ((mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
                      mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) &&
                     validate::is_currently_valid() &&
-                    mkb::mode_info.entered_goal_type == 0 &&
+                    mkb::mode_info.entered_goal_type == mkb::Blue &&
                     mkb::itemgroups[5].anim_frame == 0) {// IG #5 is one of the animated ones
                     claim_achievement(3);
                 }
@@ -104,7 +107,7 @@ void tick() {
             case 26: {
                 if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT &&
                     validate::is_currently_valid() &&
-                    mkb::mode_info.entered_goal_type == 0 &&
+                    mkb::mode_info.entered_goal_type == mkb::Blue &&
                     ball.vel.z > 0) {
                     claim_achievement(4);
                 }
@@ -116,7 +119,7 @@ void tick() {
                 if ((mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
                      mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) &&
                     validate::is_currently_valid() &&
-                    mkb::mode_info.entered_goal_type == 0 &&
+                    mkb::mode_info.entered_goal_type == mkb::Blue &&
                     mkb::itemgroups[15].anim_frame == 0 &&
                     mkb::itemgroups[17].anim_frame == 0 &&
                     mkb::itemgroups[19].anim_frame == 0) {// IG #5 is one of the animated ones
@@ -180,7 +183,7 @@ void tick() {
                 if ((mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
                      mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) &&
                     validate::is_currently_valid() &&
-                    mkb::mode_info.entered_goal_type == 2 &&
+                    mkb::mode_info.entered_goal_type == mkb::Red &&
                     mkb::mode_info.stage_time_frames_remaining <= 15180) {
                     claim_achievement(10);
                 }

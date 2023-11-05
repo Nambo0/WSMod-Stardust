@@ -352,10 +352,12 @@ void tick() {
         patch::write_nop(reinterpret_cast<void*>(0x808f50f8));
         patch::write_nop(reinterpret_cast<void*>(0x808f514c));
         patch::write_nop(reinterpret_cast<void*>(0x808f5004));
+        // patch::write_nop(reinterpret_cast<void*>(0x80339d7c)); // 0.00
     }
     else {
         patch::write_word(reinterpret_cast<void*>(0x80339da0), 0x901d004c);
         patch::write_word(reinterpret_cast<void*>(0x80339f14), 0x2c000258);
+        // patch::write_word(reinterpret_cast<void*>(0x80339d7c), 0x901d004c); // 0.00
     }
 
     // Savedata testing

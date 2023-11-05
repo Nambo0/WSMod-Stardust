@@ -13,15 +13,13 @@ TICKABLE_DEFINITION((
         .description = "Menu BG",
         .enabled = true,
         .init_main_loop = init,
-        .tick = tick, ))
+        .init_main_game = init_main_game, ))
 
 u16 stage_id = 381;
 
-void tick() {
-    if (mkb::main_mode == mkb::MD_GAME) {
-        patch::write_word(reinterpret_cast<void*>(0x808fd958), PPC_INSTR_LI(PPC_R3, stage_id));
-        patch::write_word(reinterpret_cast<void*>(0x808fe7d8), PPC_INSTR_LI(PPC_R3, stage_id));
-    }
+void init_main_game() {
+    patch::write_word(reinterpret_cast<void*>(0x808fd958), PPC_INSTR_LI(PPC_R3, stage_id));
+    patch::write_word(reinterpret_cast<void*>(0x808fe7d8), PPC_INSTR_LI(PPC_R3, stage_id));
 }
 
 static void decide_bg(){

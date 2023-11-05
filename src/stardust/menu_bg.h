@@ -2,6 +2,5 @@
 
 namespace menu_bg {
 void init();
-void tick();
-void on_goal();
+void init_main_game();
 }// namespace menu_bg

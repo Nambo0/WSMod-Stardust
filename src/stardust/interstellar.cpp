@@ -4,7 +4,9 @@
 #include "../internal/pad.h"
 #include "../internal/tickable.h"
 #include "../mkb/mkb.h"
-#include "stardust/badge.h"
+#include "../stardust/badge.h"
+#include "../stardust/savedata.h"
+
 
 namespace interstellar {
 
@@ -17,7 +19,6 @@ TICKABLE_DEFINITION((
         .tick = tick,
         .on_goal = on_goal, ))
 
-static bool blitz_mode = false;
 static u8 goal_bonus_effect = 0;
 bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
 static u16 frames_left = 300 * 60;
@@ -84,9 +85,8 @@ static void spawn_banana_effect(){
 void on_stage_load(u32 stage_id) {
     if (stage_id_is_stellar(stage_id)) {
         if (mkb::main_game_mode == mkb::CHALLENGE_MODE) {
-            // Set proper timer (300s for standard, 60s for blitz)
-            if (blitz_mode) frames_left = 60 * 60;
-            else frames_left = 300 * 60;
+            // Set proper timer (300s)
+            frames_left = 300 * 60;
 
             // Set all bunches to un-collected
             for (u32 i = 0; i < 4; i++) {

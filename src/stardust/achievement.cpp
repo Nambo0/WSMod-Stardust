@@ -25,7 +25,7 @@ static bool flipped_yet = false;        // For 9-3 Flip Switches
 
 void claim_achievement(int id) {
     // ID 1 = Slot 300, and so on
-    u32 claimed_slot = 300 + id - 1;
+    u32 claimed_slot = savedata::STAGE_CHALLENGES_START + id - 1;
     if(!savedata::true_in_slot(claimed_slot)){
         savedata::write_bool_to_slot(claimed_slot, true);
         savedata::save();

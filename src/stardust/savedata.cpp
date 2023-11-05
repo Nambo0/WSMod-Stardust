@@ -14,7 +14,7 @@ namespace savedata {
 300-309 = stage challenges
 310-379 = other achievements
 380-399 = misc bools
-400-479 = 10 u8’s for interstellar best run (starts at u8 #52)
+400-479 = 10 u8’s for interstellar best run (starts at u8 #50)
 
 Specific Values:
 380 = Widescreen (for widescreen_title_fix)
@@ -129,6 +129,14 @@ bool consecutive_true_from_slot(u16 slot, u16 count){
         if(!read_bool_from_array(savedata, i)) return false;
     }
     return true;
+}
+
+u16 stellar_best_run_total(){
+    u16 total = 0;
+    for (u8 i = 0; i < 10; i++){
+        total += savedata[50 + i];
+    }
+    return total;
 }
 
 u8 best_stellar_rank(){

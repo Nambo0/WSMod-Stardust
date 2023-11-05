@@ -14,7 +14,8 @@ TICKABLE_DEFINITION((
         .description = "Achievements",
         .enabled = true,
         .init_main_loop = init,
-        .tick = tick, ))
+        .tick = tick, 
+        .on_goal = on_goal, ))
 
 // Makes ball.whatever easier to use
 mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];
@@ -22,6 +23,7 @@ mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];
 static u16 DT_last_completion_speed = 0;// For 1-8 Double Time
 static bool DT_back_to_back = false;    // For 1-8 Double Time
 static bool flipped_yet = false;        // For 9-3 Flip Switches
+static u8 last_stellar_goal = 0;        // For Goal Hunter
 
 void claim_achievement(int id) {
     // ID 1 = Slot 300, and so on
@@ -30,6 +32,54 @@ void claim_achievement(int id) {
         savedata::write_bool_to_slot(claimed_slot, true);
         savedata::save();
     }
+}
+
+bool detect_beat_the_game(){
+    if(mkb::unlock_info.g_movies_watched == 0x0fff) return true;
+    else return false;
+}
+bool detect_feeling_blue(){
+    for(u8 i=0; i < 100; i++){
+        if(savedata::true_in_slot(savedata::CLEAR_BADGE_START + i)) return true;
+    }
+    return false;
+}
+bool detect_stunt_trainee(){
+    for(u8 i=0; i < 100; i++){
+        if(savedata::true_in_slot(savedata::STUNT_BADGE_START + i)) return true;
+    }
+    return false;
+}
+bool detect_stunt_pilot(){
+    for(u8 world = 0; world < 10; world++){
+        bool world_has_stunt_badge = false;
+        for(u8 stage = 0; stage < 10; stage++){
+            if(savedata::true_in_slot(savedata::STUNT_BADGE_START + 10*world + stage)){
+                world_has_stunt_badge = true;
+                continue;
+            }
+        }
+        if(!world_has_stunt_badge) return false;
+    }
+    return true;
+}
+bool detect_stunt_specialist(){
+    for(u8 world = 0; world < 10; world++){
+        bool world_stunt_badges_full = true;
+        for(u8 stage = 0; stage < 10; stage++){
+            if(!savedata::true_in_slot(savedata::STUNT_BADGE_START + 10*world + stage)){
+                world_stunt_badges_full = false;
+            }
+        }
+        if(world_stunt_badges_full) return true;
+    }
+    return false;
+}
+bool detect_stunt_ace(){
+    for(u8 i=0; i < 100; i++){
+        if(!savedata::true_in_slot(savedata::STUNT_BADGE_START + i)) return false;
+    }
+    return true;
 }
 
 /* Very useful code to display the IG # of a specific anim ID we wanna test
@@ -187,6 +237,54 @@ void tick() {
                     mkb::mode_info.stage_time_frames_remaining <= 15180) {
                     claim_achievement(10);
                 }
+                break;
+            }
+        }
+    } // if currently valid
+
+    // Reset last stellar goal when the mode starts
+    if(mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::g_current_stage_id == 221 && mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT){
+        last_stellar_goal = 0;
+    }
+}
+
+void on_goal(){
+    // Badge-count achievements
+    if(detect_beat_the_game()) claim_achievement(11);
+    if(detect_feeling_blue()) claim_achievement(12);
+    if(detect_stunt_trainee()) claim_achievement(13);
+    if(detect_stunt_pilot()) claim_achievement(14);
+    if(detect_stunt_specialist()) claim_achievement(15);
+    if(detect_stunt_ace()) claim_achievement(16);
+
+
+    // Banana-count achievements
+    if(mkb::main_game_mode == mkb::STORY_MODE){
+        u16 banana_count = mkb::get_storymode_banana_count();
+        // EATER OF SOULS | Obtain 5,000 bananas in Story Mode (ID: 17)
+        if(banana_count >= 5000){
+            claim_achievement(17);
+        }
+        // EATER OF WORLDS | Obtain 9,999 bananas in Story Mode (ID: 18)
+        if(banana_count >= 9999){
+            claim_achievement(18);
+        }
+    }
+
+    // Interstellar achievements
+    if(mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::curr_difficulty == mkb::DIFF_BEGINNER){
+        u8 stage = mkb::g_current_stage_id - 220;
+        switch(stage) {
+            case 1: {
+                last_stellar_goal = 1;
+                break;
+            }
+            case 2 ... 9: {
+                if(last_stellar_goal == stage - 1) last_stellar_goal = stage;
+                break;
+            }
+            case 10: {
+                if(last_stellar_goal == stage - 1) claim_achievement(19);
                 break;
             }
         }

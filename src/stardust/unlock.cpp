@@ -4,6 +4,7 @@
 #include "../internal/tickable.h"
 #include "mkb/mkb.h"
 #include "../stardust/savedata.h"
+#include "../stardust/achievement.h"
 
 namespace unlock {
 
@@ -12,9 +13,7 @@ TICKABLE_DEFINITION((
         .name = "stardust-unlock",
         .description = "Bonus Modes Unlock",
         .enabled = true,
-        .init_main_loop = init,
-        .init_sel_ngc = init_sel_ngc,
-        .on_goal = on_goal, ))
+        .init_sel_ngc = init_sel_ngc, ))
 
 // Condition: 1 stunt goal in each world
 // Check each world for if they have ANY stunt goals
@@ -22,17 +21,7 @@ TICKABLE_DEFINITION((
 // If none of the worlds fail, there's 1 in each world, so succeed the condition
 bool unlock_condition_met(){
     if(mkb::unlock_info.monkeys == 99) return true; // Allows Practice Mod Unlock to unlock these modes
-    for(u8 world = 0; world < 10; world++){
-        bool world_has_stunt_badge = false;
-        for(u8 stage = 0; stage < 10; stage++){
-            if(savedata::true_in_slot(100 + 10*world + stage)){
-                world_has_stunt_badge = true;
-                continue;
-            }
-        }
-        if(!world_has_stunt_badge) return false;
-    }
-    return true;
+    achievement::detect_stunt_pilot();
 }
 
 void init_sel_ngc() {
@@ -48,9 +37,6 @@ void init_sel_ngc() {
     }
     // Lock Supernova (Master)
     patch::write_word(reinterpret_cast<void*>(0x808fbe7c), 0x38000008);
-}
-
-void init() {
 }
 
 }// namespace unlock

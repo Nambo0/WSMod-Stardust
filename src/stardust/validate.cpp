@@ -1,7 +1,7 @@
 #include "validate.h"
 
-#include "internal/tickable.h"
-#include "mkb/mkb.h"
+#include "../internal/tickable.h"
+#include "../mkb/mkb.h"
 
 namespace validate {
 

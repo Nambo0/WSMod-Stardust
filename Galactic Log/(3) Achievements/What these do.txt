@@ -31,19 +31,19 @@ Here's all the achievements I have planned so far |
 10) STARSTRUCK | 10-10 Impact  -  Clear the stunt goal after it shoots into the sky
 
 = INTERSTELLAR =
-19) GOAL HUNTER | Get all 10 banana goals without falling out
+19) FINISH HIM | Get all 10 goals in a single run
 
 = SECRET =
-HEY GOOBZ PLAY DEBUG | Complete or skip through any of the debug sub-categories
-IVE SEEN IT ALL | Complete or skip through every debug sub-category
-AAAAA | Clear a stage after traveling over 1,000 mph
-A COMPLEX JOKE | Clear a stage with exactly 54.13 on the timer
-ICARUS | Soar above the sun in the world 3 skybox
-YOU-DA-BACON | Clear a stage 10x in a row
-RULES LAWYER | Clear the stunt goal on Spleef without pressing any blue buttons
-RULES LAWYER 2 | Clear the stunt goal on Currents without clicking the stunt goal button
-DEBUG % | Clear every debug stage outside ‘The Unplayable Zone’
-ACUTALLY PLAYABLE | Clear a state from ‘The Unplayable Zone’ in debug
-I FORGOR | Clear a stage after standing still for 100+ seconds from the start
-USELESS SETUP | Hold the same direction for 100+ seconds from the start without falling out
-UHHH GG | Complete Interstellar with 0 bananas
+HEY GOOBZ PLAY DEBUG | Complete or skip through any of the debug sub-categories             (on-goal)
+A COMPLEX JOKE | Clear a stage with exactly 54.13 on the timer                              (on-goal)
+YOU-DA-BACON | Clear a stage 10x in a row                                                   (on-goal + u8)
+RULES LAWYER | Clear the stunt goal on Spleef without pressing any blue buttons             (on-goal + for loop)
+RULES LAWYER 2 | Clear the stunt goal on Currents without clicking the stunt goal button    (on-goal + for loop)
+ACUTALLY PLAYABLE | Clear a stage from ‘The Unplayable Zone’ in debug                       (on-goal)
+UHHH GG | Complete Interstellar with 0 bananas                                              (on-goal)
+ICARUS | Soar above the sun in the world 3 skybox                                           (tick)
+AAAAA | Clear a stage after traveling over 1,000 mph                                        (tick + on-goal + bool)
+I FORGOR | Clear a stage after standing still for 100+ seconds from the start               (tick + on-goal + bool)
+USELESS SETUP | Hold the same direction for 100+ seconds from the start without falling out (tick + on-goal + bool)
+IVE SEEN IT ALL | Complete or skip through every debug sub-category                         (annoying to track)
+DEBUG % | Clear every debug stage outside ‘The Unplayable Zone’                             (too much to track probably)

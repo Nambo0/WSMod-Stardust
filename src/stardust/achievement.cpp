@@ -23,7 +23,7 @@ mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];
 static u16 DT_last_completion_speed = 0;// For 1-8 Double Time
 static bool DT_back_to_back = false;    // For 1-8 Double Time
 static bool flipped_yet = false;        // For 9-3 Flip Switches
-static u8 last_stellar_goal = 0;        // For Goal Hunter
+static u8 last_stellar_goal = 0;        // For Finish Him
 
 void claim_achievement(int id) {
     // ID 1 = Slot 300, and so on
@@ -69,6 +69,7 @@ bool detect_stunt_specialist(){
         for(u8 stage = 0; stage < 10; stage++){
             if(!savedata::true_in_slot(savedata::STUNT_BADGE_START + 10*world + stage)){
                 world_stunt_badges_full = false;
+                continue;
             }
         }
         if(world_stunt_badges_full) return true;

@@ -21,7 +21,6 @@ enum {
     SWEEP_BADGE_START=200,
     STAGE_CHALLENGES_START=300,
     WIDESCREEN_MODE=380,
-    BOOLEAN_2=381,
 };
 
 void load_default_save();

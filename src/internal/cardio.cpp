@@ -25,8 +25,6 @@ struct WriteParams {
 // We need a 40KB(!) buffer just for the privilege of accessing memory cards,
 // this sucks! Reminder we only have ~550KB to work with for the entire mod,
 // including savestates
-// static u8 s_card_work_area[mkb::CARD_WORKAREA_SIZE]
-//     __attribute__((__aligned__(32)));
 static void* s_card_work_area;
 static mkb::CARDFileInfo s_card_file_info;
 

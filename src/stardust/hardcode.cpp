@@ -168,6 +168,7 @@ void tick() {
         }
         // Interstellar 3 Solar Orbit
         // Animations retain from attempt to attempt 
+        /*
         case 223: {
             if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT && mkb::main_game_mode == mkb::CHALLENGE_MODE) {
                 for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
@@ -184,6 +185,7 @@ void tick() {
             }
             break;
         }
+        */
         // Interstellar 4 Deep Space
         // Giant vertical wormhole
         case 224: {

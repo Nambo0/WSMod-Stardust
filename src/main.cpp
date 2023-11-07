@@ -1,5 +1,6 @@
 #include "config/config.h"
 #include "internal/assembly.h"
+#include "internal/cardio.h"
 #include "internal/heap.h"
 #include "internal/log.h"
 #include "internal/modlink.h"
@@ -8,7 +9,6 @@
 #include "internal/tickable.h"
 #include "internal/ui/ui_manager.h"
 #include "internal/version.h"
-#include "internal/cardio.h"
 #include "mkb/mkb.h"
 #include "stardust/savedata.h"
 
@@ -40,6 +40,7 @@ void init() {
         version::WSMOD_VERSION.patch);
 
     heap::init();
+    cardio::init();
     modlink::write();
 
     perform_assembly_patches();

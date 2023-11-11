@@ -36,11 +36,16 @@ static void display_counter(){
 }
 
 void tick() {
-    count_bunches();
     display_counter();
 }
 
+static patch::Tramp<decltype(&mkb::item_coin_disp)> s_item_coin_disp_tramp;
+
 void init() {
+    patch::hook_function(s_item_coin_disp_tramp, mkb::item_coin_disp, [](mkb::Item* item) {
+        s_item_coin_disp_tramp.dest(item);
+        count_bunches();
+    });
 }
 
 }// namespace bunch_count

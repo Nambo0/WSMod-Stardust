@@ -265,7 +265,7 @@ void tick() {
         }
         // Interstellar 6 Glitch Anomaly
         // Giant flipper wormhole
-        case 226: case 227: {
+        case 226: {
             if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
                 if(((mkb::balls[mkb::curr_player_idx].pos.x > -270 - 600 &&
                    mkb::balls[mkb::curr_player_idx].pos.x < 270 - 600) ||

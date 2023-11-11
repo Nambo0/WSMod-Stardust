@@ -213,6 +213,8 @@ void on_stage_load(u32 stage_id) {
                 bunches_gone[i] = 0;
             }
 
+            /*
+            THIS CANT GO ON STAGE LOAD, THAT CAUSES CRASHES
             // Reset logged stage bunch counts
             if(stage_id == 220){
                 for(int i = 0; i < 10; i++){
@@ -223,6 +225,7 @@ void on_stage_load(u32 stage_id) {
             else {
                 bunches_collected_on_stage[stage_id - 222] = (mkb::balls[mkb::curr_player_idx].banana_count / 10) - bunches_collected_total();
             }
+            */
         }
     }
 

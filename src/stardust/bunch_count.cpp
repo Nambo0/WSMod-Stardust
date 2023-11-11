@@ -4,7 +4,7 @@
 #include "../internal/tickable.h"
 #include "../mkb/mkb.h"
 
-namespace a {
+namespace bunch_count {
 
 // Patch is enabled by default
 TICKABLE_DEFINITION((

@@ -124,6 +124,12 @@ bool consecutive_true_from_slot(u16 slot, u16 count){
     return true;
 }
 
+void update_stellar_bunch_counts(u8* bunch_counts){
+    for(u8 i = 0; i < 10; i++){
+        savedata[50 + i] = bunch_counts[i];
+    }
+}
+
 u16 stellar_best_run_total(){
     u16 total = 0;
     for (u8 i = 0; i < 10; i++){

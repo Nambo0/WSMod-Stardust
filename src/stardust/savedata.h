@@ -13,6 +13,7 @@ bool true_in_slot(u16 slot);
 bool consecutive_true_from_slot(u16 slot, u16 count);
 u16 stellar_best_run_total();
 u8 best_stellar_rank();
+void update_stellar_bunch_counts(u8* bunch_counts);
 void write_bool_to_slot(u16 slot, bool value);
 
 enum {

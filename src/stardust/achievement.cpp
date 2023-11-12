@@ -5,6 +5,7 @@
 #include "mkb/mkb.h"
 #include "../stardust/validate.h"
 #include "../stardust/savedata.h"
+#include "../stardust/badge.h"
 
 namespace achievement {
 
@@ -31,6 +32,8 @@ void claim_achievement(int id) {
     if(!savedata::true_in_slot(claimed_slot)){
         savedata::write_bool_to_slot(claimed_slot, true);
         savedata::save();
+        // Display badges if it's a stage challenge
+        if(id >= 1 && id <= 10) badge::set_display_badges_next_frame_true();
     }
 }
 

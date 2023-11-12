@@ -13,7 +13,16 @@ TICKABLE_DEFINITION((
         .name = "stardust-badge",
         .description = "Badges",
         .enabled = true,
+        .tick = tick,
         .on_goal = on_goal, ))
+
+// Wait 1 frame before display to make sure all cpp files are done calling for badge claims
+// This also prevents the function from running more than once in a row!
+static u8 badge_display_delay = 100;
+
+void set_display_badges_next_frame_true(){
+    badge_display_delay = 1;
+}
 
 int stage_id_to_stage_number(int stage_id) {
     switch (stage_id) {
@@ -62,6 +71,7 @@ void claim_blue_goal(u16 stage_number){
     if(!savedata::true_in_slot(claimed_slot)){
         savedata::write_bool_to_slot(claimed_slot, true);
         savedata::save();
+        set_display_badges_next_frame_true();
     }
 }
 
@@ -71,6 +81,7 @@ void claim_stunt_goal(u16 stage_number){
     if(!savedata::true_in_slot(claimed_slot)){
         savedata::write_bool_to_slot(claimed_slot, true);
         savedata::save();
+        set_display_badges_next_frame_true();
     }
 }
 
@@ -80,6 +91,94 @@ void claim_sweep(u16 stage_number){
     if(!savedata::true_in_slot(claimed_slot)){
         savedata::write_bool_to_slot(claimed_slot, true);
         savedata::save();
+        set_display_badges_next_frame_true();
+    }
+}
+
+void badge_sprite_tick(u8* status, mkb::Sprite *sprite) {
+    if (sprite->g_counter > 0){
+        sprite->alpha += 0.05;
+        if (sprite->alpha > 1){
+        sprite->alpha = 1;
+    }
+    }
+    sprite->g_counter -= 1;
+    if (sprite->g_counter < 0){
+        sprite->g_counter = 0;
+        sprite->alpha -= 0.05;
+        if (sprite->alpha < 0){
+        sprite->alpha = 0;
+    }
+    }
+}
+
+static void create_badge_sprite(u8 type, u8 slot){
+    mkb::Sprite* sprite = mkb::create_sprite();
+    if (sprite != (mkb::Sprite *)0x0) {
+        sprite->type = mkb::SPRT_BMP;
+        sprite->pos.x = 0.0 + slot*40;
+        sprite->pos.y = 400.0;
+        sprite->alignment = mkb::ALIGN_CENTER;
+        switch(type){
+            case 0: sprite->bmp = 0x510; break; // Clear
+            case 1: sprite->bmp = 0x510; break; // Stunt
+            case 2: sprite->bmp = 0x510; break; // Sweep
+            case 3: sprite->bmp = 0x510; break; // Ach
+            case 4: sprite->bmp = 0xc; break; // Empty
+        }
+        sprite->alpha = 0.0;
+        sprite->g_counter = 300;
+        sprite->g_flags1 = 0x1000000;
+        sprite->width = 0.75;
+        sprite->height = 0.75;
+        sprite->widescreen_translation_x = 0x140;
+        sprite->tick_func = badge_sprite_tick;
+        switch(type){
+            case 0: mkb::strcpy(sprite->text, "clear badge"); break; // Clear
+            case 1: mkb::strcpy(sprite->text, "stunt badge"); break; // Stunt
+            case 2: mkb::strcpy(sprite->text, "sweep badge"); break; // Sweep
+            case 3: mkb::strcpy(sprite->text, "achmt badge"); break; // Ach
+            case 4: mkb::strcpy(sprite->text, "empty badge"); break; // Empty
+        }
+    }
+}
+
+static void display_badges(u16 stage_number){
+    // Clear Badge
+    if(savedata::true_in_slot(stage_number - 1)) create_badge_sprite(0, 0);
+    else create_badge_sprite(4, 0);
+    // Stunt Badge
+    if(savedata::true_in_slot(100 + stage_number - 1)) create_badge_sprite(1, 1);
+    else create_badge_sprite(4, 1);
+    // Sweep Badge
+    if(savedata::true_in_slot(200 + stage_number - 1)) create_badge_sprite(2, 2);
+    else create_badge_sprite(4, 2);
+    // Stage Challenge (ONLY SHOW ON ACHIEVEMENT STAGES)
+    switch(stage_number) {
+        case 8:  // 1-8 Double Time
+        case 16: // 2-6 Liftoff
+        case 30: // 3-10 Detonation
+        case 39: // 4-9 Avoidance
+        case 46: // 5-6 Door Dash
+        case 51: // 6-1 Recolor
+        case 70: // 7-10 Break the Targets
+        case 74: // 8-4 Frequencies
+        case 83: // 9-3 Flip Switches
+        case 100: { // 10-10 Impact
+            if(savedata::true_in_slot(300 + (stage_number - 1) / 10)) create_badge_sprite(3, 3);
+            else create_badge_sprite(4, 3);
+            break;
+        }
+    }
+}
+
+void tick(){
+    if(badge_display_delay == 0){
+        display_badges(stage_id_to_stage_number(mkb::g_current_stage_id));
+        badge_display_delay = 100;
+    }
+    if(badge_display_delay == 1){
+        badge_display_delay = 0;
     }
 }
 

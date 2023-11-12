@@ -80,9 +80,18 @@ void init_sel_ngc() {
     mkb::menu_main_game_select_entries[0].description_en = "Play Stardust's 10 world campaign!\n"
                                                            "Collect bananas and /bcb300ff/stunt goals/bcffff00/ for\n"
                                                            "extra swag.";
+    mkb::strcpy(mkb::SHOT_AUTO_RELOAD_OPTION_STRING, "Auto Menu");
+    mkb::strcpy(mkb::SHOT_AUTO_RELOAD_DESCRIPTION_STRING, "Auto load-in fast on stage entry and\nreturn to stage select on stage clear.");
     for (int i = 0; i < 4; i++) {
         // Patches each of the character button's 'next screen ID' in the character select screen
-        mkb::menu_character_select_2_entries[i].next_screen_id = mkb::MENUSCREEN_STORY_MODE_SELECTED;
+        if (mkb::unlock_info.g_movies_watched != 0x0fff) {
+            mkb::menu_character_select_2_entries[i].next_screen_id = mkb::MENUSCREEN_STORY_MODE_SELECTED;
+        }
+        else {
+            mkb::menu_character_select_2_entries[i].next_screen_id = 51;
+            patch::write_word(reinterpret_cast<void*>(0x80926e28), 0x0c000000);
+            patch::write_word(reinterpret_cast<void*>(0x80926e5c), 0x0c000000);
+        }
     }
     static patch::Tramp<decltype(&mkb::menu_character_select_tick)> s_character_select_tick;
     patch::hook_function(
@@ -100,14 +109,20 @@ void init_sel_ngc() {
                 // If we press B, then we are cancelling the process of entering story mode
                 // We need to clean up since the stack pointer is changed after calling the tick function
                 // So, we restore the pointer to the original '2'
-                if (pad::button_pressed(mkb::PAD_BUTTON_B)) {
+                    if (pad::button_pressed(mkb::PAD_BUTTON_B)) {
                     if (is_entering_story) {
+                        mkb::sel_menu_info.menu_stack[1] = mkb::MENUSCREEN_MAIN_GAME_SELECT;
                         mkb::sel_menu_info.menu_stack_ptr = ORIGINAL_STACK_INDEX;
+                        if (mkb::g_character_selected == 0) {
                         mkb::g_next_menu_screen = mkb::MENUSCREEN_MAIN_GAME_SELECT;
+                        }
                     }
+                    if (mkb::unlock_info.g_movies_watched != 0x0fff) {
                     is_entering_story = false;
                 }
+                }
             }
+
 
             s_character_select_tick.dest();
 
@@ -117,6 +132,29 @@ void init_sel_ngc() {
                 if (is_entering_story) mkb::sel_menu_info.menu_stack_ptr = 1;
             }
         });
+        static patch::Tramp<decltype(&mkb::menu_gameplay_settings_tick)> s_gameplay_settings_tick;
+        patch::hook_function(
+        s_gameplay_settings_tick,
+        mkb::menu_gameplay_settings_tick, []() {
+             if (mkb::g_currently_visible_menu_screen == 51) {
+                mkb::sel_menu_info.menu_stack[1] = mkb::MENUSCREEN_MAIN_GAME_SELECT;
+                constexpr size_t ORIGINAL_STACK_INDEX_2 = 3;
+                if (pad::button_pressed(mkb::PAD_BUTTON_A)) {
+                    mkb::sel_menu_info.menu_stack[ORIGINAL_STACK_INDEX_2] = 51;
+                    is_entering_story = true;
+                }
+                if (pad::button_pressed(mkb::PAD_BUTTON_B)) {
+                    if (is_entering_story) {
+                        mkb::sel_menu_info.menu_stack_ptr = ORIGINAL_STACK_INDEX_2;
+                        mkb::g_next_menu_screen = mkb::MENUSCREEN_CHARACTER_SELECT_2;
+                    }
+                    is_entering_story = false;
+                }
+             }
+             s_gameplay_settings_tick.dest();
+             if (mkb::g_currently_visible_menu_screen == 51) {
+                mkb::sel_menu_info.menu_stack_ptr = 3;
+             }
+});
 }
-
 }// namespace story_char_select

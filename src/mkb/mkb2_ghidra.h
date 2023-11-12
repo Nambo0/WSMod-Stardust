@@ -2291,6 +2291,32 @@ struct GTableEntry {
     undefined field_0x4[0x8];
 } __attribute__((__packed__));
 
+typedef struct theme_light theme_light, *Ptheme_light;
+
+typedef short int16_t;
+
+struct theme_light { /* A struct used for each theme ID's lighting */
+    float unk_float; /* Usually 0.6 */
+    float light_group_r;
+    float light_group_g;
+    float light_group_b;
+    float light_group_null;
+    float unk_one_1;
+    float unk_one_2;
+    float unk_one_3;
+    float unk_one_null;
+    float unk_half_1;
+    float unk_half_2;
+    float unk_half_3;
+    float unk_half_null;
+    float light_param_r;
+    float light_param_g;
+    float light_param_b;
+    int16_t xa;
+    int16_t ya;
+    float null;
+} __attribute__((__packed__));
+
 typedef struct OptiGXChanSettings OptiGXChanSettings, *POptiGXChanSettings;
 
 typedef u8 GXBool;
@@ -3034,32 +3060,6 @@ enum {
     MINIMAP_INIT=4
 };
 typedef undefined4 MinimapMode;
-
-typedef struct theme_light theme_light, *Ptheme_light;
-
-typedef short int16_t;
-
-struct theme_light { /* A struct used for each theme ID's lighting */
-    float unk_float; /* Usually 0.6 */
-    float light_group_r;
-    float light_group_g;
-    float light_group_b;
-    float light_group_null;
-    float unk_one_1;
-    float unk_one_2;
-    float unk_one_3;
-    float unk_one_null;
-    float unk_half_1;
-    float unk_half_2;
-    float unk_half_3;
-    float unk_half_null;
-    float light_param_r;
-    float light_param_g;
-    float light_param_b;
-    int16_t xa;
-    int16_t ya;
-    float null;
-} __attribute__((__packed__));
 
 typedef struct DipSwitchesOld DipSwitchesOld, *PDipSwitchesOld;
 
@@ -5365,9 +5365,7 @@ extern "C" {
     extern f32 projection_near_clip;
     extern f32 projection_far_clip;
     extern Mtx44 g_some_projection_matrix;
-    extern undefined1 g_some_gmaflag_1;
-    extern undefined1 g_some_gmaflag_2;
-    extern undefined1 g_some_gmaflag_3;
+    extern undefined4 g_some_gmaflag_1;
     extern pointer INIT_REL_PATHS[2];
     extern OSHeapHandle currentHeap;
     extern undefined4 arena_lo;
@@ -5553,6 +5551,7 @@ extern "C" {
     extern undefined * switchdataD_8037ed54;
     extern pointer switchdataD_8037ed78;
     extern undefined * switchdataD_8037edf8;
+    extern struct theme_light theme_lights[41];
     extern char init_common_p_lz[17];
     extern char init_common_lz[15];
     extern struct BmpInfo bmp_infos[25];
@@ -5845,6 +5844,7 @@ extern "C" {
     extern s8 stageselect_course_idx[2];
     extern s8 stageselect_course_stage_idx[2][10];
     extern undefined1 g_last_selected_bowling_difficulty;
+    extern undefined4 g_auto_reload_setting;
     extern undefined4 menu_tick_func;
     extern undefined4 menu_draw_func;
     extern struct RelBufferInfo g_some_sel_ngc_rel_buffer;
@@ -5980,7 +5980,7 @@ extern "C" {
     extern struct Effect effects[512];
     extern undefined g_some_bg_mtx;
     extern Mtx g_related_to_texture_UV_map;
-    extern undefined1 cm_unlock_entries[18];
+    extern undefined1 cm_unlock_entries;
     extern struct CourseCommand * current_cm_entry;
     extern int stage_jump_distance;
     extern BOOL32 in_practice_mode;
@@ -5988,7 +5988,7 @@ extern "C" {
     extern ModeFlag  g_mode_flags2;
     extern undefined4 g_some_course_length;
     extern struct CmPlayerProgress cm_player_progress[12];
-    extern undefined1 storymode_unlock_entries[13];
+    extern undefined1 storymode_unlock_entries;
     extern undefined2 g_next_item_id;
     extern struct Item items[256];
     extern undefined2 next_stobj_id;
@@ -6054,8 +6054,8 @@ extern "C" {
     extern undefined4 g_maybe_smth_related_to_pausing;
     extern struct MemCardInfo memcard_infos[2];
     extern struct StoryModeSaveFile storymode_save_files[3];
-    extern undefined1 g_storymode_unlock_entries_copy[13];
-    extern undefined1 g_cm_unlock_entries_copy[18];
+    extern undefined1 g_storymode_unlock_entries_copy;
+    extern undefined1 g_cm_unlock_entries_copy;
     extern undefined g_some_string;
     extern struct GSomethingWithPadMotorsStruct g_some_pad_motor_array1[4];
     extern struct GSomethingWithPadMotorsStruct g_some_pad_motor_array2[4];
@@ -6098,6 +6098,7 @@ extern "C" {
     extern undefined4 g_some_author_cutscene_flag;
     extern undefined4 g_playpoint_msg_counter;
     extern struct UnlockInfo unlock_info;
+    extern byte sprite_decoration_bar_tick[1];
     extern float view_stage_aspect_ratio;
     extern pointer switchdataD_804ee064;
     extern undefined * story_mode_funcs;
@@ -6177,6 +6178,9 @@ extern "C" {
     extern undefined * switchdataD_80543868;
     extern undefined4 scen_stgname_buffer;
     extern undefined4 g_scen_stage_names_loaded;
+    extern undefined4 g_are_story_select_sprites_visible;
+    extern undefined2 g_amount_of_stages_per_world;
+    extern undefined2 g_amount_of_beaten_stages_in_world;
     extern float some_ape_float;
     extern float some_ape_float2;
     extern float some_ape_float3;
@@ -6255,6 +6259,8 @@ extern "C" {
     extern undefined menu_boat_game_settings_grand_prix_entries;
     extern undefined menu_shot_empty_entries;
     extern undefined menu_shot_stage_select_entries;
+    extern char SHOT_AUTO_RELOAD_OPTION_STRING[12];
+    extern char SHOT_AUTO_RELOAD_DESCRIPTION_STRING[55];
     extern undefined menu_shot_gameplay_settings_1p_entries;
     extern undefined menu_shot_gameplay_settings_2p_entries;
     extern undefined menu_shot_gameplay_settings_3p_entries;
@@ -6302,6 +6308,7 @@ extern "C" {
     extern struct Ape * menu_apes[4];
     extern undefined4 g_menu_color_overlay_timer;
     extern undefined g_something_with_preview_textures;
+    extern undefined4 g_replay_stage_id_to_load;
     extern undefined1 g_gift_menu_cursor_pos;
     extern undefined * switchdataD_80590050;
     extern pointer switchdataD_805b1fc6;
@@ -6443,7 +6450,7 @@ extern "C" {
     void * memset(void * ptr, int value, size_t num);
     void * __fill_mem(void * ptr, int value, size_t num);
     void * memcpy(void * dest, void * src, size_t count);
-    int TRK_memset(int param_1, uint param_2, uint param_3);
+    int TRK_memset(int param_1, byte param_2, uint param_3);
     void TRK_memcpy(int param_1, int param_2, int param_3);
     void g_init_console(void);
     void g_some_heap_init(void);
@@ -6601,7 +6608,7 @@ extern "C" {
     void DMAErrorHandler(undefined4 param_1, undefined4 * param_2);
     void __OSCacheInit(void);
     undefined8 __OSLoadFPUContext(undefined8 param_1, undefined4 param_2, int param_3);
-    void __OSSaveFPUContext(double param_1, double param_2, double param_3, double param_4, double param_5, double param_6, double param_7, double param_8, undefined4 param_9_00, undefined4 param_10_00, int param_11);
+    void __OSSaveFPUContext(double param_1, double param_2, double param_3, double param_4, double param_5, double param_6, double param_7, double param_8, undefined4 param_9, undefined4 param_10, int param_11);
     void OSSetCurrentContext(struct OSContext * context);
     OSContext * OSGetCurrentContext(void);
     undefined4 OSSaveContext(int param_1);
@@ -6852,7 +6859,7 @@ extern "C" {
     void VIInit(void);
     void VIWaitForRetrace(void);
     void setFbbRegs(int param_1, uint * param_2, uint * param_3, uint * param_4, uint * param_5);
-    void setVerticalRegs(uint param_1, ushort param_2, byte param_3, short param_4, short param_5, short param_6, short param_7, short param_8, int param_9);
+    void setVerticalRegs(ushort param_1, ushort param_2, byte param_3, short param_4, short param_5, short param_6, short param_7, short param_8, int param_9);
     void VIConfigure(struct GXRenderModeObj * rm);
     void VIFlush(void);
     void VISetNextFrameBuffer(void * fb);
@@ -7766,7 +7773,7 @@ extern "C" {
     void g_maybe_something_with_normals(int param_1);
     void g_init_gma(struct GmaBuffer * gma_buffer, struct Gma * gma_header, struct TplBuffer * tpl);
     int g_init_gma_model_materials(struct GmaModel * model, struct TplBuffer * tpl, struct GXTexObj * texobj_array);
-    void g_memcpy_using_locked_cache(void * dest, void * curr_src_1_1_1_1_1_1_1_1, size_t count);
+    void g_memcpy_using_locked_cache(void * dest, void * curr_src_1_1_1_1_1_1_1_1_1_1, size_t count);
     void g_something_with_locked_cache_2(void * param_1, uint param_2, uint param_3);
     void memcpy2(void * dest, void * src, size_t count);
     int * __va_arg(char * param_1, int param_2);
@@ -7867,7 +7874,7 @@ extern "C" {
     undefined4 __flush_all(void);
     void __close_all(void);
     uint * __find_unopened_file(void);
-    void __num2dec(int param_1, int param_2);
+    void __num2dec(double param_1_00, int param_2, char * param_3);
     void __num2dec_internal(double param_1, char * param_2);
     uint __equals_dec(int param_1, int param_2);
     void __two_exp(undefined4 * param_1, ushort param_2);
@@ -7905,7 +7912,7 @@ extern "C" {
     int __pformatter(void (* WriteProc)(void *, char *, size_t), void * WriteProcArg, char * format_str, va_list arg, int is_secure);
     byte * float2str(double param_1, int param_2, int param_3);
     void round_decimal(int param_1, int param_2);
-    char * double2hex(ulonglong param_1, int param_2, int param_3);
+    char * double2hex(double param_1, int param_2, int param_3);
     char * longlong2str(uint param_1, uint param_2, int param_3, char * param_4);
     char * long2str(uint param_1, int param_2, char * param_3);
     char * parse_format(int param_1, char * param_2, uint * param_3);
@@ -8017,7 +8024,7 @@ extern "C" {
     undefined4 return_0(void);
     int TRKDoNotifyStopped(char param_1);
     void TRK_flush_cache(uint param_1, int param_2);
-    void TRK_fill_mem(int param_1, uint param_2, uint param_3);
+    void TRK_fill_mem(int param_1, byte param_2, uint param_3);
     void __TRK_get_MSR(void);
     void __TRK_set_MSR(void);
     void TRK_ppc_memcpy(int param_1, int param_2, int param_3);
@@ -9562,6 +9569,7 @@ extern "C" {
     byte g_is_master_unlocked(void);
     void empty_function(void);
     void g_set_unlockables_status(void);
+    void g_handle_goal(void);
     void empty_function(void);
     void compare_play_points_with_99999_after_exit_game(void);
     dword get_play_point_count(void);
@@ -9699,10 +9707,24 @@ extern "C" {
     void empty_function(void);
     void g_create_storymode_select_sprites(uint param_1);
     void g_related_to_loading_story_stageselect(uint param_1);
-    void g_draw_ape_storymode_select_screen(int param_1);
-    void empty_function(void);
-    void sprite_scen_stagesel_stage_name_tick(undefined4 param_1, int param_2);
+    void sprite_story_stage_select_tick(u8 * status, struct Sprite * sprite);
+    void sprite_story_stage_select_disp(struct Sprite * sprite);
+    void g_handle_story_clear_stage_balls(short param_1);
+    void sprite_clear_floors_tick(u8 * status, struct Sprite * sprite);
+    void sprite_clear_floors_disp(struct Sprite * sprite);
+    void sprite_decoration_bar_disp(struct Sprite * sprite);
+    void sprite_world_tick(u8 * status, struct Sprite * sprite);
+    void sprite_world_disp(struct Sprite * sprite);
+    void g_animate_story_select_sprites(undefined2 param_1);
+    void g_sprite_world_info_tick(u8 * status, struct Sprite * sprite);
+    void g_sprite_world_info_disp(struct Sprite * sprite);
+    void sprite_scen_stagesel_stage_name_tick(u8 * param_1, struct Sprite * sprite);
     void sprite_scen_stagesel_stage_name_disp(struct Sprite * sprite);
+    void sprite_story_difficulty_tick(u8 * status, struct Sprite * sprite);
+    void sprite_story_difficulty_disp(struct Sprite * sprite);
+    void g_draw_story_stage_preview_ball(undefined2 param_1);
+    void g_sprite_story_stage_info_tick(u8 * status, struct Sprite * sprite);
+    void g_sprite_story_stage_info_disp(struct Sprite * sprite);
     void g_preload_all_story_preview_images(void);
     void g_draw_now_loading_text(void);
     uint g_get_storymode_next_world(void);
@@ -10038,6 +10060,8 @@ extern "C" {
     void exoption_epilog(void);
     void exoption_unlinked_func(void);
     void exoption_draw_func(void);
+    void create_replay_hud_sprites(void);
+    void create_replay_stage_name_sprites(float x, float y);
 #ifdef __cplusplus
 } // extern "C"
 #endif

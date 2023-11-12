@@ -7,7 +7,7 @@
 
 namespace auto_menu {
 
-u8 auto_mode = 1; // 0 = none, 1 = all, 2 = hold A
+u8 auto_mode = 0; // 0 = none, 1 = all
 bool trigger_retry = true;
 u8 fade_frame = 0;
 
@@ -41,18 +41,16 @@ void force_stage_select(){
 }
 
 void tick() {
-    // Dpad Down to switch modes
-    if (pad::button_pressed(mkb::PAD_BUTTON_DOWN)){
-        auto_mode += 1;
-        if(auto_mode > 2) auto_mode = 0;
-        // Fast spin-in (Only set this before story entry!)
-        if(auto_mode == 0) patch::write_word(reinterpret_cast<void*>(0x808f4a3c), 0x2c000001);
-        if(auto_mode > 0) patch::write_word(reinterpret_cast<void*>(0x808f4a3c), 0x2c00ff01);
-
-        ball.banana_count = auto_mode;
-    }
+        if (mkb::g_auto_reload_setting == 0) {
+            auto_mode = 1;
+        }
+        else {
+            auto_mode = 0;
+        }
 
     if (mkb::main_game_mode == mkb::STORY_MODE){
+        if(auto_mode == 0) patch::write_word(reinterpret_cast<void*>(0x808f4a3c), 0x2c000001);
+        if(auto_mode > 0) patch::write_word(reinterpret_cast<void*>(0x808f4a3c), 0x2c00ff01);
         // Auto Stage Select
         if(fade_frame > 0){
             if(fade_frame > 15){
@@ -86,9 +84,6 @@ void on_goal(){
             case 1:
                 begin_stage_select_fade();
                 return;
-            case 2:
-                if(pad::button_down(mkb::PAD_BUTTON_A)) begin_stage_select_fade();
-            return;
         }
     }
 }

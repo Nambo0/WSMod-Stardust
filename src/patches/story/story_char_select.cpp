@@ -81,7 +81,7 @@ void init_sel_ngc() {
                                                            "Collect bananas and /bcb300ff/stunt goals/bcffff00/ for\n"
                                                            "extra swag.";
     mkb::strcpy(mkb::SHOT_AUTO_RELOAD_OPTION_STRING, "Auto Menu");
-    mkb::strcpy(mkb::SHOT_AUTO_RELOAD_DESCRIPTION_STRING, "Auto load-in fast on stage entry and\nreturn to stage select on stage clear.");
+    mkb::strcpy(mkb::SHOT_AUTO_RELOAD_DESCRIPTION_STRING, "Fast spin-in and automatic\npost-goal stage select.");
     for (int i = 0; i < 4; i++) {
         // Patches each of the character button's 'next screen ID' in the character select screen
         if (mkb::unlock_info.g_movies_watched != 0x0fff) {

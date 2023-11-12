@@ -21,7 +21,7 @@ TICKABLE_DEFINITION((
 // If none of the worlds fail, there's 1 in each world, so succeed the condition
 bool unlock_condition_met(){
     if(mkb::unlock_info.monkeys == 99) return true; // Allows Practice Mod Unlock to unlock these modes
-    achievement::detect_stunt_pilot();
+    return achievement::detect_stunt_pilot();
 }
 
 void init_sel_ngc() {

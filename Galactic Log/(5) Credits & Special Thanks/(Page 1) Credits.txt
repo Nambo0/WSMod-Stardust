@@ -1,2 +1,59 @@
-Display credits for ppl who contributed to the pack directly
-(Music, artwork, code)
+Words listed in blue have associated links in the credits txt file
+Credits come in the form of hugs, since I super-appreciate every single person who contributed to this project.
+**Direct Contributions**
+||   Original Soundtrack   ||
+(>^-^)> Walkr_ (Hear their music: https://linktr.ee/walkrmusic )
+(>^-^)> Relayer (Hear their music: https://wxokeys.bandcamp.com/ )
+Full Soundtrack | (link)
+Song Credits:
+Title/Debug | quasar 3, by Walkr
+Menu | quasar 2, by Walkr
+World 1 | Bubblegum Dream, by Relayer
+World 2 | Cloudscape, by Walkr
+World 3 | Solar Orbit, by Relayer
+World 4 | Deep Space, by Walkr
+World 5 | Dark Generator, by Relayer
+World 6 | Glitch Anomaly, by Walkr
+World 7 | Pomegranate Dream, by Relayer
+World 8 | Pulsar, by Walkr
+World 9 | Genesis, by Walkr
+World 10 | Haven, by Walkr
+Joke Stages | 2002 gamecube controller, by Walkr
+Story Stage Select | unlimited stages, by Walkr
+Exit Game | would u like to save?, by Walkr
+||   Art   ||
+(>^-^)> Shadow
+Title Art | Collaborated with me to form the concept & design
+World 7 | Drew all the stylish black & white character art seen in the background
+See Shadow's art: https://charredshadow.tumblr.com/
+||   Code   ||
+Stardust features some special code written specifically for it, made by:
+(>^-^)> Rehtrop (Biggest contributions in saving data to the memory card)
+(>^-^)> Bombsquad (Biggest contributions in writing the framework for the Galactic Log's custom ui)
+(>^-^)> Eucalyptus (Biggest contributions in designing menu formats and displaying custom badge sprites onscreen)
+All 4 of us (myself included) contributed more than just the summaries listed here
+||   Modding Tools   ||
+Custom stages wouldn't be possible without everyone who contributed to the development of SMB hacking,
+and custom code wouldn't be possible without everyone who contributed to the development of WSMod.
+Trying to credit each individual person who made hacking what it is today would be trying to credit an entire community,
+so that's exactly what I'll do...
+(>^-^)> Custom Level Guide: https://docs.google.com/document/d/194QZxrimkjHEzSSMKbafs86PnmiYmFBZUnoaEnks4es/edit#heading=h.ov0lpemghqwc
+(>^-^)> Blend2SMBstage2: https://github.com/TheBombSquad/BlendToSMBStage2
+(>^-^)> WorkshopMod: https://github.com/TheBombSquad/SMB2WorkshopMod
+(>^-^)> Practice Mod: https://github.com/ComplexPlane/SMB2PracticeMod
+(>^-^)> SMB Level Workshop: https://discord.gg/CEYjvDj
+Contributors for each tool can be found in each of these links, if I tried to list everyone I'd forget someone :P
+There's tons of other tools for modding this game which I didn't mention, links and credits for those can be found through the Workshop Server
+||   Playtesters   ||
+(>^-^)> Eddy (Literally collected every stunt goal, banana bunch, and stage achievement, plus tons of help console lag-testing)
+Special thanks to eddy for putting in SO much extra time into testing all the pack's bonuses and giving me feedback on just about everything
+(>^-^)> 42guy42 (Focused on stress-testing speedy completions and lots of stunt goals)
+(>^-^)> Rehtrop (Provided very thorough feedback which helped immensely in improving the stage designs)
+(>^-^)> Null (Focused on difficulty balancing and readability)
+(>^-^)> Walkr_
+(>^-^)> Goobz
+(>^-^)> Dyrude
+(>^-^)> Eucalyptus (Focused on hunting down visual blemishes)
+Everyone gave countless amounts of suggestions to improve literally every stage from its first draft.
+Even if I didn't list a focus, your playthroughs and feedback all meant just as much to me!
+Thank you also for all the moral support. Seeing your excitement after marking down each stage was infinitely heart-warming & motivational <3

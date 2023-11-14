@@ -172,9 +172,13 @@ static void display_badges(u16 stage_number){
     }
 }
 
+void display_badges_fix(){
+    display_badges(stage_id_to_stage_number(mkb::g_current_stage_id));
+}
+
 void tick(){
     if(badge_display_delay == 0){
-        display_badges(stage_id_to_stage_number(mkb::g_current_stage_id));
+        display_badges_fix();
         badge_display_delay = 100;
     }
     if(badge_display_delay == 1){

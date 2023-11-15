@@ -64,7 +64,7 @@ static void skip_stage(){
 }
 
 static void cause_fallout(){
-    mkb::balls[mkb::curr_player_idx].pos.y = -1000;
+    mkb::balls[mkb::curr_player_idx].pos.y = mkb::stagedef->fallout->y - 1;
 }
 
 void tick(){

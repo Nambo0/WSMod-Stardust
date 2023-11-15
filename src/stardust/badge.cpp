@@ -116,7 +116,7 @@ static void create_badge_sprite(u8 type, u8 slot){
     mkb::Sprite* sprite = mkb::create_sprite();
     if (sprite != (mkb::Sprite *)0x0) {
         sprite->type = mkb::SPRT_BMP;
-        sprite->pos.x = 125.0 + slot*40;
+        sprite->pos.x = 132.5 + slot*40;
         sprite->pos.y = 420.0;
         sprite->alignment = mkb::ALIGN_CENTER;
         switch(type){
@@ -131,7 +131,7 @@ static void create_badge_sprite(u8 type, u8 slot){
         sprite->g_flags1 = 0x1000000;
         sprite->width = 0.5;
         sprite->height = 0.5;
-        sprite->widescreen_translation_x = 0x60;
+        sprite->widescreen_translation_x = 0x62;
         sprite->tick_func = badge_sprite_tick;
         switch(type){
             case 0: mkb::strcpy(sprite->text, "clear badge"); break; // Clear

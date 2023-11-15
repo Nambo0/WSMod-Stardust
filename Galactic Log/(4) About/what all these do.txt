@@ -28,9 +28,10 @@ Collecting every single bunch on a stage will award that stage's
 
 ========================================================================
 Unlocking Bonus Modes: [BEFORE UNLOCK]
-Unlock this bonus mode by claiming the following achievement:
+Unlock all bonus modes by claiming the following achievements:
 
-[GOLD]STUNT PILOT\ | Complete 1 [PURP]stunt goal\ in each world  ~  (Unlocks All Bonus Modes)
+[GOLD]BEAT THE GAME\ | Complete story mode
+[GOLD]STUNT PILOT\ | Complete 1 [PURP]stunt goal\ in each world
 
 More info on [ORANGE]achievements\ can be found in that section of the
 Galactic log.

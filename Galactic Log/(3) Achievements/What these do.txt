@@ -9,10 +9,10 @@ Each sub-menu brings up the list of achievements in that category
 Here's all the achievements I have planned so far |
 
 = STORY MODE =
-11) BEAT THE GAME | Complete story mode
+11) BEAT THE GAME | Complete story mode  ~  (Part of unlocking Bonus Modes)
 12) FEELING BLUE | Complete all 100 blue goals
 13) STUNT TRAINEE | Complete 1 stunt goal
-14) STUNT PILOT | Complete 1 stunt goal in each world  ~  (Unlocks All Bonus Modes)
+14) STUNT PILOT | Complete 1 stunt goal in each world  ~  (Part of unlocking Bonus Modes)
 15) STUNT SPECIALIST | Complete all 10 Stunt Goals in any world
 16) STUNT ACE | Complete all 100 Stunt Goals
 17) EATER OF SOULS | Obtain 5,000 bananas in Story Mode
@@ -46,4 +46,4 @@ AAAAA | Clear a stage after traveling over 1,000 mph                            
 I FORGOR | Clear a stage after standing still for 100+ seconds from the start               (tick + on-goal + bool)
 USELESS SETUP | Hold the same direction for 100+ seconds from the start without falling out (tick + on-goal + bool)
 IVE SEEN IT ALL | Complete or skip through every debug sub-category                         (annoying to track)
-DEBUG % | Clear every debug stage outside ‘The Unplayable Zone’                             (too much to track probably)
+DEBUG % | Clear every debug stage outside ‘The Unplayable Zone’                             (annoying to track)

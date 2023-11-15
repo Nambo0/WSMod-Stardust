@@ -1,5 +1,7 @@
 #include "cardio.h"
 #include "heap.h"
+#include "mkb.h"
+#include "modlink.h"
 #include <optional>
 
 namespace cardio {
@@ -23,8 +25,7 @@ struct WriteParams {
 // We need a 40KB(!) buffer just for the privilege of accessing memory cards,
 // this sucks! Reminder we only have ~550KB to work with for the entire mod,
 // including savestates
-static u8 s_card_work_area[mkb::CARD_WORKAREA_SIZE]
-    __attribute__((__aligned__(32)));
+static void* s_card_work_area;
 static mkb::CARDFileInfo s_card_file_info;
 
 static WriteState s_state = WriteState::Idle;
@@ -101,6 +102,11 @@ static void finish_write(mkb::CARDResult res) {
         0);// I'm assuming that trying to unmount when mounting failed is OK
     s_write_params.callback(res);
     s_state = WriteState::Idle;
+}
+
+void init() {
+    s_card_work_area = heap::alloc(mkb::CARD_WORKAREA_SIZE);
+    modlink::set_card_work_area(s_card_work_area);
 }
 
 void tick() {

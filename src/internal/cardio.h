@@ -4,6 +4,7 @@
 
 namespace cardio {
 
+void init();
 void tick();
 
 // Caller gets a heap-allocated buffer containing file, which they own

@@ -116,21 +116,21 @@ static void create_badge_sprite(u8 type, u8 slot){
     mkb::Sprite* sprite = mkb::create_sprite();
     if (sprite != (mkb::Sprite *)0x0) {
         sprite->type = mkb::SPRT_BMP;
-        sprite->pos.x = 0.0 + slot*40;
-        sprite->pos.y = 400.0;
+        sprite->pos.x = 125.0 + slot*40;
+        sprite->pos.y = 420.0;
         sprite->alignment = mkb::ALIGN_CENTER;
         switch(type){
-            case 0: sprite->bmp = 0x510; break; // Clear
-            case 1: sprite->bmp = 0x510; break; // Stunt
-            case 2: sprite->bmp = 0x510; break; // Sweep
-            case 3: sprite->bmp = 0x510; break; // Ach
-            case 4: sprite->bmp = 0xc; break; // Empty
+            case 0: sprite->bmp = 0x32; break; // Clear
+            case 1: sprite->bmp = 0x1e; break; // Stunt
+            case 2: sprite->bmp = 0x42; break; // Sweep
+            case 3: sprite->bmp = 0x5e; break; // Ach
+            case 4: sprite->bmp = 0x49; break; // Empty
         }
         sprite->alpha = 0.0;
         sprite->g_counter = 300;
         sprite->g_flags1 = 0x1000000;
-        sprite->width = 0.75;
-        sprite->height = 0.75;
+        sprite->width = 0.5;
+        sprite->height = 0.5;
         sprite->widescreen_translation_x = 0x140;
         sprite->tick_func = badge_sprite_tick;
         switch(type){

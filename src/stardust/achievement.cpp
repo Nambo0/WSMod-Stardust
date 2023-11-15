@@ -33,7 +33,7 @@ void claim_achievement(int id) {
         savedata::write_bool_to_slot(claimed_slot, true);
         savedata::save();
         // Display badges if it's a stage challenge
-        if(id >= 1 && id <= 10) badge::set_display_badges_next_frame_true();
+        if(id >= 1 && id <= 10) badge::set_display_badges_next_frame_true(3);
     }
 }
 

@@ -19,9 +19,11 @@ TICKABLE_DEFINITION((
 // Wait 1 frame before display to make sure all cpp files are done calling for badge claims
 // This also prevents the function from running more than once in a row!
 static u8 badge_display_delay = 100;
+static u8 queued_badge_types = 0;
 
-void set_display_badges_next_frame_true(){
+void set_display_badges_next_frame_true(int type){
     badge_display_delay = 1;
+    queued_badge_types |= 1 << type;
 }
 
 int stage_id_to_stage_number(int stage_id) {
@@ -71,7 +73,7 @@ void claim_blue_goal(u16 stage_number){
     if(!savedata::true_in_slot(claimed_slot)){
         savedata::write_bool_to_slot(claimed_slot, true);
         savedata::save();
-        set_display_badges_next_frame_true();
+        set_display_badges_next_frame_true(0);
     }
 }
 
@@ -81,7 +83,7 @@ void claim_stunt_goal(u16 stage_number){
     if(!savedata::true_in_slot(claimed_slot)){
         savedata::write_bool_to_slot(claimed_slot, true);
         savedata::save();
-        set_display_badges_next_frame_true();
+        set_display_badges_next_frame_true(1);
     }
 }
 
@@ -91,7 +93,7 @@ void claim_sweep(u16 stage_number){
     if(!savedata::true_in_slot(claimed_slot)){
         savedata::write_bool_to_slot(claimed_slot, true);
         savedata::save();
-        set_display_badges_next_frame_true();
+        set_display_badges_next_frame_true(2);
     }
 }
 
@@ -144,32 +146,15 @@ static void create_badge_sprite(u8 type, u8 slot){
 }
 
 static void display_badges(u16 stage_number){
-    // Clear Badge
-    if(savedata::true_in_slot(stage_number - 1)) create_badge_sprite(0, 0);
-    else create_badge_sprite(4, 0);
-    // Stunt Badge
-    if(savedata::true_in_slot(100 + stage_number - 1)) create_badge_sprite(1, 1);
-    else create_badge_sprite(4, 1);
-    // Sweep Badge
-    if(savedata::true_in_slot(200 + stage_number - 1)) create_badge_sprite(2, 2);
-    else create_badge_sprite(4, 2);
-    // Stage Challenge (ONLY SHOW ON ACHIEVEMENT STAGES)
-    switch(stage_number) {
-        case 8:  // 1-8 Double Time
-        case 16: // 2-6 Liftoff
-        case 30: // 3-10 Detonation
-        case 39: // 4-9 Avoidance
-        case 46: // 5-6 Door Dash
-        case 51: // 6-1 Recolor
-        case 70: // 7-10 Break the Targets
-        case 74: // 8-4 Frequencies
-        case 83: // 9-3 Flip Switches
-        case 100: { // 10-10 Impact
-            if(savedata::true_in_slot(300 + (stage_number - 1) / 10)) create_badge_sprite(3, 3);
-            else create_badge_sprite(4, 3);
-            break;
+    u8 current_slot = 0;
+    for(u8 i = 0; i < 4; i++){
+        // For each of the 4 types, check if that type is queued
+        if (queued_badge_types & (1 << i)){
+            create_badge_sprite(i, current_slot);
+            current_slot++;
         }
     }
+    queued_badge_types = 0;
 }
 
 void tick(){

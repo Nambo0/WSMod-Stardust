@@ -407,12 +407,5 @@ void tick() {
         patch::write_word(reinterpret_cast<void*>(0x80339f14), 0x2c000258);
         // patch::write_word(reinterpret_cast<void*>(0x80339d7c), 0x901d004c); // 0.00
     }
-
-    // Savedata testing
-    if(pad::button_pressed(mkb::PAD_TRIGGER_Z)){
-        savedata::save();
-        mkb::balls[mkb::curr_player_idx].banana_count = 111;
-    }
-
 }// void tick
 }// namespace hardcode

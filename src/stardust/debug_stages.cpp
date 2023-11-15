@@ -64,7 +64,7 @@ static void skip_stage(){
 }
 
 static void cause_fallout(){
-    mkb::sub_mode = mkb::SMD_GAME_RINGOUT_INIT;
+    mkb::balls[mkb::curr_player_idx].pos.y = -1000;
 }
 
 void tick(){
@@ -87,7 +87,7 @@ void tick(){
     if(mkb::main_game_mode == mkb::CHALLENGE_MODE && 
     (mkb::curr_difficulty == mkb::DIFF_BEGINNER || mkb::curr_difficulty == mkb::DIFF_ADVANCED) &&
     (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN)){
-        if(pad::button_down(mkb::PAD_TRIGGER_Z) && pad::button_pressed(mkb::PAD_BUTTON_B)){
+        if(pad::button_down(mkb::PAD_TRIGGER_R) && pad::button_pressed(mkb::PAD_BUTTON_B)){
             cause_fallout();
         }
     }

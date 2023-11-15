@@ -20,9 +20,6 @@ TICKABLE_DEFINITION((
         .tick = tick,
         .on_goal = on_goal, ))
 
-// Makes ball.whatever easier to use
-mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];
-
 void begin_stage_select_fade(){
     if(fade_frame == 0) fade_frame = 1;
     mkb::fade_screen_to_color(0x101,0xffffff,15);
@@ -41,7 +38,7 @@ void force_stage_select(){
 }
 
 void tick() {
-        if (mkb::g_auto_reload_setting == 0) {
+        if (mkb::g_auto_reload_setting == 0 && mkb::unlock_info.g_movies_watched == 0x0fff) {
             auto_mode = 1;
         }
         else {
@@ -71,7 +68,6 @@ void tick() {
 }
 
 void init() {
-
 }
 
 void on_goal(){

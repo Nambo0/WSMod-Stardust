@@ -407,13 +407,21 @@ void tick() {
         patch::write_word(reinterpret_cast<void*>(0x80339f14), 0x2c000258);
         // patch::write_word(reinterpret_cast<void*>(0x80339d7c), 0x901d004c); // 0.00
     }
-    // Fast retry for Monuments
+    // Fast retry and fixed camera for Monuments
     if (mkb::current_stage_id == 77) {
         patch::write_word(reinterpret_cast<void*>(0x802ba280), 0x38000000);
         patch::write_word(reinterpret_cast<void*>(0x802ba288), 0x38800000);
         patch::write_word(reinterpret_cast<void*>(0x802b8cdc), 0x38800020);
-        patch::write_word(reinterpret_cast<void*>(0x802973d8), 0x2c000000);
+        if (mkb::in_practice_mode == false) {
+            patch::write_word(reinterpret_cast<void*>(0x802973d8), 0x2c000000);
+        }
+        else {
+            patch::write_word(reinterpret_cast<void*>(0x802973d8), 0x2c000002);
+        }
         patch::write_word(reinterpret_cast<void*>(0x802ba304), 0x3880004c);
+        patch::write_word(reinterpret_cast<void*>(0x8044b1f4), 0x0000004d);
+        patch::write_word(reinterpret_cast<void*>(0x8044b200), 0x00000000);
+        patch::write_word(reinterpret_cast<void*>(0x8044b204), 0x43e10000);
     }
     else {
         patch::write_word(reinterpret_cast<void*>(0x802ba280), 0x3800001e);
@@ -421,6 +429,9 @@ void tick() {
         patch::write_word(reinterpret_cast<void*>(0x802b8cdc), 0x38800004);
         patch::write_word(reinterpret_cast<void*>(0x802973d8), 0x2c000001);
         patch::write_word(reinterpret_cast<void*>(0x802ba304), 0x38800000);
+        patch::write_word(reinterpret_cast<void*>(0x8044b1f4), 0x00000117);
+        patch::write_word(reinterpret_cast<void*>(0x8044b200), 0xc2480000);
+        patch::write_word(reinterpret_cast<void*>(0x8044b204), 0x42c80000);
     }
 }// void tick
 }// namespace hardcode

@@ -407,5 +407,20 @@ void tick() {
         patch::write_word(reinterpret_cast<void*>(0x80339f14), 0x2c000258);
         // patch::write_word(reinterpret_cast<void*>(0x80339d7c), 0x901d004c); // 0.00
     }
+    // Fast retry for Monuments
+    if (mkb::current_stage_id == 77) {
+        patch::write_word(reinterpret_cast<void*>(0x802ba280), 0x38000000);
+        patch::write_word(reinterpret_cast<void*>(0x802ba288), 0x38800000);
+        patch::write_word(reinterpret_cast<void*>(0x802b8cdc), 0x38800020);
+        patch::write_word(reinterpret_cast<void*>(0x802973d8), 0x2c000000);
+        patch::write_word(reinterpret_cast<void*>(0x802ba304), 0x3880004c);
+    }
+    else {
+        patch::write_word(reinterpret_cast<void*>(0x802ba280), 0x3800001e);
+        patch::write_word(reinterpret_cast<void*>(0x802ba288), 0x3880001e);
+        patch::write_word(reinterpret_cast<void*>(0x802b8cdc), 0x38800004);
+        patch::write_word(reinterpret_cast<void*>(0x802973d8), 0x2c000001);
+        patch::write_word(reinterpret_cast<void*>(0x802ba304), 0x38800000);
+    }
 }// void tick
 }// namespace hardcode

@@ -16,6 +16,7 @@ TICKABLE_DEFINITION((
         .description = "Interstellar",
         .enabled = true,
         .init_main_loop = init,
+        .init_main_game = init_main_game,
         .tick = tick,
         .on_goal = on_goal, ))
 
@@ -35,6 +36,8 @@ static patch::Tramp<decltype(&mkb::create_fallout_or_bonus_finish_sprite)> s_cre
 static patch::Tramp<decltype(&mkb::g_reset_ball)> s_g_reset_ball_tramp;
 // void load_stagedef(u32 stage_id);
 static patch::Tramp<decltype(&mkb::load_stagedef)> s_load_stagedef_tramp;
+static patch::Tramp<decltype(&mkb::smd_game_ringout_tick)> s_smd_game_ringout_tick_tramp;
+static patch::Tramp<decltype(&mkb::smd_game_timeover_tick)> s_smd_game_timeover_tick_tramp;
 
 static bool stage_id_is_stellar(u32 stage_id) {
     switch (stage_id) {
@@ -351,6 +354,39 @@ void on_spin_in() {
     }
 }
 
+void on_bonus_finish() {
+if ((mkb::current_stage_id == 230) && (mkb::mode_info.stage_time_frames_remaining < 15 * 60) && (mkb::in_practice_mode == false)) {
+    if (mkb::sub_mode_frame_counter == 0x3c) {
+    mkb::fade_screen_to_color(0x101,0,0x3d);
+    mkb::g_fade_track_volume(0x3c,'\x02');
+    }
+    if (mkb::sub_mode_frame_counter < 1) {
+        mkb::g_smth_with_ending_course();
+        mkb::g_smth_with_ending_course_2();
+        mkb::g_change_music_volume(0xc,0x3c,'\0');
+        mkb::main_mode_request = mkb::MD_AUTHOR;
+        mkb::sub_mode_request = mkb::SMD_AUTHOR_PLAY_ENDING_INIT;
+        mkb::mode_flags = mkb::mode_flags | 0x100040;
+        }
+
+    }
+if ((mkb::current_stage_id == 71) && (mkb::mode_info.stage_time_frames_remaining < 1) && (mkb::in_practice_mode == false) && (mkb::mode_info.ball_mode & (1 << 6))) {
+    if (mkb::sub_mode_frame_counter == 0x3c) {
+    mkb::fade_screen_to_color(0x101,0,0x3d);
+    mkb::g_fade_track_volume(0x3c,'\x02');
+    }
+    if (mkb::sub_mode_frame_counter < 1) {
+        mkb::g_smth_with_ending_course();
+        mkb::g_smth_with_ending_course_2();
+        mkb::g_change_music_volume(0xc,0x3c,'\0');
+        mkb::main_mode_request = mkb::MD_AUTHOR;
+        mkb::sub_mode_request = mkb::SMD_AUTHOR_PLAY_ENDING_INIT;
+        mkb::mode_flags = mkb::mode_flags | 0x100040;
+        }
+
+    }
+}
+
 void init() {
     patch::hook_function(s_create_fallout_or_bonus_finish_sprite_tramp, mkb::create_fallout_or_bonus_finish_sprite, [](s32 param_1) {
         on_fallout();
@@ -363,6 +399,17 @@ void init() {
     patch::hook_function(s_load_stagedef_tramp, mkb::load_stagedef, [](u32 stage_id) {
         s_load_stagedef_tramp.dest(stage_id);
         on_stage_load(stage_id);
+    });
+}
+
+void init_main_game() {
+    patch::hook_function(s_smd_game_ringout_tick_tramp, mkb::smd_game_ringout_tick, []() {
+        s_smd_game_ringout_tick_tramp.dest();
+        on_bonus_finish();
+    });
+    patch::hook_function(s_smd_game_timeover_tick_tramp, mkb::smd_game_timeover_tick, []() {
+        s_smd_game_timeover_tick_tramp.dest();
+        on_bonus_finish();
     });
 }
 

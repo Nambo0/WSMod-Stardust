@@ -7246,7 +7246,7 @@
 8038844C:g_init_rankings_to_defaults_wrapper
 8038846C:g_init_rankings_to_defaults
 803886DC:FUN_802b24a4
-803888B8:FUN_802b2680
+803888B8:g_smth_with_ending_course_2
 80388D84:FUN_802b2b4c
 80388E14:g_NameEntry2_InitFirst
 8038903C:FUN_802b2e04
@@ -8855,7 +8855,7 @@
 808FA3B0:caseD_7
 808FA3C4:get_next_stage_id
 808FA434:g_decrement_active_ball_monkey_count
-808FA574:FUN_804d24fc
+808FA574:g_smth_with_ending_course
 808FA594:FUN_804d251c
 808FA5AC:FUN_804d2534
 808FA5F0:FUN_804d2578

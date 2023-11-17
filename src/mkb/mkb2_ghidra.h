@@ -5980,7 +5980,7 @@ extern "C" {
     extern struct Effect effects[512];
     extern undefined g_some_bg_mtx;
     extern Mtx g_related_to_texture_UV_map;
-    extern undefined1 cm_unlock_entries;
+    extern u8 cm_unlock_entries[18];
     extern struct CourseCommand * current_cm_entry;
     extern int stage_jump_distance;
     extern BOOL32 in_practice_mode;
@@ -5988,7 +5988,7 @@ extern "C" {
     extern ModeFlag  g_mode_flags2;
     extern undefined4 g_some_course_length;
     extern struct CmPlayerProgress cm_player_progress[12];
-    extern undefined1 storymode_unlock_entries;
+    extern u8 storymode_unlock_entries[13];
     extern undefined2 g_next_item_id;
     extern struct Item items[256];
     extern undefined2 next_stobj_id;
@@ -9513,6 +9513,7 @@ extern "C" {
     void empty_function(void);
     void g_init_rankings_to_defaults_wrapper(void);
     void g_init_rankings_to_defaults(void);
+    void g_smth_with_ending_course_2(void);
     void g_NameEntry2_InitFirst(void);
     void g_nameentry2_init(void);
     void game_nameentry_draw_func(void);
@@ -9645,6 +9646,7 @@ extern "C" {
     void smd_game_sugg_save_tick(void);
     int get_next_stage_id(void);
     uint g_decrement_active_ball_monkey_count(void);
+    void g_smth_with_ending_course(void);
     void smd_game_force_exit_init(void);
     void smd_game_force_exit_tick(void);
     void smd_game_scenscnplay_return(void);

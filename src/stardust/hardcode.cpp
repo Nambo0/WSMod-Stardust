@@ -25,6 +25,8 @@ static bool entered_wormhole = false;
 static u16 frame_to_remove_indicators = 0;
 
 static patch::Tramp<decltype(&mkb::teleport_through_wormhole)> s_teleport_through_wormhole_tramp;
+static patch::Tramp<decltype(&mkb::draw_sprite)> s_draw_sprite_tramp; // Monuments: Hide HUD
+static patch::Tramp<decltype(&mkb::g_draw_minimap)> s_draw_minimap_tramp; // Monuments: Hide HUD
 
 void flip_hardcoded_wormholes(int idx) {
     switch (mkb::g_current_stage_id) {
@@ -94,6 +96,19 @@ void init() {
         mkb::undefined8 result = s_teleport_through_wormhole_tramp.dest(ball_idx, wormhole_idx);
         flip_hardcoded_wormholes(wormhole_idx + 1);
         return result;
+    });
+    patch::hook_function(s_draw_sprite_tramp, mkb::draw_sprite, [](mkb::Sprite* sprite) {
+        // Hide every sprite except the pause menu
+        bool correct_mode = mkb::main_mode == mkb::MD_GAME;
+        bool is_pausemenu_sprite = sprite->disp_func == mkb::sprite_pausemenu_disp;
+        if (!((mkb::g_current_stage_id == 77) && correct_mode && !is_pausemenu_sprite)) {
+            s_draw_sprite_tramp.dest(sprite);
+        }
+    });
+    patch::hook_function(s_draw_minimap_tramp, mkb::g_draw_minimap, []() {
+        if (mkb::g_current_stage_id != 77) {
+            s_draw_minimap_tramp.dest();
+        }
     });
 }
 

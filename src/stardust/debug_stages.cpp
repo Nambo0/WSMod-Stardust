@@ -91,6 +91,16 @@ void tick(){
             cause_fallout();
         }
     }
+    if(mkb::current_stage_id == 205) {
+        if(mkb::mode_info.entered_goal_type == 1) {
+            mkb::mode_info.cm_course_stage_num = 21;
+            mkb::mode_info.cm_stage_id = 246;
+        }
+        if(mkb::mode_info.entered_goal_type == 2) {
+            mkb::mode_info.cm_course_stage_num = 90;
+            mkb::mode_info.cm_stage_id = 321;
+        }
+    }
 }
 
 void on_goal() {

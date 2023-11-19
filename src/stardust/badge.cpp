@@ -20,6 +20,7 @@ TICKABLE_DEFINITION((
 // This also prevents the function from running more than once in a row!
 static u8 badge_display_delay = 100;
 static u8 queued_badge_types = 0;
+static bool sweep_claimed_this_stage = false; // Used to avoid repeating sweep claims when checking postgoals
 
 void set_display_badges_next_frame_true(int type){
     badge_display_delay = 1;
@@ -59,7 +60,7 @@ bool detect_sweep() {
         if (mkb::item_pool_info.status_list[i] == 0) continue;                                       // skip if its inactive
         mkb::Item& item = mkb::items[i];                                                             // shorthand: current item in the list = "item"
         if (item.coin_type != 1) continue;                                                           // skip if its not a bunch
-        if (item.g_some_flag == 0 && item.g_some_bitfield & 1 && item.g_some_bitfield & 0xfffffffd) {// True if banana is gone
+        if (item.g_some_flag == 0 /*&& item.g_some_bitfield & 1 && item.g_some_bitfield & 0xfffffffd */) {// True if banana is gone
             continue;
         }
         else return false;// Returns false if any bunches are un-collected
@@ -158,12 +159,17 @@ static void display_badges(u16 stage_number){
 }
 
 void tick(){
+    // Delay by 1 frame to ensure all our on-goal functions trigger!
     if(badge_display_delay == 0){
         display_badges(stage_id_to_stage_number(mkb::g_current_stage_id));
         badge_display_delay = 100;
     }
     if(badge_display_delay == 1){
         badge_display_delay = 0;
+    }
+    if(mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN && !sweep_claimed_this_stage && detect_sweep()){
+        claim_sweep(stage_id_to_stage_number(mkb::g_current_stage_id));
+        sweep_claimed_this_stage = true;
     }
 }
 
@@ -177,7 +183,9 @@ void on_goal() {
         }
         if(detect_sweep()){
             claim_sweep(stage_id_to_stage_number(mkb::g_current_stage_id));
+            sweep_claimed_this_stage = true;
         }
+        else sweep_claimed_this_stage = false;
     }
     else{
         // TODO: Error message

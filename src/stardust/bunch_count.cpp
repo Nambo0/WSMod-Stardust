@@ -11,7 +11,8 @@ TICKABLE_DEFINITION((
         .name = "stardust-bunch-count",
         .description = "Bunch Count",
         .enabled = true,
-        .init_main_loop = init, ))
+        .init_main_loop = init, 
+        .tick = tick, ))
 
 static u8 bunches_collected = 0;
 static u8 bunches_total = 0;
@@ -24,7 +25,7 @@ static void count_bunches() {
         mkb::Item& item = mkb::items[i];                                                             // shorthand: current item in the list = "item"
         if (item.coin_type != 1) continue;                                                           // skip if its not a bunch
         bunches_total++;
-        if (item.g_some_flag == 0 && item.g_some_bitfield & 1 && item.g_some_bitfield & 0xfffffffd) {// True if banana is gone
+        if (item.g_some_flag == 0 /*&& item.g_some_bitfield & (1 << 0)*/ /*&& item.g_some_bitfield & 0xfffffffd*/) {// True if banana is gone
             bunches_collected++;
         }
     }
@@ -135,14 +136,14 @@ static patch::Tramp<decltype(&mkb::item_coin_disp)> s_item_coin_disp_tramp;
 static patch::Tramp<decltype(&mkb::create_hud_sprites)> s_create_hud_sprites_tramp;
 
 void init() {
-    patch::hook_function(s_item_coin_disp_tramp, mkb::item_coin_disp, [](mkb::Item* item) {
-        s_item_coin_disp_tramp.dest(item);
-        count_bunches();
-    });
     patch::hook_function(s_create_hud_sprites_tramp, mkb::create_hud_sprites, []() {
         s_create_hud_sprites_tramp.dest();
         display_counter();
     });
+}
+
+void tick(){
+    count_bunches();
 }
 
 }// namespace bunch_count

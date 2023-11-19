@@ -31,17 +31,18 @@ static void count_bunches() {
 }
 
 static void sprite_bunch_count_tick(u8 *status,mkb::Sprite *sprite) {
-  mkb::Sprite *other_sprite;
-  
-  other_sprite = mkb::get_sprite_with_unique_id(mkb::SPRITE_HUD_KIWAKU_WORLD);
-  if (((other_sprite != (mkb::Sprite *)0x0) && (other_sprite->g_counter == 0)) && (sprite->fpara2 < 1.0))
-  {
-    sprite->fpara2 = sprite->fpara2 + 0.05;
-  }
-  sprite->alpha = sprite->fpara1 * sprite->fpara2;
-  if (sprite->font == mkb::FONT_ASC_24x24) {
-    mkb::sprintf(sprite->text, "%u/%u", bunches_collected,bunches_total);
-  }
+    if(bunches_collected != 0){
+        mkb::Sprite *other_sprite;
+    
+        other_sprite = mkb::get_sprite_with_unique_id(mkb::SPRITE_HUD_KIWAKU_WORLD);
+        if (((other_sprite != (mkb::Sprite *)0x0) && (other_sprite->g_counter == 0)) && (sprite->fpara2 < 1.0)) {
+            sprite->fpara2 = sprite->fpara2 + 0.05;
+        }
+        sprite->alpha = sprite->fpara1 * sprite->fpara2;
+        if (sprite->font == mkb::FONT_ASC_24x24) {
+            mkb::sprintf(sprite->text, "%u/%u", bunches_collected,bunches_total);
+        }
+    }
 }
 
 static void display_counter(){

@@ -45,7 +45,7 @@ static void sprite_bunch_count_tick(u8 *status,mkb::Sprite *sprite) {
 }
 
 static void display_counter(){
-    if (mkb::main_game_mode == mkb::STORY_MODE || mkb::main_game_mode == mkb::PRACTICE_MODE && mkb::stageselect_is_storymode == true) {
+    if (mkb::main_game_mode == mkb::STORY_MODE || (mkb::main_game_mode == mkb::PRACTICE_MODE && mkb::stageselect_is_storymode == true)) {
     mkb::Sprite* sprite = mkb::create_sprite();
     if (sprite != nullptr) {
         sprite->pos.x = 54;

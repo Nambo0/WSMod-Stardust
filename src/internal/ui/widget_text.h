@@ -10,8 +10,8 @@ constexpr mkb::Rgb24 DEFAULT_ORANGE = {0xFF, 0x80, 0x00};
 
 class Text : public Widget {
 public:
-    Text(const char* text, const Vec2d dimensions) : Widget(), m_text(text) { m_dimensions = dimensions; }
-    Text(const char* text, const Vec2d pos, const Vec2d dimensions) : Widget(pos), m_text(text) { m_dimensions = dimensions; }
+    Text(const char* text) : Widget(), m_text(text) {}
+    Text(const char* text, const Vec2d pos) : Widget(pos), m_text(text) {}
     virtual void disp() override;
 
 protected:
@@ -20,7 +20,7 @@ protected:
     int m_spacing = 1;
     mkb::Rgb24 m_color = DEFAULT_ORANGE;
     bool m_drop_shadow = true;
-    mkb::SpriteAlignment m_alignment = mkb::ALIGN_CENTER;
+    mkb::SpriteAlignment m_alignment = mkb::ALIGN_LOWER_CENTER;
 
 public:
     mkb::FontStyle get_m_font_style() const {

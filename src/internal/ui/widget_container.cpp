@@ -1,67 +1,108 @@
 #include "widget_container.h"
 
 #include "internal/log.h"
-#include "internal/pad.h"
 #include "internal/ui/widget_button.h"
 
 namespace ui {
 
 void Container::tick() {
-    const auto child_count = m_children.size();
-    auto child_iterator = m_children.begin();
+    const unsigned int child_count = m_children.size();
     u32 index = 0;
 
-    if (pad::dir_pressed(pad::DIR_DOWN)) {
-        mkb::call_SoundReqID_arg_2(0x6f);
-        LOG_DEBUG("active idx: %d", m_active_index);
-        if (m_active_index == child_count - 1) {
-            m_active_index = 0;
-        }
-        else {
-            m_active_index++;
-        }
+    // Origin constraints for widgets
+    Vec2d widget_origin;
+
+    switch (m_alignment) {
+        case mkb::ALIGN_UPPER_LEFT:
+            widget_origin = m_pos;
+            widget_origin.x += m_margin;
+            widget_origin.y += m_margin;
+            break;
+        case mkb::ALIGN_UPPER_CENTER:
+            widget_origin = Vec2d{get_pos_center_point().x, m_pos.y};
+            widget_origin.y += m_margin;
+            break;
+        case mkb::ALIGN_UPPER_RIGHT:
+            widget_origin = Vec2d{m_dimensions.x, m_pos.y};
+            widget_origin.x -= m_margin;
+            widget_origin.y += m_margin;
+            break;
+        case mkb::ALIGN_CENTER_LEFT:
+            widget_origin = Vec2d{m_pos.x, get_pos_center_point().y};
+            widget_origin.x += m_margin;
+            break;
+        case mkb::ALIGN_CENTER:
+            widget_origin = get_pos_center_point();
+            break;
+        case mkb::ALIGN_CENTER_RIGHT:
+            widget_origin = Vec2d{m_dimensions.x, get_pos_center_point().y};
+            widget_origin.x -= m_margin;
+            break;
+        case mkb::ALIGN_LOWER_LEFT:
+            widget_origin = Vec2d{m_pos.x, m_dimensions.y};
+            widget_origin.x += m_margin;
+            widget_origin.y -= m_margin;
+            break;
+        case mkb::ALIGN_LOWER_CENTER:
+            widget_origin = Vec2d{get_pos_center_point().x, m_dimensions.y};
+            widget_origin.y -= m_margin;
+            break;
+        case mkb::ALIGN_LOWER_RIGHT:
+            widget_origin = m_dimensions;
+            widget_origin.x -= m_margin;
+            widget_origin.y -= m_margin;
+            break;
+        default:
+            widget_origin = m_pos;
+            MOD_ASSERT_MSG(false, "how did we get here?");
     }
 
-    if (pad::dir_pressed(pad::DIR_UP)) {
-        mkb::call_SoundReqID_arg_2(0x6f);
-        LOG_DEBUG("active idx: %d", m_active_index);
-        if (m_active_index == 0) {
-            m_active_index = child_count - 1;
+    // Calculate the total dimensions of widgets once we add them
+    Vec2d total_child_dimensions = {0.0f, 0.0f};
+    auto child_iterator = m_children.begin();
+    size_t child_index = 0;
+    while (child_iterator != m_children.end()) {
+        const auto& child = *child_iterator;
+        const auto& dimensions = child->get_dimensions();
+        LOG("child %d: pos: %f, %f dim %f, %f", child_index, child->get_pos().x, child->get_pos().y, dimensions.x, dimensions.y);
+        if (m_layout == ContainerLayout::VERTICAL) {
+            if (total_child_dimensions.x > dimensions.x) total_child_dimensions.x = dimensions.x;
+            total_child_dimensions.y += dimensions.y;
+            if (child_index == child_count - 1) total_child_dimensions.y += m_layout_spacing;// Add spacing, unless last element
         }
         else {
-            m_active_index--;
+            total_child_dimensions.x += dimensions.x;
+            if (child_index == child_count - 1) total_child_dimensions.x += m_layout_spacing;// Add spacing, unless last element
+            if (total_child_dimensions.y > dimensions.y) total_child_dimensions.y = dimensions.y;
         }
+        child_iterator++;
+        child_index++;
     }
 
-    // Vertical stacking
-    const auto bottom_bounds = m_dimensions.y;
-    const auto slice_dim = bottom_bounds / (child_count + 1);
+    // Scaling factor to fit all the widgets in the container space
+    Vec2d child_scale = {1.0f, 1.0f};
+    if (total_child_dimensions.x > m_dimensions.x) child_scale.x = m_dimensions.x / total_child_dimensions.x;
+    if (total_child_dimensions.y > m_dimensions.y) child_scale.y = m_dimensions.y / total_child_dimensions.y;
 
-    const auto center_point = get_pos_center_point();
+    mkb::OSReport("total dimensions: %f, %f / scale: %f, %f\n", total_child_dimensions.x, total_child_dimensions.y, child_scale.x, child_scale.y);
+
+    // Lays out the widgets in the container
+    child_iterator = m_children.begin();
     while (child_iterator != m_children.end()) {
         auto& child = *child_iterator;
-        uint16_t child_vertical_pos;
-        if (m_layout_justify) {
-            child_vertical_pos = (slice_dim) * (index + 1);
+        child->set_pos(Vec2d{widget_origin.x, widget_origin.y});
+        child->set_scale({child->get_scale().x * child_scale.x, child->get_scale().y * child_scale.y});
+
+        if (m_layout == ContainerLayout::VERTICAL) {
+            widget_origin.y += child->get_dimensions().y * child_scale.y;
         }
         else {
-            child_vertical_pos = (child->get_dimensions().y + m_layout_spacing * 2) * (index + 1);
+            widget_origin.x += child->get_dimensions().x * child_scale.x;
         }
 
-        child->set_pos(Vec2d{center_point.x, m_pos.y + child_vertical_pos});
-
-        // TODO: move out of this
-        auto& button_ref = static_cast<Button&>(**child_iterator);
-        if (m_active_index == index) {
-            button_ref.set_active(true);
-        }
-        else {
-            button_ref.set_active(false);
-        }
         child_iterator++;
         index++;
     }
-
 
     Widget::tick();
 }

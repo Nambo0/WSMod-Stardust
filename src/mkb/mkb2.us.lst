@@ -4439,7 +4439,7 @@
 802B882C:FUN_801e25f4
 802B8878:FUN_801e2640
 802B89A0:FUN_801e2768
-802B8B6C:FUN_801e2934
+802B8B6C:g_competition_mode_respawn_start
 802B8DA4:FUN_801e2b6c
 802B8E08:ball_physics_g_something_w_postgoal_slowdown
 802B8FBC:ball_physics_g_something_w_postgoal_blast_up
@@ -4453,7 +4453,7 @@
 802B9DAC:FUN_801e3b74
 802B9EA4:FUN_801e3c6c
 802BA0B4:FUN_801e3e7c
-802BA154:FUN_801e3f1c
+802BA154:g_handle_competition_mode_respawn
 802BA364:FUN_801e412c
 802BA384:FUN_801e414c
 802BA3C8:ball_physics_g_something_w_poastgoal_slowdown_blast_up
@@ -9975,8 +9975,12 @@
 8091FCEC:CAN_PURCHASE_PARTY_GAME_STRING
 8091FDC4:CANNOT_SELECT_PARTY_GAME_STRING
 80920234:menu_option_entries
+80920448:NUM_OF_PLAYERS_DESCRIPTION
 80920554:menu_number_of_players_entries
+80920624:NUM_OF_PLAYERS_DESCRIPTION_PLAYPOINTS
+809207B8:NUM_OF_PLAYERS_DESCRIPTION_NO_PLAYPOINTS
 80920A24:menu_character_select_1_entries
+80920AF4:CHARACTER_SELECT_DESCRIPTION_UNUSED
 80920BA0:menu_character_select_2_entries
 80921A20:menu_main_game_select_entries
 80921D00:menu_level_select_1_entries

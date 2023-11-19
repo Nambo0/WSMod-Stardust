@@ -6223,8 +6223,12 @@ extern "C" {
     extern char CAN_PURCHASE_PARTY_GAME_STRING[93];
     extern char CANNOT_SELECT_PARTY_GAME_STRING[84];
     extern undefined menu_option_entries;
+    extern char NUM_OF_PLAYERS_DESCRIPTION[36];
     extern struct MenuEntry menu_number_of_players_entries;
+    extern char NUM_OF_PLAYERS_DESCRIPTION_PLAYPOINTS[67];
+    extern char NUM_OF_PLAYERS_DESCRIPTION_NO_PLAYPOINTS[71];
     extern struct MenuEntry menu_character_select_1_entries[4];
+    extern char CHARACTER_SELECT_DESCRIPTION_UNUSED[76];
     extern struct MenuEntry menu_character_select_2_entries[4];
     extern struct MenuEntry menu_main_game_select_entries[3];
     extern undefined menu_level_select_1_entries;
@@ -8504,9 +8508,11 @@ extern "C" {
     void g_something_with_translating_items(double param_1, int param_2, struct Vec * param_position);
     void g_maybe_sets_number_of_starting_monkeys(struct Ball * ball);
     void g_reset_ball(struct Ball * in_ball);
+    void g_competition_mode_respawn_start(struct Ball * ball);
     void ball_physics_g_something_w_postgoal_slowdown(struct Ball * param_1);
     void ball_physics_g_something_w_postgoal_blast_up(struct Ball * param_1);
     void g_ball_mode_play_replay(struct Ball * ball);
+    void g_handle_competition_mode_respawn(struct Ball * ball);
     void ball_physics_g_something_w_poastgoal_slowdown_blast_up(struct Ball * param_1);
     void ball_physics_g_something_w_postgoal_blast_up2(struct Ball * ball);
     void g_move_and_collide(struct Ball * ball, struct PhysicsBall * physicsBall);

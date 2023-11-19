@@ -18,6 +18,7 @@ TICKABLE_DEFINITION((
         .description = "Hardcoded features",
         .enabled = true,
         .init_main_loop = init,
+        .init_sel_ngc = init_sel_ngc,
         .tick = tick, ))
 
 static bool entered_wormhole = false;
@@ -433,5 +434,13 @@ void tick() {
         patch::write_word(reinterpret_cast<void*>(0x8044b200), 0xc2480000);
         patch::write_word(reinterpret_cast<void*>(0x8044b204), 0x42c80000);
     }
+    if ((mkb::sub_mode == mkb::SMD_SEL_NGC_MAIN) && (mkb::g_currently_visible_menu_screen == 4)) {
+        mkb::locked_menu_items = 0xe;
+    }
 }// void tick
+void init_sel_ngc() {
+    mkb::strcpy(mkb::NUM_OF_PLAYERS_DESCRIPTION_NO_PLAYPOINTS, "You can play with 1 player.");
+    mkb::strcpy(mkb::NUM_OF_PLAYERS_DESCRIPTION_PLAYPOINTS, "You can play with 1 player.");
+    mkb::strcpy(mkb::NUM_OF_PLAYERS_DESCRIPTION, "You can play with 1 player.");
+}
 }// namespace hardcode

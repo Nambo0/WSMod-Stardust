@@ -132,8 +132,8 @@ static void create_badge_sprite(u8 type, u8 slot){
         sprite->alpha = 0.0;
         sprite->g_counter = 300;
         sprite->g_flags1 = 0x1000000;
-        sprite->width = 0.5;
-        sprite->height = 0.5;
+        sprite->width = 0.25;
+        sprite->height = 0.25;
         sprite->widescreen_translation_x = 0x62;
         sprite->tick_func = badge_sprite_tick;
         switch(type){

@@ -452,6 +452,17 @@ void tick() {
     if ((mkb::sub_mode == mkb::SMD_SEL_NGC_MAIN) && (mkb::g_currently_visible_menu_screen == 4)) {
         mkb::locked_menu_items = 0xe;
     }
+    if (mkb::curr_difficulty == mkb::DIFF_BEGINNER) {
+        mkb::strcpy(mkb::LOADIN_TEXT_STAGE, "WORLD %d");
+    }
+    else {
+        mkb::strcpy(mkb::LOADIN_TEXT_STAGE, "DEBUG %d");
+    }
+    mkb::strcpy(mkb::LOADIN_TEXT_MASTER, "WORLD X]%d");
+    patch::write_nop(reinterpret_cast<void*>(0x8032bba0));
+    patch::write_nop(reinterpret_cast<void*>(0x8032bba8));
+    patch::write_nop(reinterpret_cast<void*>(0x8032bbb0));
+    
 }// void tick
 void init_sel_ngc() {
     mkb::strcpy(mkb::NUM_OF_PLAYERS_DESCRIPTION_NO_PLAYPOINTS, "You can play with 1 player.");

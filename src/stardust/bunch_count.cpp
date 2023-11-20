@@ -47,6 +47,13 @@ static void sprite_bunch_count_tick(u8 *status,mkb::Sprite *sprite) {
 }
 
 static void display_counter(){
+     if (mkb::mode_info.attempt_count > 1) {
+        if (mkb::main_game_mode == mkb::CHALLENGE_MODE) {
+            if (mkb::current_stage_id == 245 || mkb::current_stage_id == 73) {
+                mkb::create_final_stage_sprite();
+            }
+        }
+    }
     if (mkb::main_game_mode == mkb::STORY_MODE || (mkb::main_game_mode == mkb::PRACTICE_MODE && mkb::stageselect_is_storymode == true)) {
     mkb::Sprite* sprite = mkb::create_sprite();
     if (sprite != nullptr) {
@@ -131,14 +138,42 @@ static void display_counter(){
     }
     }
 }
+static void end_of_zone() {
+    if (mkb::mode_info.attempt_count == 1) {
+        if (mkb::main_game_mode == mkb::CHALLENGE_MODE) {
+            if (mkb::current_stage_id == 245 || mkb::current_stage_id == 73) {
+                mkb::Sprite* sprite = mkb::create_sprite();
+                if (sprite != nullptr) {
+                    sprite->unique_id = mkb::SPRITE_SPECIAL_STAGE;
+                    (sprite->pos).x = 320.0;
+                    (sprite->pos).y = 300.0;
+                    sprite->font = mkb::FONT_ASC_72x64;
+                    sprite->alignment = mkb::ALIGN_CENTER;
+                    sprite->width = 0.5;
+                    sprite->height = 0.5;
+                    sprite->g_flags1 = sprite->g_flags1 | 0x1001000;
+                    sprite->widescreen_translation_x = 0x140;
+                    sprite->tick_func = mkb::sprite_final_stage_tick;
+                    sprite->disp_func = mkb::sprite_final_stage_disp;
+                    mkb::strcpy(sprite->text,mkb::LOADIN_TEXT_FINAL_STAGE);
+            }
+        }
+    }
+}
+}
 
 static patch::Tramp<decltype(&mkb::item_coin_disp)> s_item_coin_disp_tramp;
 static patch::Tramp<decltype(&mkb::create_hud_sprites)> s_create_hud_sprites_tramp;
+static patch::Tramp<decltype(&mkb::create_stage_loadin_text_sprites)> s_create_stage_loadin_text_sprites_tramp;
 
 void init() {
     patch::hook_function(s_create_hud_sprites_tramp, mkb::create_hud_sprites, []() {
         s_create_hud_sprites_tramp.dest();
         display_counter();
+    });
+    patch::hook_function(s_create_stage_loadin_text_sprites_tramp, mkb::create_stage_loadin_text_sprites, []() {
+        s_create_stage_loadin_text_sprites_tramp.dest();
+        end_of_zone();
     });
 }
 

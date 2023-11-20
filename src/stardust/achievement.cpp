@@ -103,29 +103,6 @@ void tick() {
         switch (mkb::g_current_stage_id) {
             // DOUBLE TAKE | 1-8 Double Time  -  Clear the stunt goal at both spinning speeds on back to back attempts (ID: 1)
             case 4: {
-                if ((mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
-                     mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) &&
-                    validate::is_currently_valid() &&
-                    mkb::mode_info.entered_goal_type == mkb::Red) {
-                    if (mkb::itemgroups[3].playback_state == 0) {// IG #3 is one of the animated ones, playback state 0 is 1x speed
-                        if (DT_last_completion_speed == 2) {
-                            claim_achievement(1);
-                        }
-                        else {
-                            DT_last_completion_speed = 1;
-                            DT_back_to_back = true;
-                        }
-                    }
-                    if (mkb::itemgroups[3].playback_state == 3) {// Playback state 3 is 2x speed
-                        if (DT_last_completion_speed == 1) {
-                            claim_achievement(1);
-                        }
-                        else {
-                            DT_last_completion_speed = 2;
-                            DT_back_to_back = true;
-                        }
-                    }
-                }
                 // Requires back to back finishes
                 if (mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 1) {
                     if (DT_back_to_back) {
@@ -146,11 +123,63 @@ void tick() {
                 }
                 break;
             }
+            // FLIP WIZARD | 9-3 Flip Switches  -  Clear the stage without flipping the switches once (ID: 9)
+            case 61: {
+                for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
+                    if (mkb::stagedef->coli_header_list[i].anim_group_id >= 1 &&
+                        mkb::stagedef->coli_header_list[i].anim_group_id <= 4 &&
+                        mkb::itemgroups[i].playback_state == 0) {
+                        flipped_yet = true;
+                    }
+                }
+                if (mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 1) {
+                    flipped_yet = false;
+                }
+                break;
+            }
+        }
+    } // if currently valid
+
+    // Reset last stellar goal when the mode starts
+    if(mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::g_current_stage_id == 221 && mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT){
+        last_stellar_goal = 0;
+    }
+}
+
+void on_goal(){
+    // Stage challenge achievements
+    if (validate::is_currently_valid()) {
+        switch (mkb::g_current_stage_id) {
+            // DOUBLE TAKE | 1-8 Double Time  -  Clear the stunt goal at both spinning speeds on back to back attempts (ID: 1)
+            case 4: {
+                if (mkb::mode_info.entered_goal_type == mkb::Red) {
+                    if (mkb::itemgroups[3].playback_state == 0) {// IG #3 is one of the animated ones, playback state 0 is 1x speed
+                        if (DT_last_completion_speed == 2) {
+                            claim_achievement(1);
+                        }
+                        else {
+                            DT_last_completion_speed = 1;
+                            DT_back_to_back = true;
+                        }
+                    }
+                    if (mkb::itemgroups[3].playback_state == 3) {// Playback state 3 is 2x speed
+                        if (DT_last_completion_speed == 1) {
+                            claim_achievement(1);
+                        }
+                        else {
+                            DT_last_completion_speed = 2;
+                            DT_back_to_back = true;
+                        }
+                    }
+                }
+                break;
+            }
+            // UP, UP, AND AWAY | 2-6 Liftoff  -  Soar higher than the highest cloud onstage (ID: 2)
+            // ^^^ is included in the tick function, since goal is not required
             // DEFUSED | 3-10 Detonation  -  Clear the blue goal without activating the bomb switch (ID: 3)
             case 17: {
                 if ((mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
                      mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) &&
-                    validate::is_currently_valid() &&
                     mkb::mode_info.entered_goal_type == mkb::Blue &&
                     mkb::itemgroups[5].anim_frame == 0) {// IG #5 is one of the animated ones
                     claim_achievement(3);
@@ -159,9 +188,7 @@ void tick() {
             }
             // I WANNA BE THE BACK GOAL | 4-9 Avoidance  -  Enter the blue goal from the back side (ID: 4)
             case 26: {
-                if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT &&
-                    validate::is_currently_valid() &&
-                    mkb::mode_info.entered_goal_type == mkb::Blue &&
+                if (mkb::mode_info.entered_goal_type == mkb::Blue &&
                     ball.vel.z > 0) {
                     claim_achievement(4);
                 }
@@ -170,10 +197,7 @@ void tick() {
             // BEHIND LOCKED DOORS | 5-6 Door Dash  -  Clear the blue goal without opening any doors (ID: 5)
             case 33: {
                 // Door IG #s: 15, 17, 19
-                if ((mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
-                     mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) &&
-                    validate::is_currently_valid() &&
-                    mkb::mode_info.entered_goal_type == mkb::Blue &&
+                if (mkb::mode_info.entered_goal_type == mkb::Blue &&
                     mkb::itemgroups[15].anim_frame == 0 &&
                     mkb::itemgroups[17].anim_frame == 0 &&
                     mkb::itemgroups[19].anim_frame == 0) {// IG #5 is one of the animated ones
@@ -193,20 +217,14 @@ void tick() {
                         all_broken = false;
                     }
                 }
-                if ((mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
-                     mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) &&
-                    validate::is_currently_valid() &&
-                    all_broken &&
-                    mkb::mode_info.stage_time_frames_remaining >= 150 * 60) {
+                if (all_broken && mkb::mode_info.stage_time_frames_remaining >= 150*60) {
                     claim_achievement(7);
                 }
                 break;
             }
             // POTASSIUM ALLERGY | 8-4 Frequencies  -  Clear the stage without collecting any bananas (ID: 8)
             case 52: {
-                if ((mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
-                     mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) &&
-                    validate::is_currently_valid() &&
+                if ((mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) &&
                     mkb::mode_info.bananas_remaining == 45) {
                     claim_achievement(8);
                 }
@@ -214,45 +232,22 @@ void tick() {
             }
             // FLIP WIZARD | 9-3 Flip Switches  -  Clear the stage without flipping the switches once (ID: 9)
             case 61: {
-                for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
-                    if (mkb::stagedef->coli_header_list[i].anim_group_id >= 1 &&
-                        mkb::stagedef->coli_header_list[i].anim_group_id <= 4 &&
-                        mkb::itemgroups[i].playback_state == 0) {
-                        flipped_yet = true;
-                    }
-                }
-                if (mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 1) {
-                    flipped_yet = false;
-                }
-                if ((mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
-                     mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) &&
-                    validate::is_currently_valid() &&
-                    !flipped_yet) {
+                if (!flipped_yet) {
                     claim_achievement(9);
                 }
                 break;
             }
             // STARSTRUCK | 10-10 Impact  -  Finish in the stunt goal after it shoots into the sky (ID: 10)
             case 350: {
-                if ((mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
-                     mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) &&
-                    validate::is_currently_valid() &&
-                    mkb::mode_info.entered_goal_type == mkb::Red &&
-                    mkb::mode_info.stage_time_frames_remaining <= 15180) {
+                if (mkb::mode_info.entered_goal_type == mkb::Red &&
+                    mkb::mode_info.stage_time_frames_remaining <= 15180) { // Star is in the sky
                     claim_achievement(10);
                 }
                 break;
             }
         }
-    } // if currently valid
-
-    // Reset last stellar goal when the mode starts
-    if(mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::g_current_stage_id == 221 && mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT){
-        last_stellar_goal = 0;
     }
-}
 
-void on_goal(){
     // Badge-count achievements
     if(detect_beat_the_game()) claim_achievement(11);
     if(detect_feeling_blue()) claim_achievement(12);

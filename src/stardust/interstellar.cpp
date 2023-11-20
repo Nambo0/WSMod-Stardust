@@ -419,8 +419,10 @@ void init() {
 
 void init_main_game() {
     if (mkb::curr_difficulty == mkb::DIFF_BEGINNER) {
+        if (mkb::main_game_mode == mkb::CHALLENGE_MODE || mkb::main_game_mode == mkb::PRACTICE_MODE) {
         patch::write_nop(reinterpret_cast<void*>(0x808f54f4));
         patch::write_nop(reinterpret_cast<void*>(0x808f5b90));
+        }
     }
     patch::hook_function(s_smd_game_ringout_tick_tramp, mkb::smd_game_ringout_tick, []() {
         s_smd_game_ringout_tick_tramp.dest();

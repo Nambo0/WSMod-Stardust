@@ -2,6 +2,7 @@
 
 #include "../internal/patch.h"
 #include "../internal/tickable.h"
+#include "../internal/utils.h"
 #include "mkb/mkb.h"
 #include "../stardust/validate.h"
 #include "../stardust/savedata.h"
@@ -25,6 +26,9 @@ static u16 DT_last_completion_speed = 0;// For 1-8 Double Time
 static bool DT_back_to_back = false;    // For 1-8 Double Time
 static bool flipped_yet = false;        // For 9-3 Flip Switches
 static u8 last_stellar_goal = 0;        // For Finish Him
+static u16 last_completed_stage_id = 0; // For You-Da-Bacon
+static u8 completions_in_a_row = 0;     // For You-Da-Bacon
+static bool went_very_fast = false;     // For AAAAA
 
 void claim_achievement(int id) {
     // ID 1 = Slot 300, and so on
@@ -104,7 +108,7 @@ void tick() {
             // DOUBLE TAKE | 1-8 Double Time  -  Clear the stunt goal at both spinning speeds on back to back attempts (ID: 1)
             case 4: {
                 // Requires back to back finishes
-                if (mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 1) {
+                if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) {
                     if (DT_back_to_back) {
                         DT_back_to_back = false;
                     }
@@ -138,6 +142,10 @@ void tick() {
                 break;
             }
         }
+        // 29) AAAAA | Clear a stage after traveling over 1,000 mph
+        if(mkb::math_sqrt(VEC_LEN_SQ(ball.vel) * (134.2198*134.2198)) > 999.0) went_very_fast = true;
+        if(mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) went_very_fast = false;
+        
     } // if currently valid
 
     // Reset last stellar goal when the mode starts
@@ -245,8 +253,60 @@ void on_goal(){
                 }
                 break;
             }
+            // Secret achievements
+            // 24) RULES LAWYER | Clear the stunt goal on Spleef without pressing any blue buttons             (on-goal + for loop)
+            case 31: {
+                bool none_pressed = true;
+                for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
+                    if (mkb::stagedef->coli_header_list[i].anim_group_id >= 1001 &&
+                        mkb::stagedef->coli_header_list[i].anim_group_id <= 1008 &&
+                        mkb::itemgroups[i].anim_frame == 30) { // Animation finished playing
+                        none_pressed = false;
+                    }
+                }
+                if (none_pressed) claim_achievement(24);
+            }
+            // 25) RULES LAWYER 2 | Clear the stunt goal on Currents without clicking the stunt goal button    (on-goal + for loop)
+            case 44: {
+                bool pressed = false;
+                for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
+                    if (mkb::stagedef->coli_header_list[i].anim_group_id == 1 &&
+                        mkb::itemgroups[i].anim_frame == 420) { // Animation finished playing
+                        pressed = true;
+                    }
+                }
+                if (mkb::mode_info.entered_goal_type == mkb::Red && !pressed) claim_achievement(25);
+            }
+        } // Switch stage ID
+        // 21) HEY GOOBZ PLAY DEBUG | Complete or skip through any of the debug sub-categories
+        if(mkb::main_game_mode == mkb::CHALLENGE_MODE
+        && (mkb::g_current_stage_id == 245 || // Credit Card
+            mkb::g_current_stage_id == 73 ||  // Candy Clog
+            mkb::g_current_stage_id == 71)){  // Precession
+            claim_achievement(21);
         }
-    }
+        // 22) A COMPLEX JOKE | Clear a stage with exactly 54.13 on the timer
+        if(mkb::mode_info.stage_time_frames_remaining == 3248) claim_achievement(22);
+        // 23) YOU-DA-BACON | Clear a stage 10x in a row
+        if(last_completed_stage_id == mkb::g_current_stage_id){
+            completions_in_a_row++;
+            if(completions_in_a_row == 10) claim_achievement(23);
+        }
+        else completions_in_a_row = 1;
+        last_completed_stage_id = mkb::g_current_stage_id;
+        // 26) ACUTALLY PLAYABLE | Clear a stage from ‘The Unplayable Zone’ in debug
+        if(mkb::curr_difficulty == mkb::DIFF_ADVANCED
+        && mkb::mode_info.cm_course_stage_num >= 90 && mkb::mode_info.cm_course_stage_num <= 110){
+            claim_achievement(26);
+        }
+        // 27) UHHH GG | Complete Interstellar with 0 bananas
+        if(mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::g_current_stage_id == 230
+        && mkb::balls[mkb::curr_player_idx].banana_count == 0){
+            claim_achievement(27);
+        }
+        // 28) AAAAA | Clear a stage after traveling over 1,000 mph
+        if(went_very_fast) claim_achievement(28);
+    } // If valid
 
     // Badge-count achievements
     if(detect_beat_the_game()) claim_achievement(11);
@@ -290,15 +350,7 @@ void on_goal(){
     }
 }
 
-// static patch::Tramp<decltype(&mkb::g_something_with_triangle_collision)> g_something_with_triangle_collision_tramp;
-
 void init() {
-    /*
-    patch::hook_function(g_something_with_triangle_collision_tramp, mkb::g_something_with_triangle_collision, [](mkb::PhysicsBall *param_1, mkb::StagedefColiTri *param_2) {
-        param_2->rot_from_xy.y = ball.banana_count;
-        g_something_with_triangle_collision_tramp.dest(param_1, param_2);
-      });
-    */
 }
 
 }// namespace achievement

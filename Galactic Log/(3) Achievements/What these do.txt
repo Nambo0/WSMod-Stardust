@@ -34,16 +34,16 @@ Here's all the achievements I have planned so far |
 19) FINISH HIM | Get all 10 goals in a single run
 
 = SECRET =
-HEY GOOBZ PLAY DEBUG | Complete or skip through any of the debug sub-categories             (on-goal)
-A COMPLEX JOKE | Clear a stage with exactly 54.13 on the timer                              (on-goal)
-YOU-DA-BACON | Clear a stage 10x in a row                                                   (on-goal + u8)
-RULES LAWYER | Clear the stunt goal on Spleef without pressing any blue buttons             (on-goal + for loop)
-RULES LAWYER 2 | Clear the stunt goal on Currents without clicking the stunt goal button    (on-goal + for loop)
-ACUTALLY PLAYABLE | Clear a stage from ‘The Unplayable Zone’ in debug                       (on-goal)
-UHHH GG | Complete Interstellar with 0 bananas                                              (on-goal)
-ICARUS | Soar above the sun in the world 3 skybox                                           (tick)
-AAAAA | Clear a stage after traveling over 1,000 mph                                        (tick + on-goal + bool)
-I FORGOR | Clear a stage after standing still for 100+ seconds from the start               (tick + on-goal + bool)
-USELESS SETUP | Hold the same direction for 100+ seconds from the start without falling out (tick + on-goal + bool)
+21) HEY GOOBZ PLAY DEBUG | Complete or skip through any of the debug sub-categories             (on-goal)
+22) A COMPLEX JOKE | Clear a stage with exactly 54.13 on the timer                              (on-goal)
+23) YOU-DA-BACON | Clear a stage 10x in a row                                                   (on-goal + u8)
+24) RULES LAWYER | Clear the stunt goal on Spleef without pressing any blue buttons             (on-goal + for loop)
+25) RULES LAWYER 2 | Clear the stunt goal on Currents without clicking the stunt goal button    (on-goal + for loop)
+26) ACUTALLY PLAYABLE | Clear a stage from ‘The Unplayable Zone’ in debug                       (on-goal)
+27) UHHH GG | Complete Interstellar with 0 bananas                                              (on-goal)
+28) AAAAA | Clear a stage after traveling over 1,000 mph                                        (tick + on-goal + bool)
+
+= CANCELLED =
 IVE SEEN IT ALL | Complete or skip through every debug sub-category                         (annoying to track)
 DEBUG % | Clear every debug stage outside ‘The Unplayable Zone’                             (annoying to track)
+ICARUS | Soar above the sun in the world 3 skybox                                           (annoying to calculate)

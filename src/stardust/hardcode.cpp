@@ -452,6 +452,43 @@ void tick() {
     if ((mkb::sub_mode == mkb::SMD_SEL_NGC_MAIN) && (mkb::g_currently_visible_menu_screen == 4)) {
         mkb::locked_menu_items = 0xe;
     }
+    if (mkb::curr_difficulty == mkb::DIFF_BEGINNER) {
+        mkb::strcpy(mkb::LOADIN_TEXT_STAGE, "WORLD %d");
+        mkb::strcpy(mkb::LOADIN_TEXT_FINAL_STAGE, "FINAL WORLD");
+        patch::write_word(reinterpret_cast<void*>(0x8032cf28), 0x380000ff);
+        patch::write_word(reinterpret_cast<void*>(0x8032cf30), 0x380000ff);
+    }
+    else if (mkb::curr_difficulty == mkb::DIFF_ADVANCED) {
+        mkb::strcpy(mkb::LOADIN_TEXT_STAGE, "DEBUG %d");
+        mkb::strcpy(mkb::LOADIN_TEXT_FINAL_STAGE, "END OF ZONE");
+        if (mkb::current_stage_id == 245) {
+        patch::write_word(reinterpret_cast<void*>(0x8032cf50), 0x38000000);
+        patch::write_word(reinterpret_cast<void*>(0x8032cf58), 0x380000ff);
+        patch::write_word(reinterpret_cast<void*>(0x8032cf60), 0x38000000);
+        }
+        else if (mkb::current_stage_id == 73) {
+        patch::write_word(reinterpret_cast<void*>(0x8032cf50), 0x38000000);
+        patch::write_word(reinterpret_cast<void*>(0x8032cf58), 0x38000000);
+        patch::write_word(reinterpret_cast<void*>(0x8032cf60), 0x380000ff);
+        }
+        else {
+        patch::write_word(reinterpret_cast<void*>(0x8032cf50), 0x380000ff);
+        patch::write_word(reinterpret_cast<void*>(0x8032cf58), 0x38000000);
+        patch::write_word(reinterpret_cast<void*>(0x8032cf60), 0x380000ff);
+        }
+    }
+    else {
+        mkb::strcpy(mkb::LOADIN_TEXT_STAGE, "STAGE %d");
+        mkb::strcpy(mkb::LOADIN_TEXT_FINAL_STAGE, "");
+    }
+    if (mkb::main_game_mode != mkb::CHALLENGE_MODE) {
+        mkb::strcpy(mkb::LOADIN_TEXT_FINAL_STAGE, "");
+    }
+    mkb::strcpy(mkb::LOADIN_TEXT_MASTER, "WORLD X]%d");
+    patch::write_nop(reinterpret_cast<void*>(0x8032bba0));
+    patch::write_nop(reinterpret_cast<void*>(0x8032bba8));
+    patch::write_nop(reinterpret_cast<void*>(0x8032bbb0));
+    
 }// void tick
 void init_sel_ngc() {
     mkb::strcpy(mkb::NUM_OF_PLAYERS_DESCRIPTION_NO_PLAYPOINTS, "You can play with 1 player.");

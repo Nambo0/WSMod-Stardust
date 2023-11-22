@@ -156,7 +156,7 @@ void create_new_final_stage_sprite(u8 *status, mkb::Sprite *sprite) {
     if (mkb::main_game_mode==mkb::STORY_MODE) {
     mkb::strcpy(sprite->text, "");
   } else {
-    mkb::strcpy(sprite->text, "FINAL STAGE");
+    mkb::strcpy(sprite->text, mkb::LOADIN_TEXT_FINAL_STAGE);
   }
   }
 }
@@ -212,12 +212,6 @@ void tick() {
         else {
             patch::write_word(reinterpret_cast<void*>(0x809155fc), (0x3fe38e3b));
         }
-    }
-    if (mkb::main_game_mode == mkb::STORY_MODE) {
-        patch::write_word(reinterpret_cast<void*>(0x8047f7d0), (0x00000000));
-    }
-    else {
-        patch::write_word(reinterpret_cast<void*>(0x8047f7d0), (0x46494e41));
     }
     if (mkb::widescreen_mode == 0) {
             patch::write_word(reinterpret_cast<void*>(0x8032e048), (0xc01f0038));

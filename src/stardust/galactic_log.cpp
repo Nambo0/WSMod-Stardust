@@ -78,7 +78,7 @@ void create_credits_screen() {
     credits_menu_screen.set_label("galcred");
     credits_menu_screen.set_scale(Vec2d{300, 200});
     credits_menu_screen.set_alpha(0.6666f);
-    credits_menu_screen.set_mult_color({0xff, 0x00, 0xff});// magenta
+    credits_menu_screen.set_mult_color({0x00, 0x00, 0x00});// black
     credits_menu_screen.set_depth(0.02);
 
     // Header container
@@ -102,30 +102,54 @@ void create_credits_screen() {
     auto& next_arrow = credits_menu_header_container.add(new ui::Sprite(0xc27, Vec2d{0, 0}, Vec2d{64, 64}));
     next_arrow.set_mirror(true);
 
+    /*
     // Credits Page 1
     auto& credits_container = credits_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640 - 5, 480 - 65 - 5}));
-
     // Todo: pages. maybe a button with a callback that changes the active text, use sprintf to set the text perhaps?
     auto& credits_text = credits_container.add(new ui::Text(
-        "/bcFFFFFF/NOTE: Anything marked in /bc008CFF/blue/bcFFFFFF/ means you can find\n"
-        "a relevant link in the Credits file which came downloaded with the iso\n"
+        "/bcFFFFFF/NOTE: Credits.pdf (included with the ISO) has more     \n"
+        "annotated credits, including clickable /bc008CFF/links/bcFFFFFF/\n"
+        "\n"
         "/bcC800FF/DIRECT CONTRIBUTIONS:/bcFFFFFF/\n"
-        "/bc7E00A1/||   Original Soundtrack   ||/bcFFFFFF/\n"
-        "(>^^)> Walkr_ (/bc008CFF/Hear their music/bcFFFFFF/)\n"
-        "(>^^)> Relayer (/bc008CFF/Hear their music/bcFFFFFF/)\n"
-        "Song Credits:\n"
-        "Title/Debug - quasar 3, by Walkr\n"
-        "Menu - quasar 2, by Walkr\n"
-        "World 1 - Bubblegum Dream, by Relayer\n"
-        "World 2 - Cloudscape, by Walkr\n"
-        "World 3 - Solar Orbit, by Relayer\n"
-        "World 4 - Deep Space, by Walkr\n"
-        //"World 5 - Dark Generator, by Relayer\n"
-        ""));
-
-    credits_container.set_alignment(mkb::ALIGN_UPPER_CENTER);
+        "\n"
+        "/bc00fffb/Original Soundtrack/bcFFFFFF/\n"
+        "      (>^^)> Walkr (/bc008CFF/linktr.ee/walkrmusic/bcFFFFFF/)\n"
+        "      (>^^)> Relayer (/bc008CFF/wxokeys.bandcamp.com/bcFFFFFF/)\n"
+        "/bc00fffb/Custom Code/bcFFFFFF/\n"
+        "      (>^^)> Rehtrop, Bombsquad, Eucalyptus\n"
+        "/bc00fffb/Art/bcFFFFFF/\n"
+        "      (>^^)> Shadow (/bc008CFF/charredshadow.tumblr.com/bcFFFFFF/)\n"
+        "/bc00fffb/Playtesters/bcFFFFFF/\n"
+        "      (>^^)> Eddy, 42guy42, Rehtrop, Null\n"
+        "      (>^^)> Walkr, Goobz, Dyrude, Eucalyptus\n"));
+    credits_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
+    credits_text.set_alignment(mkb::ALIGN_LOWER_RIGHT);
     credits_text.set_drop_shadow(false);
-    credits_text.set_color({0x00, 0x00, 0x00});
+    credits_text.set_color({0x00, 0x00, 0x00}); */
+
+    // Credits Page 2
+    auto& credits2_container = credits_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640 - 5, 480 - 65 - 5}));
+    // Todo: pages. maybe a button with a callback that changes the active text, use sprintf to set the text perhaps?
+    auto& credits2_text = credits2_container.add(new ui::Text(
+        "/bcFFFFFF/NOTE: Credits.pdf (included with the ISO) has more     \n"
+        "annotated credits, including clickable /bc008CFF/links/bcFFFFFF/\n"
+        "\n"
+        "/bcC800FF/SPECIAL THANKS:/bcFFFFFF/\n"
+        "\n"
+        "/bc00fffb/Specific Mentions/bcFFFFFF/\n"
+        "      (>^^)> Zona, Ghost Ham, Sudachi\n"
+        "      (>^^)> PetresInc, Dwaitley, scrap651\n"
+        "      (>^^)> Petra, Yhouse, Jesse, Ariana, Shadow\n"
+        "/bc00fffb/Broad Shout-outs/bcFFFFFF/\n"
+        "      (>^^)> Everyone listed on page 1\n"
+        "      (>^^)> Friends from Monkey Ball speedrunning\n"
+        "      (>^^)> Friends from Random Randos\n"
+        "      (>^^)> My family & irl friends\n"
+        "      (>^^)> YOU!\n"));
+    credits2_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
+    credits2_text.set_alignment(mkb::ALIGN_LOWER_RIGHT);
+    credits2_text.set_drop_shadow(false);
+    credits2_text.set_color({0x00, 0x00, 0x00});
 
     auto close_credits = [&]() {
         ui::get_widget_manager().remove("galcred");

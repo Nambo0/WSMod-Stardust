@@ -194,9 +194,12 @@ void create_badge_screen() {
 
         // 0xc3b = blue, 0xc3a = purple, 0xc39 = sweep, 0xc3c = achievement, 0xc3d = empty
         // TODO: Hook into badge system!
-        auto& blue = sprite_container.add(new ui::Sprite(0xc3b, Vec2d{32, 32}));
-        auto& purple = sprite_container.add(new ui::Sprite(0xc3a, Vec2d{32, 32}));
-        auto& sweep = sprite_container.add(new ui::Sprite(0xc39, Vec2d{32, 32}));
+        uint32_t id_1 = (mkb::rand() % 2) ? 0xc3b : 0xc3d;
+        uint32_t id_2 = (mkb::rand() % 2) ? 0xc3a : 0xc3d;
+        uint32_t id_3 = (mkb::rand() % 2) ? 0xc39 : 0xc3d;
+        auto& blue = sprite_container.add(new ui::Sprite(id_1, Vec2d{32, 32}));
+        auto& purple = sprite_container.add(new ui::Sprite(id_2, Vec2d{32, 32}));
+        auto& sweep = sprite_container.add(new ui::Sprite(id_3, Vec2d{32, 32}));
 
         blue.set_scale(Vec2d{0.5, 0.5});
         purple.set_scale(Vec2d{0.5, 0.5});

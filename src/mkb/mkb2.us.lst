@@ -3525,7 +3525,7 @@
 80277FFC:g_draw_func_init
 80278044:g_something_with_view_stage
 80278130:FUN_801a1ef8
-80278154:FUN_801a1f1c
+80278154:g_some_draw_func
 802781CC:FUN_801a1f94
 8027820C:FUN_801a1fd4
 802782AC:FUN_801a2074
@@ -4326,7 +4326,7 @@
 802B0F24:FUN_801dacec
 802B1018:g_nl2ngc_tpl_func
 802B11F8:g_nl_model_draw_func
-802B13C4:FUN_801db18c
+802B13C4:g_some_draw_func5
 802B1574:FUN_801db33c
 802B1730:FUN_801db4f8
 802B1900:FUN_801db6c8
@@ -4609,8 +4609,8 @@
 802C7CE8:FUN_801f1ab0
 802C7FEC:FUN_801f1db4
 802C82F0:FUN_801f20b8
-802C8310:FUN_801f20d8
-802C833C:FUN_801f2104
+802C8310:g_some_draw_func2
+802C833C:g_some_draw_func4
 802C8458:FUN_801f2220
 802C8464:g_smth_with_stage_anim_groups
 802C857C:g_smth_with_buttons
@@ -4663,7 +4663,7 @@
 802CCC34:FUN_801f69fc
 802CCD20:g_load_stgname_file
 802CCDD0:g_load_stgname_dvd_entrynum
-802CCF04:g_get_storymode_stage_name_buf_size
+802CCF04:g_get_scen_stgname_buffer_size
 802CCF20:g_queue_stage_name_load
 802CCF4C:g_read_storymode_select_stage_names_from_dvd
 802CD028:read_stage_name_from_dvd
@@ -7056,7 +7056,7 @@
 8037A3BC:g_some_ord_node_func2
 8037A498:FUN_802a4260
 8037A4D8:FUN_802a42a0
-8037A518:FUN_802a42e0
+8037A518:g_some_draw_func3
 8037A528:call_g_avdisp_set_ambient
 8037A548:avdisp_set_alpha
 8037A558:FUN_802a4320
@@ -8635,6 +8635,7 @@
 805BD918:g_some_frame_counter
 805BD91C:g_some_frame_counter_float
 805BD934:g_some_gameplay_flags
+805BD974:g_some_draw_var
 805BD97C:itemgroups
 805BD980:stagedef
 805BD984:seesaw_count
@@ -8935,7 +8936,7 @@
 808FE890:dmd_scen_entry_main
 808FE914:g_some_storymode_mode_func
 808FE9AC:get_current_storymode_save_file
-808FE9D0:g_some_scenario_init_func_4
+808FE9D0:g_init_scen_stage_name_buffer
 808FEA34:g_free_scen_stage_name_buffer
 808FEAA4:empty_function
 808FEAA8:FUN_804d6a30

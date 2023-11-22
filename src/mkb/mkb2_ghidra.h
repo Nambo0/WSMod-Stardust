@@ -6176,7 +6176,7 @@ extern "C" {
     extern undefined * switchdataD_805437cc;
     extern undefined * switchdataD_80543840;
     extern undefined * switchdataD_80543868;
-    extern undefined4 scen_stgname_buffer;
+    extern char * * scen_stgname_buffer;
     extern undefined4 g_scen_stage_names_loaded;
     extern undefined4 g_are_story_select_sprites_visible;
     extern undefined2 g_amount_of_stages_per_world;
@@ -6223,12 +6223,8 @@ extern "C" {
     extern char CAN_PURCHASE_PARTY_GAME_STRING[93];
     extern char CANNOT_SELECT_PARTY_GAME_STRING[84];
     extern undefined menu_option_entries;
-    extern char NUM_OF_PLAYERS_DESCRIPTION[36];
     extern struct MenuEntry menu_number_of_players_entries;
-    extern char NUM_OF_PLAYERS_DESCRIPTION_PLAYPOINTS[67];
-    extern char NUM_OF_PLAYERS_DESCRIPTION_NO_PLAYPOINTS[71];
     extern struct MenuEntry menu_character_select_1_entries[4];
-    extern char CHARACTER_SELECT_DESCRIPTION_UNUSED[76];
     extern struct MenuEntry menu_character_select_2_entries[4];
     extern struct MenuEntry menu_main_game_select_entries[3];
     extern undefined menu_level_select_1_entries;
@@ -8508,11 +8504,9 @@ extern "C" {
     void g_something_with_translating_items(double param_1, int param_2, struct Vec * param_position);
     void g_maybe_sets_number_of_starting_monkeys(struct Ball * ball);
     void g_reset_ball(struct Ball * in_ball);
-    void g_competition_mode_respawn_start(struct Ball * ball);
     void ball_physics_g_something_w_postgoal_slowdown(struct Ball * param_1);
     void ball_physics_g_something_w_postgoal_blast_up(struct Ball * param_1);
     void g_ball_mode_play_replay(struct Ball * ball);
-    void g_handle_competition_mode_respawn(struct Ball * ball);
     void ball_physics_g_something_w_poastgoal_slowdown_blast_up(struct Ball * param_1);
     void ball_physics_g_something_w_postgoal_blast_up2(struct Ball * ball);
     void g_move_and_collide(struct Ball * ball, struct PhysicsBall * physicsBall);
@@ -8618,7 +8612,7 @@ extern "C" {
     int g_something_with_shadow_cast(void);
     void g_load_stgname_file(int locale_index);
     undefined4 g_load_stgname_dvd_entrynum(s32 stgname_dvd_entrynum);
-    int g_get_storymode_stage_name_buf_size(void);
+    int g_get_scen_stgname_buffer_size(void);
     bool g_queue_stage_name_load(void);
     undefined4 g_read_storymode_select_stage_names_from_dvd(int * param_1);
     char * read_stage_name_from_dvd(int stage_id, char * out_stage_name, int out_stage_name_buf_size);
@@ -9709,7 +9703,7 @@ extern "C" {
     void dmd_scen_entry_main(void);
     void g_some_storymode_mode_func(void);
     StoryModeSaveFile * get_current_storymode_save_file(void);
-    void g_some_scenario_init_func_4(void);
+    void g_init_scen_stage_name_buffer(void);
     void g_free_scen_stage_name_buffer(void);
     void empty_function(void);
     void empty_function(void);

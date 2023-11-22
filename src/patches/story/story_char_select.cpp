@@ -86,11 +86,11 @@ void init_sel_ngc() {
         // Patches each of the character button's 'next screen ID' in the character select screen
         if (mkb::unlock_info.g_movies_watched != 0x0fff) {
             mkb::menu_character_select_2_entries[i].next_screen_id = mkb::MENUSCREEN_STORY_MODE_SELECTED;
-            mkb::strcpy(mkb::CHARACTER_SELECT_DESCRIPTION_UNUSED, "Please select the character\nyou wish to use.\n/bcff8000/Gameplay will begin.");
+            mkb::strcpy(mkb::menu_character_select_2_entries[0].description_en, "Please select the character\nyou wish to use.\n/bcff8000/Gameplay will begin.");
         }
         else {
             mkb::menu_character_select_2_entries[i].next_screen_id = 51;
-            mkb::strcpy(mkb::CHARACTER_SELECT_DESCRIPTION_UNUSED, "Please select the character\nyou wish to use.");
+            mkb::strcpy(mkb::menu_character_select_2_entries[0].description_en, "Please select the character\nyou wish to use.");
             patch::write_word(reinterpret_cast<void*>(0x80926e28), 0x0c000000);
             patch::write_word(reinterpret_cast<void*>(0x80926e5c), 0x0c000000);
         }

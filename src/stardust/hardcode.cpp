@@ -113,12 +113,13 @@ void init() {
 }
 
 void tick() {
+    /* DEV TIMER BINDS
     if (pad::button_pressed(mkb::PAD_BUTTON_LEFT) && mkb::mode_info.stage_time_frames_remaining > 600) mkb::mode_info.stage_time_frames_remaining -= 600;
     if (pad::button_pressed(mkb::PAD_BUTTON_RIGHT)) mkb::mode_info.stage_time_frames_remaining += 600;
 
     if (pad::button_pressed(mkb::PAD_BUTTON_LEFT) && mkb::mode_info.stage_time_limit > 600) mkb::mode_info.stage_time_limit -= 600;
     if (pad::button_pressed(mkb::PAD_BUTTON_RIGHT)) mkb::mode_info.stage_time_limit += 600;
-
+    */
 
     switch (mkb::g_current_stage_id) {
         // 5-4 Spleef

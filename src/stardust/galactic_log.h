@@ -2,6 +2,7 @@
 
 namespace galactic_log {
 void create_galactic_log_menu();
+void create_about_screen();
 void create_credits_screen();
 void create_badge_screen();
 void init_main_loop();

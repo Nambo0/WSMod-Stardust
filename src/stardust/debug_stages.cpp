@@ -32,13 +32,13 @@ static void skip_countdown_sprite_tick(u8* status, mkb::Sprite* sprite) {
         case 0:
             sprite->g_counter = 0;
             break;
-        case 1 ... 60:
+        case 1 ... 30:
             mkb::strcpy(sprite->text, "SKIP STAGE? 3");
             break;
-        case 61 ... 120:
+        case 31 ... 60:
             mkb::strcpy(sprite->text, "SKIP STAGE? 2");
             break;
-        case 121 ... 180:
+        case 61 ... 90:
             mkb::strcpy(sprite->text, "SKIP STAGE? 1");
             break;
     }
@@ -55,7 +55,7 @@ static void create_skip_countdown_sprite() {
         sprite->mult_color.green = 0x80;
         sprite->mult_color.blue = 0x00;
         sprite->alpha = 0.0;
-        sprite->g_counter = 180;
+        sprite->g_counter = 90;
         sprite->g_flags1 = 0x1000000;
         sprite->widescreen_translation_x = 0x140;
         sprite->tick_func = skip_countdown_sprite_tick;
@@ -79,18 +79,22 @@ void tick() {
     if (mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::curr_difficulty == mkb::DIFF_ADVANCED &&
         (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN)) {
         if (pad::button_down(mkb::PAD_BUTTON_B)) {
-            if (button_b_frames < 180) {
+            if (button_b_frames < 90) {
                 button_b_frames++;
                 if (button_b_frames == 1) {
                     create_skip_countdown_sprite();
                 }
-                if (button_b_frames == 180) {
+                if (button_b_frames == 90) {
                     skip_stage();
+                    button_b_frames = 0; // Reset B frames if stage skipped
                 }
             }
         }
-        else button_b_frames = 0;
+        else button_b_frames = 0; // Reset B frames if B is no longer held
     }
+    else button_b_frames = 0; // Reset B frames if proper mode is left
+
+    // Interstellar quick-death hotkey
     if (mkb::main_game_mode == mkb::CHALLENGE_MODE &&
         (mkb::curr_difficulty == mkb::DIFF_BEGINNER || mkb::curr_difficulty == mkb::DIFF_ADVANCED) &&
         (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN)) {

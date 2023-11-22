@@ -124,7 +124,7 @@ void create_credits_screen() {
         ""));
 
     credits_container.set_alignment(mkb::ALIGN_UPPER_CENTER);
-    credits_text.set_drop_shadow(true);
+    credits_text.set_drop_shadow(false);
     credits_text.set_color({0x00, 0x00, 0x00});
 
     auto close_credits = [&]() {

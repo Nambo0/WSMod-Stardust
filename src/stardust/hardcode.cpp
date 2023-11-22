@@ -502,10 +502,8 @@ void tick() {
 
 }// void tick
 void init_sel_ngc() {
-    /*
     mkb::strcpy(mkb::NUM_OF_PLAYERS_DESCRIPTION_NO_PLAYPOINTS, "You can play with 1 player.");
     mkb::strcpy(mkb::NUM_OF_PLAYERS_DESCRIPTION_PLAYPOINTS, "You can play with 1 player.");
     mkb::strcpy(mkb::NUM_OF_PLAYERS_DESCRIPTION, "You can play with 1 player.");
-     */
 }
 }// namespace hardcode

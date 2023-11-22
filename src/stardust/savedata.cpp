@@ -21,7 +21,7 @@ Specific Values:
 */
 
 
-static u8 savedata[] = { 0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,
+static u8 savedata[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -68,16 +68,16 @@ static void to_buffer() {
 
 // load save file with no completions
 void load_default_save() {
-    for (u32 i = 0; i < 60; i++){
+    for (u32 i = 0; i < 60; i++) {
         savedata[i] = 0x00;
     }
 }
 
 void update_special_bools() {
-    if(mkb::widescreen_mode == mkb::NORMAL){
+    if (mkb::widescreen_mode == mkb::NORMAL) {
         write_bool_to_slot(savedata::WIDESCREEN_MODE, false);
     }
-    else if(mkb::widescreen_mode != mkb::NORMAL){
+    else if (mkb::widescreen_mode != mkb::NORMAL) {
         write_bool_to_slot(savedata::WIDESCREEN_MODE, true);
     }
 }
@@ -94,62 +94,67 @@ void save() {
 // =============================================================================================
 
 // Functions for reading/writing the array
-bool read_bool_from_array(u8* array, u16 slot){
+bool read_bool_from_array(u8* array, u16 slot) {
     u32 array_index = slot / 8;
     u32 bit_offset = slot % 8;
     if (array[array_index] & (1 << bit_offset)) return true;
     else return false;
 }
 
-void write_bool_to_array(u8* array, u16 slot, bool value_to_write){
+void write_bool_to_array(u8* array, u16 slot, bool value_to_write) {
     u32 array_index = slot / 8;
     u32 bit_offset = slot % 8;
-    if(value_to_write){
+    if (value_to_write) {
         array[array_index] |= 1 << bit_offset;
     }
-    else{
+    else {
         array[array_index] &= ~(1 << bit_offset);
     }
 }
 
 // Functions for reading/writing the array
-bool true_in_slot(u16 slot){
+bool true_in_slot(u16 slot) {
     return read_bool_from_array(savedata, slot);
 }
 
-bool consecutive_true_from_slot(u16 slot, u16 count){
-    for(int i = slot; i < slot + count; i++){
-        if(!read_bool_from_array(savedata, i)) return false;
+bool consecutive_true_from_slot(u16 slot, u16 count) {
+    for (int i = slot; i < slot + count; i++) {
+        if (!read_bool_from_array(savedata, i)) return false;
     }
     return true;
 }
 
-void update_stellar_bunch_counts(u8* bunch_counts){
-    for(u8 i = 0; i < 10; i++){
+void update_stellar_bunch_counts(u8* bunch_counts) {
+    for (u8 i = 0; i < 10; i++) {
         savedata[50 + i] = bunch_counts[i];
     }
 }
 
-u16 stellar_best_run_total(){
+u16 stellar_best_run_total() {
     u16 total = 0;
-    for (u8 i = 0; i < 10; i++){
+    for (u8 i = 0; i < 10; i++) {
         total += savedata[50 + i];
     }
     return total;
 }
 
-u8 best_stellar_rank(){
-    switch(stellar_best_run_total()){
-        case 0 ... 99: return 0;
-        case 100 ... 199: return 1;
-        case 200 ... 299: return 2;
-        case 300 ... 399: return 3;
-        case 400 ... 499: return 4;
+u8 best_stellar_rank() {
+    switch (stellar_best_run_total()) {
+        case 0 ... 99:
+            return 0;
+        case 100 ... 199:
+            return 1;
+        case 200 ... 299:
+            return 2;
+        case 300 ... 399:
+            return 3;
+        case 400 ... 499:
+            return 4;
     }
     return 5;
 }
 
-void write_bool_to_slot(u16 slot, bool value){
+void write_bool_to_slot(u16 slot, bool value) {
     write_bool_to_array(savedata, slot, value);
 }
 // =============================================================================================

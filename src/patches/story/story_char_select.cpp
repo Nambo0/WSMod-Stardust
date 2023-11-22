@@ -111,17 +111,17 @@ void init_sel_ngc() {
                 // If we press B, then we are cancelling the process of entering story mode
                 // We need to clean up since the stack pointer is changed after calling the tick function
                 // So, we restore the pointer to the original '2'
-                    if (pad::button_pressed(mkb::PAD_BUTTON_B)) {
+                if (pad::button_pressed(mkb::PAD_BUTTON_B)) {
                     if (is_entering_story) {
                         mkb::sel_menu_info.menu_stack[1] = mkb::MENUSCREEN_MAIN_GAME_SELECT;
                         mkb::sel_menu_info.menu_stack_ptr = ORIGINAL_STACK_INDEX;
                         if (mkb::g_character_selected == 0) {
-                        mkb::g_next_menu_screen = mkb::MENUSCREEN_MAIN_GAME_SELECT;
+                            mkb::g_next_menu_screen = mkb::MENUSCREEN_MAIN_GAME_SELECT;
                         }
                     }
                     if (mkb::unlock_info.g_movies_watched != 0x0fff) {
-                    is_entering_story = false;
-                }
+                        is_entering_story = false;
+                    }
                 }
             }
 
@@ -134,11 +134,11 @@ void init_sel_ngc() {
                 if (is_entering_story) mkb::sel_menu_info.menu_stack_ptr = 1;
             }
         });
-        static patch::Tramp<decltype(&mkb::menu_gameplay_settings_tick)> s_gameplay_settings_tick;
-        patch::hook_function(
+    static patch::Tramp<decltype(&mkb::menu_gameplay_settings_tick)> s_gameplay_settings_tick;
+    patch::hook_function(
         s_gameplay_settings_tick,
         mkb::menu_gameplay_settings_tick, []() {
-             if (mkb::g_currently_visible_menu_screen == 51) {
+            if (mkb::g_currently_visible_menu_screen == 51) {
                 mkb::sel_menu_info.menu_stack[1] = mkb::MENUSCREEN_MAIN_GAME_SELECT;
                 constexpr size_t ORIGINAL_STACK_INDEX_2 = 3;
                 if (pad::button_pressed(mkb::PAD_BUTTON_A)) {
@@ -152,11 +152,11 @@ void init_sel_ngc() {
                     }
                     is_entering_story = false;
                 }
-             }
-             s_gameplay_settings_tick.dest();
-             if (mkb::g_currently_visible_menu_screen == 51) {
+            }
+            s_gameplay_settings_tick.dest();
+            if (mkb::g_currently_visible_menu_screen == 51) {
                 mkb::sel_menu_info.menu_stack_ptr = 3;
-             }
-});
+            }
+        });
 }
 }// namespace story_char_select

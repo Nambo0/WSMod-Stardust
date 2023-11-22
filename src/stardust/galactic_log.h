@@ -7,4 +7,4 @@ void create_badge_screen();
 void init_main_loop();
 void init_main_game();
 void tick();
-}// namespace bunch_count
+}// namespace galactic_log

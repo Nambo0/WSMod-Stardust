@@ -85,13 +85,13 @@ void TickableManager::init() const {
 
                 // On-goal-entry functions
                 patch::hook_function(s_smd_game_goal_init_tramp, mkb::smd_game_goal_init, []() {
-                  s_smd_game_goal_init_tramp.dest();
+                    s_smd_game_goal_init_tramp.dest();
 
-                  for (const auto& tickable: get_tickable_manager().get_tickables()) {
-                      if (tickable->enabled && tickable->on_goal) {
-                          (*tickable->on_goal)();
-                      }
-                  }
+                    for (const auto& tickable: get_tickable_manager().get_tickables()) {
+                        if (tickable->enabled && tickable->on_goal) {
+                            (*tickable->on_goal)();
+                        }
+                    }
                 });
             }
 

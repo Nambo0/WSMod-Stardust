@@ -1,7 +1,7 @@
 #include "interstellar.h"
 
-#include "../internal/patch.h"
 #include "../internal/pad.h"
+#include "../internal/patch.h"
 #include "../internal/tickable.h"
 #include "../mkb/mkb.h"
 #include "../stardust/badge.h"
@@ -52,36 +52,36 @@ static bool stage_id_is_stellar(u32 stage_id) {
 
 static u8 bunches_collected_on_stage[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-static u16 bunches_collected_total(){
+static u16 bunches_collected_total() {
     u16 total = 0;
-    for(int i = 0; i < 10; i++){
+    for (int i = 0; i < 10; i++) {
         total += bunches_collected_on_stage[i];
     }
     return total;
 }
 
-static void save_finished_run_total(){
+static void save_finished_run_total() {
     bunches_collected_on_stage[9] = (mkb::balls[mkb::curr_player_idx].banana_count / 10) - bunches_collected_total();
     savedata::update_stellar_bunch_counts(bunches_collected_on_stage);
     savedata::save();
 }
 
 // REMOVE THIS NAME, AND MOVE THIS TO WHEREVER THE ENDSCREEN CODE ENDS UP
-static void finished_run_calculations(){
-    if(bunches_collected_total() > savedata::stellar_best_run_total()){
+static void finished_run_calculations() {
+    if (bunches_collected_total() > savedata::stellar_best_run_total()) {
         save_finished_run_total();
         // Display "New Best!"
     }
 }
 
-static void spawn_banana_effect(){
+static void spawn_banana_effect() {
     mkb::Effect effect;
     mkb::Ball ball = mkb::balls[mkb::curr_player_idx];
-    mkb::Item& dummy_item = mkb::items[1]; 
+    mkb::Item& dummy_item = mkb::items[1];
     for (u32 i = 0; i < mkb::item_pool_info.upper_bound; i++) {
-        if (mkb::item_pool_info.status_list[i] == 0) continue; // skip if its inactive
-        mkb::Item& item = mkb::items[i];                       // shorthand: current item in the list = "item"
-        if (item.coin_type != 1) continue;                     // skip if its not a bunch
+        if (mkb::item_pool_info.status_list[i] == 0) continue;// skip if its inactive
+        mkb::Item& item = mkb::items[i];                      // shorthand: current item in the list = "item"
+        if (item.coin_type != 1) continue;                    // skip if its not a bunch
         dummy_item = item;
         break;
     }
@@ -102,64 +102,64 @@ static void spawn_banana_effect(){
     // Sounds
     mkb::call_SoundReqID_arg_0(0x39);
     if (((mkb::mode_info.ball_mode & mkb::BALLMODE_IN_TUTORIAL_SEQUENCE) !=
-            mkb::BALLMODE_NONE) ||
+         mkb::BALLMODE_NONE) ||
         ((mkb::mode_info.ball_mode & mkb::BALLMODE_IN_REPLAY) ==
-            mkb::BALLMODE_NONE)) {
+         mkb::BALLMODE_NONE)) {
         mkb::call_SoundReqID_arg_0(0x2820);
     }
 }
 
-void goal_bonus_sprite_tick(u8* status, mkb::Sprite *sprite) {
-    if (sprite->g_counter > 0){
+void goal_bonus_sprite_tick(u8* status, mkb::Sprite* sprite) {
+    if (sprite->g_counter > 0) {
         sprite->alpha += 0.05;
-        if (sprite->alpha > 1){
-        sprite->alpha = 1;
-    }
+        if (sprite->alpha > 1) {
+            sprite->alpha = 1;
+        }
     }
     sprite->g_counter -= 1;
-    if (sprite->g_counter < 0){
+    if (sprite->g_counter < 0) {
         sprite->g_counter = 0;
         sprite->alpha -= 0.05;
-        if (sprite->alpha < 0){
-        sprite->alpha = 0;
-    }
+        if (sprite->alpha < 0) {
+            sprite->alpha = 0;
+        }
     }
 }
 
 void create_goal_bonus_sprite() {
-  mkb::Sprite* sprite = mkb::create_sprite();
-  if (sprite != (mkb::Sprite *)0x0) {
-    sprite->pos.x = 320.0;
-    sprite->pos.y = 380.0;
-    sprite->font = mkb::FONT_JAP_24x24_2;
-    sprite->alignment = mkb::ALIGN_CENTER;
-    sprite->mult_color.red = 0xff;
-    sprite->mult_color.green = 0xff;
-    sprite->mult_color.blue = 0x00;
-    sprite->alpha = 0.0;
-    sprite->g_counter = 300;
-    sprite->g_flags1 = 0x1000000;
-    sprite->widescreen_translation_x = 0x140;
-    sprite->tick_func = goal_bonus_sprite_tick;
-    mkb::strcpy(sprite->text, "BONUS  +50");
-  }
-  sprite = mkb::create_sprite();
-   if (sprite != (mkb::Sprite *)0x0) {
-    sprite->type = mkb::SPRT_BMP;
-    sprite->pos.x = 340.0;
-    sprite->pos.y = 380.0;
-    sprite->alignment = mkb::ALIGN_CENTER;
-    sprite->bmp = 0xc;
-    sprite->alpha = 0.0;
-    sprite->g_counter = 300;
-    sprite->g_flags1 = 0x1000000;
-    sprite->width = 0.3;
-    sprite->height = 0.3;
-    sprite->widescreen_translation_x = 0x140;
-    sprite->tick_func = goal_bonus_sprite_tick;
-    mkb::strcpy(sprite->text, "bonus banana");
-  }
-  return;
+    mkb::Sprite* sprite = mkb::create_sprite();
+    if (sprite != (mkb::Sprite*) 0x0) {
+        sprite->pos.x = 320.0;
+        sprite->pos.y = 380.0;
+        sprite->font = mkb::FONT_JAP_24x24_2;
+        sprite->alignment = mkb::ALIGN_CENTER;
+        sprite->mult_color.red = 0xff;
+        sprite->mult_color.green = 0xff;
+        sprite->mult_color.blue = 0x00;
+        sprite->alpha = 0.0;
+        sprite->g_counter = 300;
+        sprite->g_flags1 = 0x1000000;
+        sprite->widescreen_translation_x = 0x140;
+        sprite->tick_func = goal_bonus_sprite_tick;
+        mkb::strcpy(sprite->text, "BONUS  +50");
+    }
+    sprite = mkb::create_sprite();
+    if (sprite != (mkb::Sprite*) 0x0) {
+        sprite->type = mkb::SPRT_BMP;
+        sprite->pos.x = 340.0;
+        sprite->pos.y = 380.0;
+        sprite->alignment = mkb::ALIGN_CENTER;
+        sprite->bmp = 0xc;
+        sprite->alpha = 0.0;
+        sprite->g_counter = 300;
+        sprite->g_flags1 = 0x1000000;
+        sprite->width = 0.3;
+        sprite->height = 0.3;
+        sprite->widescreen_translation_x = 0x140;
+        sprite->tick_func = goal_bonus_sprite_tick;
+        mkb::strcpy(sprite->text, "bonus banana");
+    }
+    return;
 }
 
 void remove_banana(mkb::Item& item) {
@@ -170,39 +170,39 @@ void remove_banana(mkb::Item& item) {
 
 void create_penalty_sprite() {
 
-  mkb::Sprite* sprite = mkb::create_sprite();
-  if (sprite != (mkb::Sprite *)0x0) {
-    sprite->pos.x = 320.0;
-    sprite->pos.y = 380.0;
-    sprite->font = mkb::FONT_JAP_24x24_2;
-    sprite->alignment = mkb::ALIGN_CENTER;
-    sprite->mult_color.red = 0xff;
-    sprite->mult_color.green = 0x80;
-    sprite->mult_color.blue = 0x00;
-    sprite->alpha = 0.0;
-    sprite->g_counter = 300;
-    sprite->g_flags1 = 0x1000000;
-    sprite->widescreen_translation_x = 0x140;
-    sprite->tick_func = goal_bonus_sprite_tick;
-    mkb::strcpy(sprite->text, "PENALTY  -15");
-  }
-  sprite = mkb::create_sprite();
-   if (sprite != (mkb::Sprite *)0x0) {
-    sprite->type = mkb::SPRT_BMP;
-    sprite->pos.x = 367.0;
-    sprite->pos.y = 380.0;
-    sprite->alignment = mkb::ALIGN_CENTER;
-    sprite->bmp = 0x510;
-    sprite->alpha = 0.0;
-    sprite->g_counter = 300;
-    sprite->g_flags1 = 0x1000000;
-    sprite->width = 0.75;
-    sprite->height = 0.75;
-    sprite->widescreen_translation_x = 0x140;
-    sprite->tick_func = goal_bonus_sprite_tick;
-    mkb::strcpy(sprite->text, "penalty time");
-  }
-  return;
+    mkb::Sprite* sprite = mkb::create_sprite();
+    if (sprite != (mkb::Sprite*) 0x0) {
+        sprite->pos.x = 320.0;
+        sprite->pos.y = 380.0;
+        sprite->font = mkb::FONT_JAP_24x24_2;
+        sprite->alignment = mkb::ALIGN_CENTER;
+        sprite->mult_color.red = 0xff;
+        sprite->mult_color.green = 0x80;
+        sprite->mult_color.blue = 0x00;
+        sprite->alpha = 0.0;
+        sprite->g_counter = 300;
+        sprite->g_flags1 = 0x1000000;
+        sprite->widescreen_translation_x = 0x140;
+        sprite->tick_func = goal_bonus_sprite_tick;
+        mkb::strcpy(sprite->text, "PENALTY  -15");
+    }
+    sprite = mkb::create_sprite();
+    if (sprite != (mkb::Sprite*) 0x0) {
+        sprite->type = mkb::SPRT_BMP;
+        sprite->pos.x = 367.0;
+        sprite->pos.y = 380.0;
+        sprite->alignment = mkb::ALIGN_CENTER;
+        sprite->bmp = 0x510;
+        sprite->alpha = 0.0;
+        sprite->g_counter = 300;
+        sprite->g_flags1 = 0x1000000;
+        sprite->width = 0.75;
+        sprite->height = 0.75;
+        sprite->widescreen_translation_x = 0x140;
+        sprite->tick_func = goal_bonus_sprite_tick;
+        mkb::strcpy(sprite->text, "penalty time");
+    }
+    return;
 }
 
 void on_stage_load(u32 stage_id) {
@@ -219,13 +219,13 @@ void on_stage_load(u32 stage_id) {
     }
 
     // Handle frozen & increasing timers
-    if(mkb::main_game_mode == mkb::PRACTICE_MODE && stage_id_is_stellar(stage_id)){
+    if (mkb::main_game_mode == mkb::PRACTICE_MODE && stage_id_is_stellar(stage_id)) {
         // time over at -60 frames (so timer is able to stop at 0.00)
         *reinterpret_cast<u32*>(0x80297548) = 0x2c00ffa0;
         // Add 1 to the timer each frame (increasing)
         patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030001);
     }
-    else if(stage_id == 267 || stage_id == 77){
+    else if (stage_id == 267 || stage_id == 77) {
         // time over at -60 frames (so timer is able to stop at 0.00)
         *reinterpret_cast<u32*>(0x80297548) = 0x2c00ffa0;
         // add 0 to the timer each frame (frozen)
@@ -243,7 +243,7 @@ void tick() {
     if (stage_id_is_stellar(mkb::g_current_stage_id)) {
         if (mkb::main_game_mode == mkb::PRACTICE_MODE &&
             (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN)) {
-            if(mkb::mode_info.stage_time_frames_remaining >= 540*60){
+            if (mkb::mode_info.stage_time_frames_remaining >= 540 * 60) {
                 // Loop timer to 0 at 540
                 mkb::mode_info.stage_time_frames_remaining = 0;
             }
@@ -253,12 +253,12 @@ void tick() {
         }
     }
 
-    if(goal_bonus_effect > 0 && !paused_now){
+    if (goal_bonus_effect > 0 && !paused_now) {
         goal_bonus_effect++;
-        if(goal_bonus_effect % 6 == 0){
+        if (goal_bonus_effect % 6 == 0) {
             spawn_banana_effect();
         }
-        if(goal_bonus_effect > 30){
+        if (goal_bonus_effect > 30) {
             goal_bonus_effect = 0;
         }
     }
@@ -274,11 +274,10 @@ void tick() {
 
     // Only run at the start of each stage
     bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
-    if(stage_id_is_stellar(mkb::g_current_stage_id) && mkb::main_game_mode == mkb::CHALLENGE_MODE
-    && mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT && mkb::mode_info.stage_time_frames_remaining == 300*60 - 1 && !paused_now){
+    if (stage_id_is_stellar(mkb::g_current_stage_id) && mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT && mkb::mode_info.stage_time_frames_remaining == 300 * 60 - 1 && !paused_now) {
         // (i1 only) Reset logged stage bunch counts
-        if(mkb::g_current_stage_id == 221){
-            for(int i = 0; i < 10; i++){
+        if (mkb::g_current_stage_id == 221) {
+            for (int i = 0; i < 10; i++) {
                 bunches_collected_on_stage[i] = 0;
             }
         }
@@ -287,8 +286,7 @@ void tick() {
             bunches_collected_on_stage[mkb::g_current_stage_id - 222] = (mkb::balls[mkb::curr_player_idx].banana_count / 10) - bunches_collected_total();
         }
     }
-    if(mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::g_current_stage_id == 230
-    && mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT && !paused_now) finished_run_calculations(); // Run ends via 0.00 timeover
+    if (mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::g_current_stage_id == 230 && mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT && !paused_now) finished_run_calculations();// Run ends via 0.00 timeover
 }
 
 void on_goal() {
@@ -297,7 +295,7 @@ void on_goal() {
         ball.banana_count += 50;
         goal_bonus_effect = 1;
         create_goal_bonus_sprite();
-        if(mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::g_current_stage_id == 230) finished_run_calculations(); // Run ends via goal
+        if (mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::g_current_stage_id == 230) finished_run_calculations();// Run ends via goal
     }
 }
 
@@ -311,7 +309,7 @@ void on_fallout() {
             else {
                 // Cause bonus finish if time is over
                 mkb::mode_info.ball_mode |= 1 << 6;
-                if(mkb::g_current_stage_id == 230) finished_run_calculations(); // Run ends via <15s fallout
+                if (mkb::g_current_stage_id == 230) finished_run_calculations();// Run ends via <15s fallout
             }
             create_penalty_sprite();
 
@@ -370,35 +368,33 @@ void on_spin_in() {
 }
 
 void on_bonus_finish() {
-if ((mkb::current_stage_id == 230) && (mkb::mode_info.stage_time_frames_remaining < 15 * 60) && (mkb::in_practice_mode == false)) {
-    if (mkb::sub_mode_frame_counter == 0x3c) {
-    mkb::fade_screen_to_color(0x101,0,0x3d);
-    mkb::g_fade_track_volume(0x3c,'\x02');
-    }
-    if (mkb::sub_mode_frame_counter < 1) {
-        mkb::g_smth_with_ending_course();
-        mkb::g_smth_with_ending_course_2();
-        mkb::g_change_music_volume(0xc,0x3c,'\0');
-        mkb::main_mode_request = mkb::MD_AUTHOR;
-        mkb::sub_mode_request = mkb::SMD_AUTHOR_PLAY_ENDING_INIT;
-        mkb::mode_flags = mkb::mode_flags | 0x100040;
+    if ((mkb::current_stage_id == 230) && (mkb::mode_info.stage_time_frames_remaining < 15 * 60) && (mkb::in_practice_mode == false)) {
+        if (mkb::sub_mode_frame_counter == 0x3c) {
+            mkb::fade_screen_to_color(0x101, 0, 0x3d);
+            mkb::g_fade_track_volume(0x3c, '\x02');
         }
-
-    }
-if ((mkb::current_stage_id == 71) && (mkb::mode_info.stage_time_frames_remaining < 1) && (mkb::in_practice_mode == false) && (mkb::mode_info.ball_mode & (1 << 6))) {
-    if (mkb::sub_mode_frame_counter == 0x3c) {
-    mkb::fade_screen_to_color(0x101,0,0x3d);
-    mkb::g_fade_track_volume(0x3c,'\x02');
-    }
-    if (mkb::sub_mode_frame_counter < 1) {
-        mkb::g_smth_with_ending_course();
-        mkb::g_smth_with_ending_course_2();
-        mkb::g_change_music_volume(0xc,0x3c,'\0');
-        mkb::main_mode_request = mkb::MD_AUTHOR;
-        mkb::sub_mode_request = mkb::SMD_AUTHOR_PLAY_ENDING_INIT;
-        mkb::mode_flags = mkb::mode_flags | 0x100040;
+        if (mkb::sub_mode_frame_counter < 1) {
+            mkb::g_smth_with_ending_course();
+            mkb::g_smth_with_ending_course_2();
+            mkb::g_change_music_volume(0xc, 0x3c, '\0');
+            mkb::main_mode_request = mkb::MD_AUTHOR;
+            mkb::sub_mode_request = mkb::SMD_AUTHOR_PLAY_ENDING_INIT;
+            mkb::mode_flags = mkb::mode_flags | 0x100040;
         }
-
+    }
+    if ((mkb::current_stage_id == 71) && (mkb::mode_info.stage_time_frames_remaining < 1) && (mkb::in_practice_mode == false) && (mkb::mode_info.ball_mode & (1 << 6))) {
+        if (mkb::sub_mode_frame_counter == 0x3c) {
+            mkb::fade_screen_to_color(0x101, 0, 0x3d);
+            mkb::g_fade_track_volume(0x3c, '\x02');
+        }
+        if (mkb::sub_mode_frame_counter < 1) {
+            mkb::g_smth_with_ending_course();
+            mkb::g_smth_with_ending_course_2();
+            mkb::g_change_music_volume(0xc, 0x3c, '\0');
+            mkb::main_mode_request = mkb::MD_AUTHOR;
+            mkb::sub_mode_request = mkb::SMD_AUTHOR_PLAY_ENDING_INIT;
+            mkb::mode_flags = mkb::mode_flags | 0x100040;
+        }
     }
 }
 
@@ -420,8 +416,8 @@ void init() {
 void init_main_game() {
     if (mkb::curr_difficulty == mkb::DIFF_BEGINNER) {
         if (mkb::main_game_mode == mkb::CHALLENGE_MODE || mkb::main_game_mode == mkb::PRACTICE_MODE) {
-        patch::write_nop(reinterpret_cast<void*>(0x808f54f4));
-        patch::write_nop(reinterpret_cast<void*>(0x808f5b90));
+            patch::write_nop(reinterpret_cast<void*>(0x808f54f4));
+            patch::write_nop(reinterpret_cast<void*>(0x808f5b90));
         }
     }
     patch::hook_function(s_smd_game_ringout_tick_tramp, mkb::smd_game_ringout_tick, []() {

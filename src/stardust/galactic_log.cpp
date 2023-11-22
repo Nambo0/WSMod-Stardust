@@ -71,7 +71,7 @@ void create_galactic_log_menu() {
 
 void create_credits_screen() {
     LOG("Creating credits screen...");
-    mkb::load_bmp_by_id(0xc); // TODO: do not rely on this, this wastes memory
+    mkb::load_bmp_by_id(0xc);// TODO: do not rely on this, this wastes memory
 
     // Parent widget, this is the pink screen
     auto& credits_menu_screen = ui::get_widget_manager().add(new ui::Sprite(0x4b, Vec2d{0, 0}, Vec2d{64, 64}));
@@ -103,7 +103,7 @@ void create_credits_screen() {
     next_arrow.set_mirror(true);
 
     // Credits Page 1
-    auto& credits_container = credits_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640-5, 480-65-5}));
+    auto& credits_container = credits_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640 - 5, 480 - 65 - 5}));
 
     // Todo: pages. maybe a button with a callback that changes the active text, use sprintf to set the text perhaps?
     auto& credits_text = credits_container.add(new ui::Text(
@@ -128,8 +128,8 @@ void create_credits_screen() {
     credits_text.set_color({0x00, 0x00, 0x00});
 
     auto close_credits = [&]() {
-      ui::get_widget_manager().remove("galcred");
-      create_galactic_log_menu();
+        ui::get_widget_manager().remove("galcred");
+        create_galactic_log_menu();
     };
 
     auto& close_handler = credits_menu_screen.add(new ui::Button("", Vec2d{0, 0}, close_credits));// TODO: generic input handler widget
@@ -139,7 +139,7 @@ void create_credits_screen() {
 
 void create_badge_screen() {
     LOG("Creating badge screen...");
-    mkb::load_bmp_by_id(0xc); // TODO: do not rely on this, this wastes memory
+    mkb::load_bmp_by_id(0xc);// TODO: do not rely on this, this wastes memory
 
     // Parent widget, this is the pink screen
     auto& badge_menu_screen = ui::get_widget_manager().add(new ui::Sprite(0x4b, Vec2d{0, 0}, Vec2d{64, 64}));
@@ -171,15 +171,15 @@ void create_badge_screen() {
     next_arrow.set_mirror(true);
 
     // Credits Page 1
-    auto& badge_container = badge_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640-5, 480-65-5}));
+    auto& badge_container = badge_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640 - 5, 480 - 65 - 5}));
 
     // Todo: pages. maybe a button with a callback that changes the active text, use sprintf to set the text perhaps?
     LOG("Creating stage name list...");
     uint32_t active_world_idx = 0;
     for (uint32_t stage_idx = 0; stage_idx < 10; stage_idx++) {
-        auto& layout_row = badge_container.add(new ui::Container(Vec2d{0,0}, Vec2d{630, 32}));
+        auto& layout_row = badge_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{630, 32}));
         layout_row.set_layout(ui::ContainerLayout::HORIZONTAL);
-        auto& text_container = layout_row.add(new ui::Container(Vec2d{0,0}, Vec2d{420, 32}));
+        auto& text_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{420, 32}));
         auto& sprite_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{210, 32}));
         sprite_container.set_layout(ui::ContainerLayout::HORIZONTAL);
 
@@ -188,15 +188,15 @@ void create_badge_screen() {
         char stage_name_buffer[64] = {0};
         mkb::read_stage_name_from_dvd(stage_id, stage_name_buffer, 64);
         LOG("Got name %s", stage_name_buffer)
-        mkb::sprintf(badge_stage_name_buffer[stage_idx], format_str, active_world_idx+1, stage_idx+1, stage_name_buffer);
+        mkb::sprintf(badge_stage_name_buffer[stage_idx], format_str, active_world_idx + 1, stage_idx + 1, stage_name_buffer);
         LOG("Did sprintf to yield: %s", badge_stage_name_buffer[stage_idx])
         auto& text = text_container.add(new ui::Text(badge_stage_name_buffer[stage_idx]));
 
-        //0xc3b = blue, 0xc3a = purple, 0xc39 = sweep, 0xc3c = achievement, 0xc3d = empty
-        //TODO: Hook into badge system!
-        auto& blue = sprite_container.add(new ui::Sprite(0xc3b, Vec2d{32,32}));
-        auto& purple = sprite_container.add(new ui::Sprite(0xc3a, Vec2d{32,32}));
-        auto& sweep = sprite_container.add(new ui::Sprite(0xc39, Vec2d{32,32}));
+        // 0xc3b = blue, 0xc3a = purple, 0xc39 = sweep, 0xc3c = achievement, 0xc3d = empty
+        // TODO: Hook into badge system!
+        auto& blue = sprite_container.add(new ui::Sprite(0xc3b, Vec2d{32, 32}));
+        auto& purple = sprite_container.add(new ui::Sprite(0xc3a, Vec2d{32, 32}));
+        auto& sweep = sprite_container.add(new ui::Sprite(0xc39, Vec2d{32, 32}));
 
         blue.set_scale(Vec2d{0.5, 0.5});
         purple.set_scale(Vec2d{0.5, 0.5});
@@ -212,8 +212,8 @@ void create_badge_screen() {
      */
 
     auto close_badge = [&]() {
-      ui::get_widget_manager().remove("galbadg");
-      create_galactic_log_menu();
+        ui::get_widget_manager().remove("galbadg");
+        create_galactic_log_menu();
     };
 
     auto& close_handler = badge_menu_screen.add(new ui::Button("", Vec2d{0, 0}, close_badge));// TODO: generic input handler widget

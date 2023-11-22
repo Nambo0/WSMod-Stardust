@@ -4,11 +4,11 @@
 #include "../internal/patch.h"
 #include "../internal/tickable.h"
 #include "../mkb/mkb.h"
-#include "../utils/vecutil.h"
 #include "../stardust/achievement.h"
-#include "../stardust/validate.h"
 #include "../stardust/badge.h"
 #include "../stardust/savedata.h"
+#include "../stardust/validate.h"
+#include "../utils/vecutil.h"
 
 namespace hardcode {
 
@@ -25,8 +25,8 @@ static bool entered_wormhole = false;
 static u16 frame_to_remove_indicators = 0;
 
 static patch::Tramp<decltype(&mkb::teleport_through_wormhole)> s_teleport_through_wormhole_tramp;
-static patch::Tramp<decltype(&mkb::draw_sprite)> s_draw_sprite_tramp; // Monuments: Hide HUD
-static patch::Tramp<decltype(&mkb::g_draw_minimap)> s_draw_minimap_tramp; // Monuments: Hide HUD
+static patch::Tramp<decltype(&mkb::draw_sprite)> s_draw_sprite_tramp;    // Monuments: Hide HUD
+static patch::Tramp<decltype(&mkb::g_draw_minimap)> s_draw_minimap_tramp;// Monuments: Hide HUD
 
 void flip_hardcoded_wormholes(int idx) {
     switch (mkb::g_current_stage_id) {
@@ -65,25 +65,25 @@ void flip_hardcoded_wormholes(int idx) {
     }
 }
 
-void fix_stellar_bunch_indicators(){
+void fix_stellar_bunch_indicators() {
     for (u32 ig = 0; ig < mkb::stagedef->coli_header_count; ig++) {
-        if(mkb::stagedef->coli_header_list[ig].anim_group_id == 12001){
+        if (mkb::stagedef->coli_header_list[ig].anim_group_id == 12001) {
             bool bunch_near = false;
             for (u32 i = 0; i < mkb::item_pool_info.upper_bound; i++) {
-                mkb::Item& item = mkb::items[i];                           // shorthand: current item in the list = "item"
-                if (mkb::item_pool_info.status_list[i] == 0) continue;     // skip if its inactive
-                if (item.coin_type != 1) continue;                         // skip if its not a bunch
-                if (item.g_some_flag == 0 && item.g_some_bitfield & 1 && item.g_some_bitfield & 0xfffffffd) continue; // skip if banana is gone
-                Vec diff = {mkb::stagedef->coli_header_list[ig].origin.x - item.g_position_copy_2.x, //
+                mkb::Item& item = mkb::items[i];                                                                     // shorthand: current item in the list = "item"
+                if (mkb::item_pool_info.status_list[i] == 0) continue;                                               // skip if its inactive
+                if (item.coin_type != 1) continue;                                                                   // skip if its not a bunch
+                if (item.g_some_flag == 0 && item.g_some_bitfield & 1 && item.g_some_bitfield & 0xfffffffd) continue;// skip if banana is gone
+                Vec diff = {mkb::stagedef->coli_header_list[ig].origin.x - item.g_position_copy_2.x,                 //
                             mkb::stagedef->coli_header_list[ig].origin.y - item.g_position_copy_2.y,
                             mkb::stagedef->coli_header_list[ig].origin.z - item.g_position_copy_2.z};
-                if(diff.x*diff.x < 1    // Check if an indicator is in the same place
-                && diff.y*diff.y < 1    // as a bunch
-                && diff.z*diff.z < 1){  // (Squared to use absolute value)
+                if (diff.x * diff.x < 1      // Check if an indicator is in the same place
+                    && diff.y * diff.y < 1   // as a bunch
+                    && diff.z * diff.z < 1) {// (Squared to use absolute value)
                     bunch_near = true;
                 }
             }
-            if(!bunch_near){
+            if (!bunch_near) {
                 mkb::itemgroups[ig].playback_state = 0;
                 mkb::itemgroups[ig].anim_frame = 2;
             }
@@ -183,7 +183,7 @@ void tick() {
             break;
         }
         // Interstellar 3 Solar Orbit
-        // Animations retain from attempt to attempt 
+        // Animations retain from attempt to attempt
         /*
         case 223: {
             if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT && mkb::main_game_mode == mkb::CHALLENGE_MODE) {
@@ -206,19 +206,19 @@ void tick() {
         // Giant vertical wormhole
         case 224: {
             if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
-                if(mkb::balls[mkb::curr_player_idx].pos.x > -500 &&
-                   mkb::balls[mkb::curr_player_idx].pos.x < 500 &&
-                   mkb::balls[mkb::curr_player_idx].pos.z > -500 &&
-                   mkb::balls[mkb::curr_player_idx].pos.z < 500){
-                    if(mkb::balls[mkb::curr_player_idx].pos.y < 0){
+                if (mkb::balls[mkb::curr_player_idx].pos.x > -500 &&
+                    mkb::balls[mkb::curr_player_idx].pos.x < 500 &&
+                    mkb::balls[mkb::curr_player_idx].pos.z > -500 &&
+                    mkb::balls[mkb::curr_player_idx].pos.z < 500) {
+                    if (mkb::balls[mkb::curr_player_idx].pos.y < 0) {
                         mkb::balls[mkb::curr_player_idx].pos.y += 650;
                     }
-                    if(mkb::balls[mkb::curr_player_idx].pos.y > 650){
+                    if (mkb::balls[mkb::curr_player_idx].pos.y > 650) {
                         mkb::balls[mkb::curr_player_idx].pos.y -= 650;
                     }
                 }
             }
-            if(mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT){
+            if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) {
                 fix_stellar_bunch_indicators();
             }
             break;
@@ -250,12 +250,12 @@ void tick() {
                 // If all 3 purple buttons are activated, activate 'bunch' animation (id 11005)
                 if (purple_inactive_count < 1 && indicator_inactive_count < 1) {
                     for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
-                        switch(mkb::stagedef->coli_header_list[i].anim_group_id){
+                        switch (mkb::stagedef->coli_header_list[i].anim_group_id) {
                             case 11003:
                                 mkb::itemgroups[i].playback_state = 0;
                                 break;
                             case 12001:
-                                if(mkb::itemgroups[i].anim_frame > 1) mkb::itemgroups[i].playback_state = 2; // Reverse bunch indicator anims
+                                if (mkb::itemgroups[i].anim_frame > 1) mkb::itemgroups[i].playback_state = 2;// Reverse bunch indicator anims
                                 break;
                         }
                     }
@@ -272,8 +272,8 @@ void tick() {
 
                 // Fix bunch indicators on challenge retry
                 // Do this on the 30th frame after retrying so their animations can align them!
-                if(mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) frame_to_remove_indicators = mkb::mode_info.stage_time_frames_remaining - 32;
-                if(mkb::mode_info.stage_time_frames_remaining < frame_to_remove_indicators){
+                if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) frame_to_remove_indicators = mkb::mode_info.stage_time_frames_remaining - 32;
+                if (mkb::mode_info.stage_time_frames_remaining < frame_to_remove_indicators) {
                     fix_stellar_bunch_indicators();
                 }
             }
@@ -283,51 +283,51 @@ void tick() {
         // Giant flipper wormhole
         case 226: {
             if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
-                if(((mkb::balls[mkb::curr_player_idx].pos.x > -270 - 600 &&
-                   mkb::balls[mkb::curr_player_idx].pos.x < 270 - 600) ||
-                   (mkb::balls[mkb::curr_player_idx].pos.x > -270 + 600 &&
-                   mkb::balls[mkb::curr_player_idx].pos.x < 270 + 600)) &&
-                   mkb::balls[mkb::curr_player_idx].pos.z > -270 &&
-                   mkb::balls[mkb::curr_player_idx].pos.z < 270){
-                    if(mkb::balls[mkb::curr_player_idx].pos.y < 0){
+                if (((mkb::balls[mkb::curr_player_idx].pos.x > -270 - 600 &&
+                      mkb::balls[mkb::curr_player_idx].pos.x < 270 - 600) ||
+                     (mkb::balls[mkb::curr_player_idx].pos.x > -270 + 600 &&
+                      mkb::balls[mkb::curr_player_idx].pos.x < 270 + 600)) &&
+                    mkb::balls[mkb::curr_player_idx].pos.z > -270 &&
+                    mkb::balls[mkb::curr_player_idx].pos.z < 270) {
+                    if (mkb::balls[mkb::curr_player_idx].pos.y < 0) {
                         // Flip ball
                         mkb::balls[mkb::curr_player_idx].pos.y = 0;
                         mkb::balls[mkb::curr_player_idx].pos.x *= -1;
                         mkb::balls[mkb::curr_player_idx].vel.y *= -1;
-                        mkb::balls[mkb::curr_player_idx].vel.y += 0.1; // Add some velocity to prevent getting stuck
+                        mkb::balls[mkb::curr_player_idx].vel.y += 0.1;// Add some velocity to prevent getting stuck
                         mkb::balls[mkb::curr_player_idx].vel.x *= -1;
                         // Flip camera
                         auto camera_rotation = &mkb::cameras[mkb::curr_player_idx].rot;
                         camera_rotation->x -= camera_rotation->x * 2;
                         camera_rotation->y -= camera_rotation->y * 2;
-                        camera_rotation->z += 32768; // 180deg rotation
+                        camera_rotation->z += 32768;// 180deg rotation
                     }
                 }
             }
-            if(mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT){
+            if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) {
                 fix_stellar_bunch_indicators();
             }
             break;
             // Fix bunch indicators on challenge retry
-            if(mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT){
+            if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) {
                 for (u32 ig = 0; ig < mkb::stagedef->coli_header_count; ig++) {
-                    if(mkb::stagedef->coli_header_list[ig].anim_group_id == 12001){
+                    if (mkb::stagedef->coli_header_list[ig].anim_group_id == 12001) {
                         bool bunch_near = false;
                         for (u32 i = 0; i < mkb::item_pool_info.upper_bound; i++) {
-                            mkb::Item& item = mkb::items[i];                           // shorthand: current item in the list = "item"
-                            if (mkb::item_pool_info.status_list[i] == 0) continue;     // skip if its inactive
-                            if (item.coin_type != 1) continue;                         // skip if its not a bunch
-                            if (item.g_some_flag == 0 && item.g_some_bitfield & 1 && item.g_some_bitfield & 0xfffffffd) continue; // skip if banana is gone
-                            Vec diff = {mkb::stagedef->coli_header_list[ig].origin.x - item.g_position_copy_2.x, //
+                            mkb::Item& item = mkb::items[i];                                                                     // shorthand: current item in the list = "item"
+                            if (mkb::item_pool_info.status_list[i] == 0) continue;                                               // skip if its inactive
+                            if (item.coin_type != 1) continue;                                                                   // skip if its not a bunch
+                            if (item.g_some_flag == 0 && item.g_some_bitfield & 1 && item.g_some_bitfield & 0xfffffffd) continue;// skip if banana is gone
+                            Vec diff = {mkb::stagedef->coli_header_list[ig].origin.x - item.g_position_copy_2.x,                 //
                                         mkb::stagedef->coli_header_list[ig].origin.y - item.g_position_copy_2.y,
                                         mkb::stagedef->coli_header_list[ig].origin.z - item.g_position_copy_2.z};
-                            if(diff.x*diff.x < 1    // Check if an indicator is in the same place
-                            && diff.y*diff.y < 1    // as a bunch
-                            && diff.z*diff.z < 1){  // (Squared to use absolute value)
+                            if (diff.x * diff.x < 1      // Check if an indicator is in the same place
+                                && diff.y * diff.y < 1   // as a bunch
+                                && diff.z * diff.z < 1) {// (Squared to use absolute value)
                                 bunch_near = true;
                             }
                         }
-                        if(!bunch_near){
+                        if (!bunch_near) {
                             mkb::itemgroups[ig].playback_state = 0;
                             mkb::itemgroups[ig].anim_frame = 2;
                         }
@@ -341,7 +341,7 @@ void tick() {
             if (mkb::sub_mode == mkb::SMD_GAME_READY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
                 for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
                     u32 anim_id = mkb::stagedef->coli_header_list[i].anim_group_id;
-                    switch(anim_id){
+                    switch (anim_id) {
                         // Claimed badges
                         case 0 ... 309: {
                             if (savedata::true_in_slot(anim_id)) {
@@ -353,15 +353,25 @@ void tick() {
 
                         // Interstellar Rank Medallion
                         // These positions are variable so they all need separate cases
-                        case 400: if (savedata::best_stellar_rank() == 1) mkb::itemgroups[i].playback_state = 0; break;
-                        case 401: if (savedata::best_stellar_rank() == 2) mkb::itemgroups[i].playback_state = 0; break;
-                        case 402: if (savedata::best_stellar_rank() == 3) mkb::itemgroups[i].playback_state = 0; break;
-                        case 403: if (savedata::best_stellar_rank() == 4) mkb::itemgroups[i].playback_state = 0; break;
-                        case 404: if (savedata::best_stellar_rank() == 5) mkb::itemgroups[i].playback_state = 0; break;
-                        
+                        case 400:
+                            if (savedata::best_stellar_rank() == 1) mkb::itemgroups[i].playback_state = 0;
+                            break;
+                        case 401:
+                            if (savedata::best_stellar_rank() == 2) mkb::itemgroups[i].playback_state = 0;
+                            break;
+                        case 402:
+                            if (savedata::best_stellar_rank() == 3) mkb::itemgroups[i].playback_state = 0;
+                            break;
+                        case 403:
+                            if (savedata::best_stellar_rank() == 4) mkb::itemgroups[i].playback_state = 0;
+                            break;
+                        case 404:
+                            if (savedata::best_stellar_rank() == 5) mkb::itemgroups[i].playback_state = 0;
+                            break;
+
                         // World sweep statue decorations
-                        case 500 ... 519:{
-                            if (savedata::consecutive_true_from_slot((anim_id - 500)*10 + 100, 10)) {
+                        case 500 ... 519: {
+                            if (savedata::consecutive_true_from_slot((anim_id - 500) * 10 + 100, 10)) {
                                 mkb::itemgroups[i].playback_state = 0;
                                 mkb::itemgroups[i].anim_frame = 2;
                             }
@@ -369,15 +379,16 @@ void tick() {
                         }
 
                         // Story sweep statues
-                        case 600: case 601:{
-                            if (savedata::consecutive_true_from_slot((anim_id - 600)*100 + 100, 100)) {
+                        case 600:
+                        case 601: {
+                            if (savedata::consecutive_true_from_slot((anim_id - 600) * 100 + 100, 100)) {
                                 mkb::itemgroups[i].playback_state = 0;
                                 mkb::itemgroups[i].anim_frame = 2;
                             }
                             break;
                         }
                     }
-                    if(anim_id > 399 && anim_id < 405 && mkb::itemgroups[i].anim_frame > 1198){
+                    if (anim_id > 399 && anim_id < 405 && mkb::itemgroups[i].anim_frame > 1198) {
                         mkb::itemgroups[i].anim_frame = 2;
                     }
                 }
@@ -385,24 +396,24 @@ void tick() {
             break;
         }
     }
-    
+
     // Special hardcode for Interstellar 6 size-3 wormholes
     if (mkb::current_stage_id == 226) {
-        patch::write_word(reinterpret_cast<void*>(0x803de6f8), 0x41400000); // 12.0
-        patch::write_word(reinterpret_cast<void*>(0x803e65b0), 0x40c00000); // 6.0
+        patch::write_word(reinterpret_cast<void*>(0x803de6f8), 0x41400000);// 12.0
+        patch::write_word(reinterpret_cast<void*>(0x803e65b0), 0x40c00000);// 6.0
     }
     // Special hardcode for Interstellar 9 size-6 big wormholes
     else if (mkb::current_stage_id == 229 || mkb::current_stage_id == 230) {
-        patch::write_word(reinterpret_cast<void*>(0x803de6f8), 0x41c00000); // 24.0
-        patch::write_word(reinterpret_cast<void*>(0x803e65b0), 0x41400000); // 12.0
+        patch::write_word(reinterpret_cast<void*>(0x803de6f8), 0x41c00000);// 24.0
+        patch::write_word(reinterpret_cast<void*>(0x803e65b0), 0x41400000);// 12.0
     }
-    else { 
-        patch::write_word(reinterpret_cast<void*>(0x803de6f8), 0x40800000); // 4.0 (default)
-        patch::write_word(reinterpret_cast<void*>(0x803e65b0), 0x40000000); // 2.0 (default)
+    else {
+        patch::write_word(reinterpret_cast<void*>(0x803de6f8), 0x40800000);// 4.0 (default)
+        patch::write_word(reinterpret_cast<void*>(0x803e65b0), 0x40000000);// 2.0 (default)
     }
     // Special hardcode for W4 & W6 snow particle rates
     patch::write_nop(reinterpret_cast<void*>(0x802f4ef4));
-    if(mkb::world_theme == 0x00120000) patch::write_word(reinterpret_cast<void*>(0x802f4eac), 0xc07f001c);
+    if (mkb::world_theme == 0x00120000) patch::write_word(reinterpret_cast<void*>(0x802f4eac), 0xc07f001c);
     else patch::write_word(reinterpret_cast<void*>(0x802f4eac), 0xc07f0038);
     // Hurry up removal for frozen/count-up timers
     if ((mkb::main_game_mode == mkb::PRACTICE_MODE && (mkb::curr_difficulty == mkb::DIFF_BEGINNER)) || (mkb::current_stage_id == 267) || (mkb::current_stage_id == 77)) {
@@ -462,19 +473,19 @@ void tick() {
         mkb::strcpy(mkb::LOADIN_TEXT_STAGE, "DEBUG %d");
         mkb::strcpy(mkb::LOADIN_TEXT_FINAL_STAGE, "END OF ZONE");
         if (mkb::current_stage_id == 245) {
-        patch::write_word(reinterpret_cast<void*>(0x8032cf50), 0x38000000);
-        patch::write_word(reinterpret_cast<void*>(0x8032cf58), 0x380000ff);
-        patch::write_word(reinterpret_cast<void*>(0x8032cf60), 0x38000000);
+            patch::write_word(reinterpret_cast<void*>(0x8032cf50), 0x38000000);
+            patch::write_word(reinterpret_cast<void*>(0x8032cf58), 0x380000ff);
+            patch::write_word(reinterpret_cast<void*>(0x8032cf60), 0x38000000);
         }
         else if (mkb::current_stage_id == 73) {
-        patch::write_word(reinterpret_cast<void*>(0x8032cf50), 0x38000000);
-        patch::write_word(reinterpret_cast<void*>(0x8032cf58), 0x38000000);
-        patch::write_word(reinterpret_cast<void*>(0x8032cf60), 0x380000ff);
+            patch::write_word(reinterpret_cast<void*>(0x8032cf50), 0x38000000);
+            patch::write_word(reinterpret_cast<void*>(0x8032cf58), 0x38000000);
+            patch::write_word(reinterpret_cast<void*>(0x8032cf60), 0x380000ff);
         }
         else {
-        patch::write_word(reinterpret_cast<void*>(0x8032cf50), 0x380000ff);
-        patch::write_word(reinterpret_cast<void*>(0x8032cf58), 0x38000000);
-        patch::write_word(reinterpret_cast<void*>(0x8032cf60), 0x380000ff);
+            patch::write_word(reinterpret_cast<void*>(0x8032cf50), 0x380000ff);
+            patch::write_word(reinterpret_cast<void*>(0x8032cf58), 0x38000000);
+            patch::write_word(reinterpret_cast<void*>(0x8032cf60), 0x380000ff);
         }
     }
     else {
@@ -488,7 +499,7 @@ void tick() {
     patch::write_nop(reinterpret_cast<void*>(0x8032bba0));
     patch::write_nop(reinterpret_cast<void*>(0x8032bba8));
     patch::write_nop(reinterpret_cast<void*>(0x8032bbb0));
-    
+
 }// void tick
 void init_sel_ngc() {
     /*

@@ -114,7 +114,7 @@ void new_item_coin_coli(mkb::Item* item, mkb::PhysicsBall* phys_ball) {
                 mkb::stagedef->coli_header_list[item->itemgroup_idx].anim_group_id <=
                     12000) {
                 effect.g_scale = Vec{2.0, 2.0, 2.0};
-                if(mkb::stagedef->coli_header_list[item->itemgroup_idx].anim_group_id != 11001) big_bunch::remove_closest_bunch_indicator();// REMOVES THE INDICATOR
+                if (mkb::stagedef->coli_header_list[item->itemgroup_idx].anim_group_id != 11001) big_bunch::remove_closest_bunch_indicator();// REMOVES THE INDICATOR
             }
             spawn_effect(&effect);
         }
@@ -168,7 +168,7 @@ void new_view_stage_draw_bananas(void) {
                 if (banana_list->type == mkb::BANANA_BUNCH &&
                     mkb::stagedef->coli_header_list[iVar2].anim_group_id >= 11000 &&
                     mkb::stagedef->coli_header_list[iVar2].anim_group_id <= 12000) {
-                    mkb::mtxa_scale_s(2.5f); //unsure if this is exactly the same, but close enough
+                    mkb::mtxa_scale_s(2.5f);// unsure if this is exactly the same, but close enough
                 }
                 mkb::mtxa_mult_left(&mkb::mtxa[1]);
                 mkb::load_gx_pos_nrm_mtx(mkb::mtxa, 0);

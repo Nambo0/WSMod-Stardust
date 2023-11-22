@@ -57,6 +57,9 @@ void new_render_func(void) {
           if (((pSVar6->stage_model_a->some_effect_bitflag & mkb::EFFECT_TRANSPARENCY_A) == mkb::EFFECT_NULL)
              && (pGVar3 = (mkb::GmaModel *)mkb::g_some_draw_func2((int)pSVar6->stage_model_a),
                 pGVar3 != (mkb::GmaModel *)0x0)) {
+            if (pSVar10->texture_scroll != (mkb::StagedefTextureScroll *)0x0) {
+            mkb::g_something_with_texture_scroll(pSVar10->texture_scroll);
+          }
          if ((pSVar6->stage_model_a->some_effect_bitflag & mkb::EFFECT_TRANSPARENCY_B) == mkb::EFFECT_NULL)
           {
             mkb::avdisp_draw_model_culled_sort_never(pGVar3);

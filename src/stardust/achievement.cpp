@@ -130,7 +130,7 @@ void tick() {
                         flipped_yet = true;
                     }
                 }
-                if (mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 1) {
+                if (mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 2) {
                     flipped_yet = false;
                 }
                 break;

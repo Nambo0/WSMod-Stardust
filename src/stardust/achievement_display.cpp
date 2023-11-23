@@ -178,6 +178,7 @@ void create_achievement_sprite() {
         sprite->g_flags1 = sprite->g_flags1 | 0xa1000000;
         sprite->widescreen_translation_x = 0x60;
         sprite->tick_func = achievement_sprite_tick;
+        set_sprite_achievement_name(sprite);
     }
     mkb::Sprite* sprite_shadow = mkb::create_sprite();
     if (sprite_shadow != nullptr) {
@@ -200,6 +201,7 @@ void create_achievement_sprite() {
         sprite_shadow->g_flags1 = sprite->g_flags1 | 0xa1000000;
         sprite_shadow->widescreen_translation_x = 0x60;
         sprite_shadow->tick_func = achievement_sprite_tick;
+        set_sprite_achievement_name(sprite);
     }
     sprite = mkb::create_sprite();
     if (sprite != (mkb::Sprite*) 0x0) {

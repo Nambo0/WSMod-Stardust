@@ -10,13 +10,12 @@ Here's all the achievements I have planned so far |
 
 = STORY MODE =
 11) BEAT THE GAME | Complete story mode  ~  (Part of unlocking Bonus Modes)
-12) FEELING BLUE | Complete all 100 blue goals
-13) STUNT TRAINEE | Complete 1 stunt goal
-14) STUNT PILOT | Complete 1 stunt goal in each world  ~  (Part of unlocking Bonus Modes)
-15) STUNT SPECIALIST | Complete all 10 Stunt Goals in any world
-16) STUNT ACE | Complete all 100 Stunt Goals
-17) EATER OF SOULS | Obtain 5,000 bananas in Story Mode
-18) EATER OF WORLDS | Obtain 9,999 bananas in Story Mode
+12) STUNT TRAINEE | Complete 1 stunt goal
+13) STUNT PILOT | Complete 1 stunt goal in each world  ~  (Part of unlocking Bonus Modes)
+14) STUNT SPECIALIST | Complete all 10 Stunt Goals in any world
+15) STUNT ACE | Complete all 100 Stunt Goals
+16) EATER OF SOULS | Obtain 5,000 bananas in Story Mode
+17) EATER OF WORLDS | Obtain 9,999 bananas in Story Mode
 
 = STAGE CHALLENGES =
 1) DOUBLE TAKE | 1-8 Double Time  -  Clear the stunt goal at both spinning speeds on back to back attempts
@@ -31,17 +30,22 @@ Here's all the achievements I have planned so far |
 10) STARSTRUCK | 10-10 Impact  -  Clear the stunt goal after it shoots into the sky
 
 = INTERSTELLAR =
-19) FINISH HIM | Get all 10 goals in a single run
+21) BRONZE RANK | Finish an Interstellar run with 1000+ bananas
+22) SILVER RANK | Finish an Interstellar run with 2000+ bananas
+23) GOLD RANK | Finish an Interstellar run with 3000+ bananas
+24) PLATINUM RANK | Finish an Interstellar run with 4000+ bananas
+25) STAR RANK | Finish an Interstellar run with 5000+ bananas
+26) FINISH HIM | Get all 10 goals in a single run
 
 = SECRET =
-21) HEY GOOBZ PLAY DEBUG | Complete or skip through any of the debug sub-categories             (on-goal)
-22) A COMPLEX JOKE | Clear a stage with exactly 54.13 on the timer                              (on-goal)
-23) YOU-DA-BACON | Clear a stage 10x in a row                                                   (on-goal + u8)
-24) RULES LAWYER | Clear the stunt goal on Spleef without pressing any blue buttons             (on-goal + for loop)
-25) RULES LAWYER 2 | Clear the stunt goal on Currents without clicking the stunt goal button    (on-goal + for loop)
-26) ACUTALLY PLAYABLE | Clear a stage from ‘The Unplayable Zone’ in debug                       (on-goal)
-27) UHHH GG | Complete Interstellar with 0 bananas                                              (on-goal)
-28) AAAAA | Clear a stage after traveling over 1,000 mph                                        (tick + on-goal + bool)
+31) HEY GOOBZ PLAY DEBUG | Complete or skip through any of the debug sub-categories             (on-goal)
+32) A COMPLEX JOKE | Clear a stage with exactly 54.13 on the timer                              (on-goal)
+33) YOU-DA-BACON | Clear a stage 10x in a row                                                   (on-goal + u8)
+34) SPLEEF RULES LAWYER | Clear the stunt goal on Spleef without pressing any blue buttons             (on-goal + for loop)
+35) CURRENTS RULES LAWYER | Clear the stunt goal on Currents without clicking the stunt goal button    (on-goal + for loop)
+36) ACUTALLY PLAYABLE | Clear a stage from ‘The Unplayable Zone’ in debug                       (on-goal)
+37) UHHH GG | Complete Interstellar with 0 bananas                                              (on-goal)
+38) AAAAA | Clear a stage after traveling over 1,000 mph                                        (tick + on-goal + bool)
 
 = CANCELLED =
 IVE SEEN IT ALL | Complete or skip through every debug sub-category                         (annoying to track)

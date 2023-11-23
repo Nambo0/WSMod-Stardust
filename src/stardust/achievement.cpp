@@ -6,6 +6,7 @@
 #include "../stardust/badge.h"
 #include "../stardust/savedata.h"
 #include "../stardust/validate.h"
+#include "../stardust/achievement_display.h"
 #include "mkb/mkb.h"
 
 namespace achievement {
@@ -36,20 +37,13 @@ void claim_achievement(int id) {
     if (!savedata::true_in_slot(claimed_slot)) {
         savedata::write_bool_to_slot(claimed_slot, true);
         savedata::save();
-        // Display badges if it's a stage challenge
-        if (id >= 1 && id <= 10) badge::set_display_badges_next_frame_true(3);
+        achievement_display::add_achievement_to_display_queue(id);
     }
 }
 
 bool detect_beat_the_game() {
     if (mkb::unlock_info.g_movies_watched == 0x0fff) return true;
     else return false;
-}
-bool detect_feeling_blue() {
-    for (u8 i = 0; i < 100; i++) {
-        if (savedata::true_in_slot(savedata::CLEAR_BADGE_START + i)) return true;
-    }
-    return false;
 }
 bool detect_stunt_trainee() {
     for (u8 i = 0; i < 100; i++) {
@@ -142,7 +136,7 @@ void tick() {
                 break;
             }
         }
-        // 29) AAAAA | Clear a stage after traveling over 1,000 mph
+        // 38) AAAAA | Clear a stage after traveling over 1,000 mph
         if (mkb::math_sqrt(VEC_LEN_SQ(ball.vel) * (134.2198 * 134.2198)) > 999.0) went_very_fast = true;
         if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) went_very_fast = false;
 
@@ -254,7 +248,7 @@ void on_goal() {
                 break;
             }
             // Secret achievements
-            // 24) RULES LAWYER | Clear the stunt goal on Spleef without pressing any blue buttons             (on-goal + for loop)
+            // 34) RULES LAWYER | Clear the stunt goal on Spleef without pressing any blue buttons             (on-goal + for loop)
             case 31: {
                 bool none_pressed = true;
                 for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
@@ -264,9 +258,9 @@ void on_goal() {
                         none_pressed = false;
                     }
                 }
-                if (none_pressed) claim_achievement(24);
+                if (none_pressed) claim_achievement(34);
             }
-            // 25) RULES LAWYER 2 | Clear the stunt goal on Currents without clicking the stunt goal button    (on-goal + for loop)
+            // 35) RULES LAWYER 2 | Clear the stunt goal on Currents without clicking the stunt goal button    (on-goal + for loop)
             case 44: {
                 bool pressed = false;
                 for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
@@ -275,43 +269,42 @@ void on_goal() {
                         pressed = true;
                     }
                 }
-                if (mkb::mode_info.entered_goal_type == mkb::Red && !pressed) claim_achievement(25);
+                if (mkb::mode_info.entered_goal_type == mkb::Red && !pressed) claim_achievement(35);
             }
         }// Switch stage ID
-        // 21) HEY GOOBZ PLAY DEBUG | Complete or skip through any of the debug sub-categories
+        // 31) HEY GOOBZ PLAY DEBUG | Complete or skip through any of the debug sub-categories
         if (mkb::main_game_mode == mkb::CHALLENGE_MODE && (mkb::g_current_stage_id == 245 ||// Credit Card
                                                            mkb::g_current_stage_id == 73 || // Candy Clog
                                                            mkb::g_current_stage_id == 71)) {// Precession
-            claim_achievement(21);
+            claim_achievement(31);
         }
-        // 22) A COMPLEX JOKE | Clear a stage with exactly 54.13 on the timer
-        if (mkb::mode_info.stage_time_frames_remaining == 3248) claim_achievement(22);
-        // 23) YOU-DA-BACON | Clear a stage 10x in a row
+        // 32) A COMPLEX JOKE | Clear a stage with exactly 54.13 on the timer
+        if (mkb::mode_info.stage_time_frames_remaining == 3248) claim_achievement(32);
+        // 33) YOU-DA-BACON | Clear a stage 10x in a row
         if (last_completed_stage_id == mkb::g_current_stage_id) {
             completions_in_a_row++;
-            if (completions_in_a_row == 10) claim_achievement(23);
+            if (completions_in_a_row == 10) claim_achievement(33);
         }
         else completions_in_a_row = 1;
         last_completed_stage_id = mkb::g_current_stage_id;
-        // 26) ACUTALLY PLAYABLE | Clear a stage from ‘The Unplayable Zone’ in debug
+        // 36) ACUTALLY PLAYABLE | Clear a stage from ‘The Unplayable Zone’ in debug
         if (mkb::curr_difficulty == mkb::DIFF_ADVANCED && mkb::mode_info.cm_course_stage_num >= 90 && mkb::mode_info.cm_course_stage_num <= 110) {
-            claim_achievement(26);
+            claim_achievement(36);
         }
-        // 27) UHHH GG | Complete Interstellar with 0 bananas
+        // 37) UHHH GG | Complete Interstellar with 0 bananas
         if (mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::g_current_stage_id == 230 && mkb::balls[mkb::curr_player_idx].banana_count == 0) {
-            claim_achievement(27);
+            claim_achievement(37);
         }
-        // 28) AAAAA | Clear a stage after traveling over 1,000 mph
-        if (went_very_fast) claim_achievement(28);
+        // 38) AAAAA | Clear a stage after traveling over 1,000 mph
+        if (went_very_fast) claim_achievement(38);
     }// If valid
 
     // Badge-count achievements
     if (detect_beat_the_game()) claim_achievement(11);
-    if (detect_feeling_blue()) claim_achievement(12);
-    if (detect_stunt_trainee()) claim_achievement(13);
-    if (detect_stunt_pilot()) claim_achievement(14);
-    if (detect_stunt_specialist()) claim_achievement(15);
-    if (detect_stunt_ace()) claim_achievement(16);
+    if (detect_stunt_trainee()) claim_achievement(12);
+    if (detect_stunt_pilot()) claim_achievement(13);
+    if (detect_stunt_specialist()) claim_achievement(14);
+    if (detect_stunt_ace()) claim_achievement(15);
 
 
     // Banana-count achievements
@@ -319,11 +312,11 @@ void on_goal() {
         u16 banana_count = mkb::get_storymode_banana_count();
         // EATER OF SOULS | Obtain 5,000 bananas in Story Mode (ID: 17)
         if (banana_count >= 5000) {
-            claim_achievement(17);
+            claim_achievement(16);
         }
         // EATER OF WORLDS | Obtain 9,999 bananas in Story Mode (ID: 18)
         if (banana_count >= 9999) {
-            claim_achievement(18);
+            claim_achievement(17);
         }
     }
 
@@ -340,7 +333,7 @@ void on_goal() {
                 break;
             }
             case 10: {
-                if (last_stellar_goal == stage - 1) claim_achievement(19);
+                if (last_stellar_goal == stage - 1) claim_achievement(26);
                 break;
             }
         }

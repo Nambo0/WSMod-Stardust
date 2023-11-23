@@ -86,13 +86,13 @@ void tick() {
                 }
                 if (button_b_frames == 90) {
                     skip_stage();
-                    button_b_frames = 0; // Reset B frames if stage skipped
+                    button_b_frames = 0;// Reset B frames if stage skipped
                 }
             }
         }
-        else button_b_frames = 0; // Reset B frames if B is no longer held
+        else button_b_frames = 0;// Reset B frames if B is no longer held
     }
-    else button_b_frames = 0; // Reset B frames if proper mode is left
+    else button_b_frames = 0;// Reset B frames if proper mode is left
 
     // Interstellar quick-death hotkey
     if (mkb::main_game_mode == mkb::CHALLENGE_MODE &&

@@ -1,5 +1,7 @@
 #include "galactic_log.h"
 
+#include "../stardust/savedata.h"
+#include "../stardust/unlock.h"
 #include "internal/heap.h"
 #include "internal/log.h"
 #include "internal/patch.h"
@@ -9,8 +11,6 @@
 #include "internal/ui/widget_menu.h"
 #include "internal/ui/widget_text.h"
 #include "internal/ui/widget_window.h"
-#include "../stardust/unlock.h"
-#include "../stardust/savedata.h"
 #include "widget_input.h"
 #include "widget_sprite.h"
 
@@ -27,7 +27,7 @@ TICKABLE_DEFINITION((
 static patch::Tramp<decltype(&mkb::g_create_how_to_sprite)> s_g_create_how_to_sprite_tramp;
 static char s_badge_stage_name_buffer[10][64];
 static char s_text_page_buffer[1024] = {0};
-static uint8_t s_log_page_number = 0; // Current index of page in log screen
+static uint8_t s_log_page_number = 0;// Current index of page in log screen
 static uint8_t s_log_page_count = 0; // Number of pages in a log screen
 
 // All relevant pages of text here
@@ -149,10 +149,9 @@ constexpr char* s_log_pages_about[8] = {
     "/bcC800FF/Continued:/bcFFFFFF/\n"
     "\n"
     "The center of the stage has a spinning /bc009DFF/medallion/bcFFFFFF/,\n"
-    "representing your best Interstellar rank!\n"
-};
+    "representing your best Interstellar rank!\n"};
 constexpr char* s_log_pages_credits[2] = {
-"/bcFFFFFF/NOTE: Credits.pdf (included with the ISO) has more     \n"
+    "/bcFFFFFF/NOTE: Credits.pdf (included with the ISO) has more     \n"
     "annotated credits, including clickable /bc008CFF/links/bcFFFFFF/\n"
     "\n"
     "/bcC800FF/DIRECT CONTRIBUTIONS:/bcFFFFFF/\n"
@@ -181,9 +180,8 @@ constexpr char* s_log_pages_credits[2] = {
     "      (>^^)> Friends from Monkey Ball speedrunning\n"
     "      (>^^)> Friends from Random Randos\n"
     "      (>^^)> My family & irl friends\n"
-    "      (>^^)> YOU!\n"
-};
-}
+    "      (>^^)> YOU!\n"};
+}// namespace
 
 void create_galactic_log_menu() {
     constexpr Vec2d center = Vec2d{640 / 2, 480 / 2};
@@ -243,7 +241,7 @@ void create_about_screen() {
 
     // Initialize the correct page count/page index
     s_log_page_number = 0;
-    s_log_page_count = 8; // TODO: hook into bonus locked/unlocked status
+    s_log_page_count = 8;// TODO: hook into bonus locked/unlocked status
 
     // Parent widget, this is the darkened screen
     auto& about_menu_screen = ui::get_widget_manager().add(new ui::Sprite(0x4b, Vec2d{0, 0}, Vec2d{64, 64}));
@@ -290,47 +288,47 @@ void create_about_screen() {
     auto decrement_page_about = []() {
         // UNLOCKED: Skip page 3
         // LOCKED: End on page 3
-        if(unlock::unlock_condition_met()){
+        if (unlock::unlock_condition_met()) {
             if (s_log_page_number == 0) {
-                s_log_page_number = s_log_page_count-1;
+                s_log_page_number = s_log_page_count - 1;
             }
             else {
                 --s_log_page_number;
             }
-            if (s_log_page_number == 2) s_log_page_number = 1; // Skip page 3
+            if (s_log_page_number == 2) s_log_page_number = 1;// Skip page 3
         }
-        else{
+        else {
             if (s_log_page_number == 0) {
-                s_log_page_number = 2; // Wraparound to page 3
+                s_log_page_number = 2;// Wraparound to page 3
             }
             else {
                 --s_log_page_number;
             }
         }
-      mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
+        mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
     };
 
     auto increment_page_about = []() {
         // UNLOCKED: Skip page 3
         // LOCKED: End on page 3
-        if (unlock::unlock_condition_met()){
-            if (s_log_page_number+1 >= s_log_page_count) {
+        if (unlock::unlock_condition_met()) {
+            if (s_log_page_number + 1 >= s_log_page_count) {
                 s_log_page_number = 0;
             }
             else {
                 ++s_log_page_number;
             }
-            if(s_log_page_number == 2) s_log_page_number = 3; // Skip page 3
+            if (s_log_page_number == 2) s_log_page_number = 3;// Skip page 3
         }
-        else{
-            if (s_log_page_number+1 >= 3) { // End on page 3
+        else {
+            if (s_log_page_number + 1 >= 3) {// End on page 3
                 s_log_page_number = 0;
             }
             else {
                 ++s_log_page_number;
             }
         }
-      mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
+        mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
     };
 
     auto& close_handler = about_menu_screen.add(new ui::Input(mkb::PAD_BUTTON_B, close_about));
@@ -397,23 +395,23 @@ void create_credits_screen() {
     close_handler.set_input(mkb::PAD_BUTTON_B);
 
     auto decrement_page_credits = []() {
-      if (s_log_page_number == 0) {
-          s_log_page_number = s_log_page_count-1;
-      }
-      else {
-          --s_log_page_number;
-      }
-      mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
+        if (s_log_page_number == 0) {
+            s_log_page_number = s_log_page_count - 1;
+        }
+        else {
+            --s_log_page_number;
+        }
+        mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
     };
 
     auto increment_page_credits = []() {
-      if (s_log_page_number+1 >= s_log_page_count) {
-          s_log_page_number = 0;
-      }
-      else {
-          ++s_log_page_number;
-      }
-      mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
+        if (s_log_page_number + 1 >= s_log_page_count) {
+            s_log_page_number = 0;
+        }
+        else {
+            ++s_log_page_number;
+        }
+        mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
     };
     auto& previous_page_handler = credits_menu_screen.add(new ui::Input(pad::DIR_LEFT, decrement_page_credits));
     previous_page_handler.set_sound_effect_id(0x6f);
@@ -450,9 +448,9 @@ void create_badge_list() {
         uint32_t id_1 = 0xc3d;
         uint32_t id_2 = 0xc3d;
         uint32_t id_3 = 0xc3d;
-        if(savedata::true_in_slot(savedata::CLEAR_BADGE_START + s_log_page_number*10 + (stage_idx + 1))) id_1 = 0xc3b;
-        if(savedata::true_in_slot(savedata::STUNT_BADGE_START + s_log_page_number*10 + (stage_idx + 1))) id_2 = 0xc3a;
-        if(savedata::true_in_slot(savedata::SWEEP_BADGE_START + s_log_page_number*10 + (stage_idx + 1))) id_3 = 0xc39;
+        if (savedata::true_in_slot(savedata::CLEAR_BADGE_START + s_log_page_number * 10 + (stage_idx + 1))) id_1 = 0xc3b;
+        if (savedata::true_in_slot(savedata::STUNT_BADGE_START + s_log_page_number * 10 + (stage_idx + 1))) id_2 = 0xc3a;
+        if (savedata::true_in_slot(savedata::SWEEP_BADGE_START + s_log_page_number * 10 + (stage_idx + 1))) id_3 = 0xc39;
         auto& blue = sprite_container.add(new ui::Sprite(id_1, Vec2d{32, 32}));
         auto& purple = sprite_container.add(new ui::Sprite(id_2, Vec2d{32, 32}));
         auto& sweep = sprite_container.add(new ui::Sprite(id_3, Vec2d{32, 32}));
@@ -462,7 +460,7 @@ void create_badge_list() {
         sweep.set_scale(Vec2d{0.5, 0.5});
 
         text.set_alignment(ui::LEFT);
-        text.set_drop_shadow(false); // temporary
+        text.set_drop_shadow(false);// temporary
     }
 }
 void create_badge_screen() {
@@ -511,27 +509,27 @@ void create_badge_screen() {
     };
 
     auto decrement_page_badge = []() {
-      auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
-      badge_menu_screen.remove("galbdgc");
-      if (s_log_page_number == 0) {
-          s_log_page_number = s_log_page_count-1;
-      }
-      else {
-          --s_log_page_number;
-      }
-      create_badge_list();
+        auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
+        badge_menu_screen.remove("galbdgc");
+        if (s_log_page_number == 0) {
+            s_log_page_number = s_log_page_count - 1;
+        }
+        else {
+            --s_log_page_number;
+        }
+        create_badge_list();
     };
 
     auto increment_page_badge = []() {
-      auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
-      badge_menu_screen.remove("galbdgc");
-      if (s_log_page_number+1 >= s_log_page_count) {
-          s_log_page_number = 0;
-      }
-      else {
-          ++s_log_page_number;
-      }
-      create_badge_list();
+        auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
+        badge_menu_screen.remove("galbdgc");
+        if (s_log_page_number + 1 >= s_log_page_count) {
+            s_log_page_number = 0;
+        }
+        else {
+            ++s_log_page_number;
+        }
+        create_badge_list();
     };
 
     auto& previous_page_handler = badge_menu_screen.add(new ui::Input(pad::DIR_LEFT, decrement_page_badge));

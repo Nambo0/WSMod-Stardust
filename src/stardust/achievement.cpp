@@ -3,10 +3,10 @@
 #include "../internal/patch.h"
 #include "../internal/tickable.h"
 #include "../internal/utils.h"
+#include "../stardust/achievement_display.h"
 #include "../stardust/badge.h"
 #include "../stardust/savedata.h"
 #include "../stardust/validate.h"
-#include "../stardust/achievement_display.h"
 #include "mkb/mkb.h"
 
 namespace achievement {

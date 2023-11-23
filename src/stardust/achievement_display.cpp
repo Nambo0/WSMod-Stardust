@@ -150,7 +150,7 @@ void create_achievement_sprite() {
         sprite->g_flags1 = 0x1000000;
         sprite->width = 0.25;
         sprite->height = 0.25;
-        sprite->widescreen_translation_x = 0x140;
+        sprite->widescreen_translation_x = 0x60;
         sprite->tick_func = achievement_sprite_tick;
         mkb::strcpy(sprite->text, "achievement icon");
     }

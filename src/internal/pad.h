@@ -16,17 +16,6 @@ enum Dir {
     DIR_NONE = -1,
 };
 
-void init();
-// Tick functions to be run at different points in the game loop
-void on_frame_start();
-void tick();// Run this after controller inputs are read and processed by the game
-
-// In exclusive mode, inputs only register
-// when passing `true` to the optional second argument of the input checking functions,
-// meanwhile the game sees zero inputs.
-void set_exclusive_mode(bool enabled);
-bool get_exclusive_mode();
-
 // Simple wrappers about internal MKB2 bitfields. Represents OR-ed inputs of all controllers.
 
 // Accept a mkb::PadDigitalInput
@@ -44,6 +33,5 @@ bool analog_chord_pressed(u16 analog1, u16 analog2, bool priority = false);
 s32 get_cstick_dir(bool priority = false);
 bool dir_down(u16 dir, bool priority = false);   // Only works for cardinal directions
 bool dir_pressed(u16 dir, bool priority = false);// Only works for cardinal directions
-bool konami_pressed();
 
 }// namespace pad

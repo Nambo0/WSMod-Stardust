@@ -4,35 +4,29 @@
 namespace pad {
 
 static bool s_exclusive_mode;
-static bool s_exclusive_mode_request;
-
-static mkb::AnalogInputGroup s_merged_analog_inputs;
-static mkb::DigitalInputGroup s_merged_digital_inputs;
-static mkb::AnalogInputGroup s_analog_inputs[4];
-static mkb::PadStatusGroup s_pad_status_groups[4];
 
 bool button_down(u16 digital_input, bool priority) {
-    return (!s_exclusive_mode || priority) && (s_merged_digital_inputs.raw & digital_input);
+    return (!s_exclusive_mode || priority) && (mkb::merged_digital_inputs.raw & digital_input);
 }
 
 bool button_pressed(u16 digital_input, bool priority) {
-    return (!s_exclusive_mode || priority) && s_merged_digital_inputs.pressed & digital_input;
+    return (!s_exclusive_mode || priority) && mkb::merged_digital_inputs.pressed & digital_input;
 }
 
 bool button_released(u16 digital_input, bool priority) {
-    return (!s_exclusive_mode || priority) && s_merged_digital_inputs.released & digital_input;
+    return (!s_exclusive_mode || priority) && mkb::merged_digital_inputs.released & digital_input;
 }
 
 bool analog_down(u16 analog_input, bool priority) {
-    return (!s_exclusive_mode || priority) && s_merged_analog_inputs.raw & analog_input;
+    return (!s_exclusive_mode || priority) && mkb::merged_analog_inputs.raw & analog_input;
 }
 
 bool analog_pressed(u16 analog_input, bool priority) {
-    return (!s_exclusive_mode || priority) && s_merged_analog_inputs.pressed & analog_input;
+    return (!s_exclusive_mode || priority) && mkb::merged_analog_inputs.pressed & analog_input;
 }
 
 bool analog_released(u16 analog_input, bool priority) {
-    return (!s_exclusive_mode || priority) && s_merged_analog_inputs.released & analog_input;
+    return (!s_exclusive_mode || priority) && mkb::merged_analog_inputs.released & analog_input;
 }
 
 bool button_chord_pressed(u16 btn1, u16 btn2, bool priority) {
@@ -97,42 +91,6 @@ bool dir_pressed(u16 dir, bool priority) {
         default: {
             return false;
         }
-    }
-}
-
-void set_exclusive_mode(bool enabled) {
-    s_exclusive_mode_request = enabled;
-}
-
-bool get_exclusive_mode() {
-    return s_exclusive_mode;
-}
-
-void on_frame_start() {
-    if (s_exclusive_mode) {
-        // Restore previous controller inputs so new inputs can be computed correctly by the game
-        mkb::merged_analog_inputs = s_merged_analog_inputs;
-        mkb::merged_digital_inputs = s_merged_digital_inputs;
-        mkb::memcpy(mkb::pad_status_groups, s_pad_status_groups, sizeof(mkb::pad_status_groups));
-        mkb::memcpy(mkb::analog_inputs, s_analog_inputs, sizeof(mkb::analog_inputs));
-    }
-
-    // Only now do we honor the request to change into/out of exclusive mode
-    s_exclusive_mode = s_exclusive_mode_request;
-}
-
-void tick() {
-    s_merged_analog_inputs = mkb::merged_analog_inputs;
-    s_merged_digital_inputs = mkb::merged_digital_inputs;
-    mkb::memcpy(s_pad_status_groups, mkb::pad_status_groups, sizeof(mkb::pad_status_groups));
-    mkb::memcpy(s_analog_inputs, mkb::analog_inputs, sizeof(mkb::analog_inputs));
-
-    if (s_exclusive_mode) {
-        // Zero controller inputs in the game
-        mkb::merged_analog_inputs = {};
-        mkb::merged_digital_inputs = {};
-        mkb::memset(mkb::pad_status_groups, 0, sizeof(mkb::pad_status_groups));
-        mkb::memset(mkb::analog_inputs, 0, sizeof(mkb::analog_inputs));
     }
 }
 

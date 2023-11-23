@@ -4,7 +4,6 @@
 #include "internal/heap.h"
 #include "internal/log.h"
 #include "internal/modlink.h"
-#include "internal/pad.h"
 #include "internal/patch.h"
 #include "internal/tickable.h"
 #include "internal/ui/ui_manager.h"
@@ -13,7 +12,7 @@
 #include "stardust/savedata.h"
 
 namespace main {
-static patch::Tramp<decltype(&mkb::process_inputs)> s_process_inputs_tramp;
+static patch::Tramp<decltype(&mkb::mode_tick)> s_mode_tick_tramp;
 
 bool debug_mode_enabled = false;
 
@@ -50,12 +49,10 @@ void init() {
     tickable::get_tickable_manager().init();
 
     patch::hook_function(
-        s_process_inputs_tramp, mkb::process_inputs, []() {
-            s_process_inputs_tramp.dest();
-
-            // These run after all controller inputs have been processed on the current frame,
-            // to ensure lowest input delay
-            pad::tick();
+        s_mode_tick_tramp, mkb::mode_tick, []() {
+            // These run after process_inputs has been ran to minimize input delay.
+            // It runs after pracmod sets s_exclusive_mode though
+            // (so practice mod can still override the pack's pad inputs)
             cardio::tick();
 
             // Tick functions (REL patches)
@@ -66,6 +63,8 @@ void init() {
             }
 
             ui::get_widget_manager().tick();
+            // after all our code has ran, run the current mode's tick function
+            s_mode_tick_tramp.dest();
         });
 
     savedata::init();

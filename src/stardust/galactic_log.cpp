@@ -422,9 +422,55 @@ void create_credits_screen() {
     next_page_handler.set_sound_effect_id(0x6f);
 }
 
+void create_badge_list() {
+    auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
+
+    auto& badge_container = badge_menu_screen.add(new ui::Container(Vec2d{0, 65}, Vec2d{640, 480 - 65}));
+    badge_container.set_label("galbdgc");
+    badge_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
+    for (uint32_t stage_idx = 0; stage_idx < 10; stage_idx++) {
+        auto& layout_row = badge_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{630, 32}));
+        layout_row.set_margin(0);
+        layout_row.set_layout_spacing(0);
+        layout_row.set_layout(ui::ContainerLayout::HORIZONTAL);
+        auto& text_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{470, 32}));
+        auto& sprite_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{160, 32}));
+        sprite_container.set_layout(ui::ContainerLayout::HORIZONTAL);
+
+        uint32_t stage_id = mkb::get_story_mode_stage_id(s_log_page_number, stage_idx);
+        LOG("Got id %d", stage_id);
+        char stage_name_buffer[64] = {0};
+        mkb::read_stage_name_from_dvd(stage_id, stage_name_buffer, 64);
+        LOG("Got name %s", stage_name_buffer)
+        mkb::sprintf(s_badge_stage_name_buffer[stage_idx], "%d-%d %s", s_log_page_number + 1, stage_idx + 1, stage_name_buffer);
+        LOG("Did sprintf to yield: %s", s_badge_stage_name_buffer[stage_idx])
+        auto& text = text_container.add(new ui::Text(s_badge_stage_name_buffer[stage_idx]));
+
+        // 0xc3b = blue, 0xc3a = purple, 0xc39 = sweep, 0xc3c = achievement, 0xc3d = empty
+        uint32_t id_1 = 0xc3d;
+        uint32_t id_2 = 0xc3d;
+        uint32_t id_3 = 0xc3d;
+        if(savedata::true_in_slot(savedata::CLEAR_BADGE_START + s_log_page_number*10 + (stage_idx + 1))) id_1 = 0xc3b;
+        if(savedata::true_in_slot(savedata::STUNT_BADGE_START + s_log_page_number*10 + (stage_idx + 1))) id_2 = 0xc3a;
+        if(savedata::true_in_slot(savedata::SWEEP_BADGE_START + s_log_page_number*10 + (stage_idx + 1))) id_3 = 0xc39;
+        auto& blue = sprite_container.add(new ui::Sprite(id_1, Vec2d{32, 32}));
+        auto& purple = sprite_container.add(new ui::Sprite(id_2, Vec2d{32, 32}));
+        auto& sweep = sprite_container.add(new ui::Sprite(id_3, Vec2d{32, 32}));
+
+        blue.set_scale(Vec2d{0.5, 0.5});
+        purple.set_scale(Vec2d{0.5, 0.5});
+        sweep.set_scale(Vec2d{0.5, 0.5});
+
+        text.set_alignment(ui::LEFT);
+        text.set_drop_shadow(false); // temporary
+    }
+}
 void create_badge_screen() {
     LOG("Creating badge screen...");
     mkb::load_bmp_by_id(0xc);// TODO: do not rely on this, this wastes memory
+
+    s_log_page_number = 0;
+    s_log_page_count = 10;
 
     // Parent widget, this is the pink screen
     auto& badge_menu_screen = ui::get_widget_manager().add(new ui::Sprite(0x4b, Vec2d{0, 0}, Vec2d{64, 64}));
@@ -455,61 +501,46 @@ void create_badge_screen() {
     auto& next_arrow = badge_menu_header_container.add(new ui::Sprite(0xc27, Vec2d{0, 0}, Vec2d{64, 64}));
     next_arrow.set_mirror(true);
 
-    // Credits Page 1
-    auto& badge_container = badge_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640 - 5, 480 - 65 - 5}));
 
-    // Todo: pages. maybe a button with a callback that changes the active text, use sprintf to set the text perhaps?
     LOG("Creating stage name list...");
-    uint32_t active_world_idx = 0;
-    for (uint32_t stage_idx = 0; stage_idx < 10; stage_idx++) {
-        auto& layout_row = badge_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{630, 32}));
-        layout_row.set_layout(ui::ContainerLayout::HORIZONTAL);
-        auto& text_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{420, 32}));
-        auto& sprite_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{210, 32}));
-        sprite_container.set_layout(ui::ContainerLayout::HORIZONTAL);
-
-        uint32_t stage_id = mkb::get_story_mode_stage_id(active_world_idx, stage_idx);
-        LOG("Got id %d", stage_id);
-        char stage_name_buffer[64] = {0};
-        mkb::read_stage_name_from_dvd(stage_id, stage_name_buffer, 64);
-        LOG("Got name %s", stage_name_buffer)
-        mkb::sprintf(s_badge_stage_name_buffer[stage_idx], "%d-%d %s", active_world_idx + 1, stage_idx + 1, stage_name_buffer);
-        LOG("Did sprintf to yield: %s", s_badge_stage_name_buffer[stage_idx])
-        auto& text = text_container.add(new ui::Text(s_badge_stage_name_buffer[stage_idx]));
-
-        // 0xc3b = blue, 0xc3a = purple, 0xc39 = sweep, 0xc3c = achievement, 0xc3d = empty
-        uint32_t id_1 = 0xc3d;
-        uint32_t id_2 = 0xc3d;
-        uint32_t id_3 = 0xc3d;
-        if(savedata::true_in_slot(savedata::CLEAR_BADGE_START + active_world_idx*10 + (stage_idx + 1))) id_1 = 0xc3b;
-        if(savedata::true_in_slot(savedata::STUNT_BADGE_START + active_world_idx*10 + (stage_idx + 1))) id_2 = 0xc3a;
-        if(savedata::true_in_slot(savedata::SWEEP_BADGE_START + active_world_idx*10 + (stage_idx + 1))) id_3 = 0xc39;
-
-        auto& blue = sprite_container.add(new ui::Sprite(id_1, Vec2d{32, 32}));
-        auto& purple = sprite_container.add(new ui::Sprite(id_2, Vec2d{32, 32}));
-        auto& sweep = sprite_container.add(new ui::Sprite(id_3, Vec2d{32, 32}));
-
-        blue.set_scale(Vec2d{0.5, 0.5});
-        purple.set_scale(Vec2d{0.5, 0.5});
-        sweep.set_scale(Vec2d{0.5, 0.5});
-
-        text.set_alignment(ui::LEFT);
-    }
-
-    badge_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
-    /*
-    badge_text.set_drop_shadow(true);
-    badge_text.set_color({0x00, 0x00, 0x00});
-     */
+    create_badge_list();
 
     auto close_badge = [&]() {
         ui::get_widget_manager().remove("galbadg");
         create_galactic_log_menu();
     };
 
-    auto& close_handler = badge_menu_screen.add(new ui::Button("", Vec2d{0, 0}, close_badge));// TODO: generic input handler widget
-    close_handler.set_active(true);
-    close_handler.set_input(mkb::PAD_BUTTON_B);
+    auto decrement_page_badge = []() {
+      auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
+      badge_menu_screen.remove("galbdgc");
+      if (s_log_page_number == 0) {
+          s_log_page_number = s_log_page_count-1;
+      }
+      else {
+          --s_log_page_number;
+      }
+      create_badge_list();
+    };
+
+    auto increment_page_badge = []() {
+      auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
+      badge_menu_screen.remove("galbdgc");
+      if (s_log_page_number+1 >= s_log_page_count) {
+          s_log_page_number = 0;
+      }
+      else {
+          ++s_log_page_number;
+      }
+      create_badge_list();
+    };
+
+    auto& previous_page_handler = badge_menu_screen.add(new ui::Input(pad::DIR_LEFT, decrement_page_badge));
+    previous_page_handler.set_sound_effect_id(0x6f);
+
+    auto& next_page_handler = badge_menu_screen.add(new ui::Input(pad::DIR_RIGHT, increment_page_badge));
+    next_page_handler.set_sound_effect_id(0x6f);
+
+    auto& close_handler = badge_menu_screen.add(new ui::Input(mkb::PAD_BUTTON_B, close_badge));
 }
 
 void init_main_loop() {
@@ -517,6 +548,7 @@ void init_main_loop() {
         mkb::call_SoundReqID_arg_2(10);
         LOG("Heap free before: %dkb", heap::get_free_space() / 1024);
         create_galactic_log_menu();
+        mkb::g_some_other_flags = mkb::g_some_other_flags | mkb::OF_GAME_PAUSED;
         LOG("Heap free after: %dkb", heap::get_free_space() / 1024);
         return;
     });

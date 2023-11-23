@@ -259,8 +259,9 @@ void create_about_screen() {
           s_log_page_number = s_log_page_count-1;
       }
       else {
-          mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[--s_log_page_number]);
+          --s_log_page_number;
       }
+      mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
     };
 
     // TODO: Handle the pages that aren't supposed to show up when bonus is locked
@@ -269,8 +270,9 @@ void create_about_screen() {
           s_log_page_number = 0;
       }
       else {
-          mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[++s_log_page_number]);
+          ++s_log_page_number;
       }
+      mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
     };
 
     auto& close_handler = about_menu_screen.add(new ui::Input(mkb::PAD_BUTTON_B, close_about));

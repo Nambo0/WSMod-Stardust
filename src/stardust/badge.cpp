@@ -187,7 +187,7 @@ void tick() {
     if (badge_display_delay == 1) {
         badge_display_delay = 0;
     }
-    if (mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN && !sweep_claimed_this_stage && detect_sweep()) {
+    if (mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN && !sweep_claimed_this_stage && detect_sweep() && validate::is_currently_valid()) {
         claim_sweep(stage_id_to_stage_number(mkb::g_current_stage_id));
         sweep_claimed_this_stage = true;
     }

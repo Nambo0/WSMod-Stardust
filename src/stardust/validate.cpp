@@ -22,7 +22,8 @@ bool is_currently_valid() {
 
 static void track_validity() {
     // Invalidate non-continuous timers (catches practice mod savestates & frozen timers)
-    if (mkb::mode_info.stage_time_frames_remaining > last_frame || mkb::mode_info.stage_time_frames_remaining < last_frame - 1) {
+    if ((mkb::mode_info.stage_time_frames_remaining > last_frame || mkb::mode_info.stage_time_frames_remaining < last_frame - 1)
+    && mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
         currently_valid = false;
     }
 

@@ -1,8 +1,8 @@
 #include "achievement_display.h"
 
+#include "../internal/pad.h"
 #include "../internal/patch.h"
 #include "../internal/tickable.h"
-#include "../internal/pad.h"
 #include "../mkb/mkb.h"
 
 namespace achievement_display {
@@ -13,79 +13,143 @@ TICKABLE_DEFINITION((
         .description = "A",
         .enabled = true,
         .init_main_loop = init,
-        .tick = tick,))
+        .tick = tick, ))
 
 u8 display_queue[] = {0, 0, 0, 0, 0};
 u8 display_timer = 0;
 u8 test_id = 1;
 
-static void set_sprite_achievement_name(mkb::Sprite * sprite){
-    switch(display_queue[0]){
+static void set_sprite_achievement_name(mkb::Sprite* sprite) {
+    switch (display_queue[0]) {
         // Stage Challenges
-        case 1: mkb::strcpy(sprite->text, "Double Take"); break;
-        case 2: mkb::strcpy(sprite->text, "Up, Up, and Away"); break;
-        case 3: mkb::strcpy(sprite->text, "Defused"); break;
-        case 4: mkb::strcpy(sprite->text, "I Wanna Be the Back Goal"); break;
-        case 5: mkb::strcpy(sprite->text, "Behind Locked Doors"); break;
-        case 6: mkb::strcpy(sprite->text, "Monochromatic"); break;
-        case 7: mkb::strcpy(sprite->text, "Target Master"); break;
-        case 8: mkb::strcpy(sprite->text, "Potassium Allergy"); break;
-        case 9: mkb::strcpy(sprite->text, "Flip Wizard"); break;
-        case 10: mkb::strcpy(sprite->text, "Starstruck"); break;
+        case 1:
+            mkb::strcpy(sprite->text, "Double Take");
+            break;
+        case 2:
+            mkb::strcpy(sprite->text, "Up, Up, and Away");
+            break;
+        case 3:
+            mkb::strcpy(sprite->text, "Defused");
+            break;
+        case 4:
+            mkb::strcpy(sprite->text, "I Wanna Be the Back Goal");
+            break;
+        case 5:
+            mkb::strcpy(sprite->text, "Behind Locked Doors");
+            break;
+        case 6:
+            mkb::strcpy(sprite->text, "Monochromatic");
+            break;
+        case 7:
+            mkb::strcpy(sprite->text, "Target Master");
+            break;
+        case 8:
+            mkb::strcpy(sprite->text, "Potassium Allergy");
+            break;
+        case 9:
+            mkb::strcpy(sprite->text, "Flip Wizard");
+            break;
+        case 10:
+            mkb::strcpy(sprite->text, "Starstruck");
+            break;
         // Story Mode
-        case 11: mkb::strcpy(sprite->text, "Beat the Game"); break;
-        case 12: mkb::strcpy(sprite->text, "Stunt Trainee"); break;
-        case 13: mkb::strcpy(sprite->text, "Stunt Pilot"); break;
-        case 14: mkb::strcpy(sprite->text, "Stunt Specialist"); break;
-        case 15: mkb::strcpy(sprite->text, "Stunt Ace"); break;
-        case 16: mkb::strcpy(sprite->text, "Eater of Souls"); break;
-        case 17: mkb::strcpy(sprite->text, "Eater of Worlds"); break;
+        case 11:
+            mkb::strcpy(sprite->text, "Beat the Game");
+            break;
+        case 12:
+            mkb::strcpy(sprite->text, "Stunt Trainee");
+            break;
+        case 13:
+            mkb::strcpy(sprite->text, "Stunt Pilot");
+            break;
+        case 14:
+            mkb::strcpy(sprite->text, "Stunt Specialist");
+            break;
+        case 15:
+            mkb::strcpy(sprite->text, "Stunt Ace");
+            break;
+        case 16:
+            mkb::strcpy(sprite->text, "Eater of Souls");
+            break;
+        case 17:
+            mkb::strcpy(sprite->text, "Eater of Worlds");
+            break;
         // Interstellar
-        case 21: mkb::strcpy(sprite->text, "Bronze Rank"); break;
-        case 22: mkb::strcpy(sprite->text, "Silver Rank"); break;
-        case 23: mkb::strcpy(sprite->text, "Gold Rank"); break;
-        case 24: mkb::strcpy(sprite->text, "Platinum Rank"); break;
-        case 25: mkb::strcpy(sprite->text, "Star Rank"); break;
-        case 26: mkb::strcpy(sprite->text, "Finish Him!"); break;
+        case 21:
+            mkb::strcpy(sprite->text, "Bronze Rank");
+            break;
+        case 22:
+            mkb::strcpy(sprite->text, "Silver Rank");
+            break;
+        case 23:
+            mkb::strcpy(sprite->text, "Gold Rank");
+            break;
+        case 24:
+            mkb::strcpy(sprite->text, "Platinum Rank");
+            break;
+        case 25:
+            mkb::strcpy(sprite->text, "Star Rank");
+            break;
+        case 26:
+            mkb::strcpy(sprite->text, "Finish Him!");
+            break;
         // Secret/Shadow
-        case 31: mkb::strcpy(sprite->text, "Hey Goobz Play Debug"); break;
-        case 32: mkb::strcpy(sprite->text, "A Complex Joke"); break;
-        case 33: mkb::strcpy(sprite->text, "You-Da-Bacon"); break;
-        case 34: mkb::strcpy(sprite->text, "Spleef Rules Lawyer"); break;
-        case 35: mkb::strcpy(sprite->text, "Currents Rules Lawyer"); break;
-        case 36: mkb::strcpy(sprite->text, "Acutally Playable"); break;
-        case 37: mkb::strcpy(sprite->text, "Uhhh... GG!"); break;
-        case 38: mkb::strcpy(sprite->text, "AAAAAAAAA"); break;
+        case 31:
+            mkb::strcpy(sprite->text, "Hey Goobz Play Debug");
+            break;
+        case 32:
+            mkb::strcpy(sprite->text, "A Complex Joke");
+            break;
+        case 33:
+            mkb::strcpy(sprite->text, "You-Da-Bacon");
+            break;
+        case 34:
+            mkb::strcpy(sprite->text, "Spleef Rules Lawyer");
+            break;
+        case 35:
+            mkb::strcpy(sprite->text, "Currents Rules Lawyer");
+            break;
+        case 36:
+            mkb::strcpy(sprite->text, "Acutally Playable");
+            break;
+        case 37:
+            mkb::strcpy(sprite->text, "Uhhh... GG!");
+            break;
+        case 38:
+            mkb::strcpy(sprite->text, "AAAAAAAAA");
+            break;
         // Error case
-        default: mkb::strcpy(sprite->text, "???"); break;
+        default:
+            mkb::strcpy(sprite->text, "???");
+            break;
     }
 }
 
 void achievement_sprite_tick(u8* status, mkb::Sprite* sprite) {
     // Queue is empty
-    if(display_queue[0] == 0){
+    if (display_queue[0] == 0) {
         sprite->alpha = 0;
         return;
     }
     // New achievement being displayed
-    if(display_timer == 180){
+    if (display_timer == 180) {
         set_sprite_achievement_name(sprite);
     }
     // Handle sprite alpha
-    switch(display_timer){
-        case 0:{
+    switch (display_timer) {
+        case 0: {
             sprite->alpha = 0;
             break;
         }
-        case 1 ... 20:{
+        case 1 ... 20: {
             sprite->alpha = display_timer * 0.05;
             break;
         }
-        case 21 ... 160:{
+        case 21 ... 160: {
             sprite->alpha = 1;
             break;
         }
-        case 161 ... 180:{
+        case 161 ... 180: {
             sprite->alpha = (180 - display_timer) * 0.05;
             break;
         }
@@ -156,10 +220,10 @@ void create_achievement_sprite() {
     return;
 }
 
-void add_achievement_to_display_queue(u8 id){
+void add_achievement_to_display_queue(u8 id) {
     // Add to slot 1 (0 = active, 1 = "on deck")
-    for(u8 queue_slot = 1; queue_slot < 5; queue_slot++){
-        if(display_queue[queue_slot] == 0){
+    for (u8 queue_slot = 1; queue_slot < 5; queue_slot++) {
+        if (display_queue[queue_slot] == 0) {
             display_queue[queue_slot] = id;
             return;
         }
@@ -174,15 +238,15 @@ void tick() {
     } */
 
     // Update display
-    if(display_timer > 0) display_timer -= 1; // Timer counting down
-    else{ // Timer = 0
-        if(display_queue[1] == 0) display_timer = 0; // Queue empty
-        else{ // Queue active
-            for(u8 queue_slot = 0; queue_slot < 4; queue_slot++){ // Move queue forward
+    if (display_timer > 0) display_timer -= 1;                     // Timer counting down
+    else {                                                         // Timer = 0
+        if (display_queue[1] == 0) display_timer = 0;              // Queue empty
+        else {                                                     // Queue active
+            for (u8 queue_slot = 0; queue_slot < 4; queue_slot++) {// Move queue forward
                 display_queue[queue_slot] = display_queue[queue_slot + 1];
             }
             display_queue[4] = 0;
-            if(display_queue[0] != 0) display_timer = 180;
+            if (display_queue[0] != 0) display_timer = 180;
         }
     }
 }

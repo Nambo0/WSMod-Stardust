@@ -17,8 +17,6 @@ static patch::Tramp<decltype(&mkb::process_inputs)> s_process_inputs_tramp;
 
 bool debug_mode_enabled = false;
 
-static bool memcard_loaded = false;
-
 static void perform_assembly_patches() {
     // Inject the run function at the start of the main game loop
     patch::write_branch_bl(reinterpret_cast<void*>(0x80270700),
@@ -57,15 +55,8 @@ void init() {
 
             // These run after all controller inputs have been processed on the current frame,
             // to ensure lowest input delay
-
             pad::tick();
             cardio::tick();
-            if (!memcard_loaded) {
-                s32 result = savedata::init();
-                if (result == 0 || result == -4) {
-                    memcard_loaded = true;
-                }
-            }
 
             // Tick functions (REL patches)
             for (const auto& tickable: tickable::get_tickable_manager().get_tickables()) {
@@ -76,6 +67,7 @@ void init() {
 
             ui::get_widget_manager().tick();
         });
+
     savedata::init();
 }
 
@@ -84,7 +76,6 @@ void init() {
  * controller inputs have been read and processed however, to ensure the lowest input delay.
  */
 void tick() {
-    pad::on_frame_start();
 }
 
 }// namespace main

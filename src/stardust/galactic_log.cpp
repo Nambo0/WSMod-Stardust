@@ -10,6 +10,7 @@
 #include "internal/ui/widget_text.h"
 #include "internal/ui/widget_window.h"
 #include "../stardust/unlock.h"
+#include "../stardust/savedata.h"
 #include "widget_input.h"
 #include "widget_sprite.h"
 
@@ -151,36 +152,36 @@ constexpr char* s_log_pages_about[8] = {
     "representing your best Interstellar rank!\n"
 };
 constexpr char* s_log_pages_credits[2] = {
+"/bcFFFFFF/NOTE: Credits.pdf (included with the ISO) has more     \n"
+    "annotated credits, including clickable /bc008CFF/links/bcFFFFFF/\n"
+    "\n"
+    "/bcC800FF/DIRECT CONTRIBUTIONS:/bcFFFFFF/\n"
+    "\n"
+    "/bc00fffb/Original Soundtrack/bcFFFFFF/\n"
+    "      (>^^)> Walkr (/bc008CFF/linktr.ee/walkrmusic/bcFFFFFF/)\n"
+    "      (>^^)> Relayer (/bc008CFF/wxokeys.bandcamp.com/bcFFFFFF/)\n"
+    "/bc00fffb/Custom Code/bcFFFFFF/\n"
+    "      (>^^)> Rehtrop, Bombsquad, Eucalyptus\n"
+    "/bc00fffb/Art/bcFFFFFF/\n"
+    "      (>^^)> Shadow (/bc008CFF/charredshadow.tumblr.com/bcFFFFFF/)\n"
+    "/bc00fffb/Playtesters/bcFFFFFF/\n"
+    "      (>^^)> Eddy, 42guy42, Rehtrop, Null\n"
+    "      (>^^)> Walkr, Goobz, Dyrude, Eucalyptus\n",
     "/bcFFFFFF/NOTE: Credits.pdf (included with the ISO) has more     \n"
-        "annotated credits, including clickable /bc008CFF/links/bcFFFFFF/\n"
-        "\n"
-        "/bcC800FF/DIRECT CONTRIBUTIONS:/bcFFFFFF/\n"
-        "\n"
-        "/bc00fffb/Original Soundtrack/bcFFFFFF/\n"
-        "      (>^^)> Walkr (/bc008CFF/linktr.ee/walkrmusic/bcFFFFFF/)\n"
-        "      (>^^)> Relayer (/bc008CFF/wxokeys.bandcamp.com/bcFFFFFF/)\n"
-        "/bc00fffb/Custom Code/bcFFFFFF/\n"
-        "      (>^^)> Rehtrop, Bombsquad, Eucalyptus\n"
-        "/bc00fffb/Art/bcFFFFFF/\n"
-        "      (>^^)> Shadow (/bc008CFF/charredshadow.tumblr.com/bcFFFFFF/)\n"
-        "/bc00fffb/Playtesters/bcFFFFFF/\n"
-        "      (>^^)> Eddy, 42guy42, Rehtrop, Null\n"
-        "      (>^^)> Walkr, Goobz, Dyrude, Eucalyptus\n",
-        "/bcFFFFFF/NOTE: Credits.pdf (included with the ISO) has more     \n"
-        "annotated credits, including clickable /bc008CFF/links/bcFFFFFF/\n"
-        "\n"
-        "/bcC800FF/SPECIAL THANKS:/bcFFFFFF/\n"
-        "\n"
-        "/bc00fffb/Specific Mentions/bcFFFFFF/\n"
-        "      (>^^)> Zona, Ghost Ham, Sudachi\n"
-        "      (>^^)> PetresInc, Dwaitley, scrap651\n"
-        "      (>^^)> Petra, Yhouse, Jesse, Ariana, Shadow\n"
-        "/bc00fffb/Broad Shout-Outs/bcFFFFFF/\n"
-        "      (>^^)> Everyone listed on page 1\n"
-        "      (>^^)> Friends from Monkey Ball speedrunning\n"
-        "      (>^^)> Friends from Random Randos\n"
-        "      (>^^)> My family & irl friends\n"
-        "      (>^^)> YOU!\n"
+    "annotated credits, including clickable /bc008CFF/links/bcFFFFFF/\n"
+    "\n"
+    "/bcC800FF/SPECIAL THANKS:/bcFFFFFF/\n"
+    "\n"
+    "/bc00fffb/Specific Mentions/bcFFFFFF/\n"
+    "      (>^^)> Zona, Ghost Ham, Sudachi\n"
+    "      (>^^)> PetresInc, Dwaitley, scrap651\n"
+    "      (>^^)> Petra, Yhouse, Jesse, Ariana, Shadow\n"
+    "/bc00fffb/Broad Shout-Outs/bcFFFFFF/\n"
+    "      (>^^)> Everyone listed on page 1\n"
+    "      (>^^)> Friends from Monkey Ball speedrunning\n"
+    "      (>^^)> Friends from Random Randos\n"
+    "      (>^^)> My family & irl friends\n"
+    "      (>^^)> YOU!\n"
 };
 }
 
@@ -477,10 +478,13 @@ void create_badge_screen() {
         auto& text = text_container.add(new ui::Text(s_badge_stage_name_buffer[stage_idx]));
 
         // 0xc3b = blue, 0xc3a = purple, 0xc39 = sweep, 0xc3c = achievement, 0xc3d = empty
-        // TODO: Hook into badge system!
-        uint32_t id_1 = (mkb::rand() % 2) ? 0xc3b : 0xc3d;
-        uint32_t id_2 = (mkb::rand() % 2) ? 0xc3a : 0xc3d;
-        uint32_t id_3 = (mkb::rand() % 2) ? 0xc39 : 0xc3d;
+        uint32_t id_1 = 0xc3d;
+        uint32_t id_2 = 0xc3d;
+        uint32_t id_3 = 0xc3d;
+        if(savedata::true_in_slot(savedata::CLEAR_BADGE_START + active_world_idx*10 + (stage_idx + 1))) id_1 = 0xc3b;
+        if(savedata::true_in_slot(savedata::STUNT_BADGE_START + active_world_idx*10 + (stage_idx + 1))) id_2 = 0xc3a;
+        if(savedata::true_in_slot(savedata::SWEEP_BADGE_START + active_world_idx*10 + (stage_idx + 1))) id_3 = 0xc39;
+
         auto& blue = sprite_container.add(new ui::Sprite(id_1, Vec2d{32, 32}));
         auto& purple = sprite_container.add(new ui::Sprite(id_2, Vec2d{32, 32}));
         auto& sweep = sprite_container.add(new ui::Sprite(id_3, Vec2d{32, 32}));

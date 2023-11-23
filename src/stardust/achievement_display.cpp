@@ -9,8 +9,8 @@ namespace achievement_display {
 
 // Patch is enabled by default
 TICKABLE_DEFINITION((
-        .name = "stardust-a",
-        .description = "A",
+        .name = "stardust-achievement-display",
+        .description = "Achievement Display",
         .enabled = true,
         .init_main_loop = init,
         .tick = tick, ))

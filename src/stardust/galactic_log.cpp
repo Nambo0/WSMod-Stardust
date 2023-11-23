@@ -508,6 +508,15 @@ void create_badge_screen() {
         create_galactic_log_menu();
     };
 
+    // Only display up to the highest unlocked world (using story cutscene unlock info)
+    s_log_page_count = 1;
+    for(u8 world = 1; world < 10; world++){
+        if (!savedata::consecutive_false_from_slot(savedata::CLEAR_BADGE_START + 10*world, 10)
+        || !savedata::consecutive_false_from_slot(savedata::STUNT_BADGE_START + 10*world, 10)){
+            s_log_page_count = world + 1;
+        }
+    }
+
     auto decrement_page_badge = []() {
         auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
         badge_menu_screen.remove("galbdgc");

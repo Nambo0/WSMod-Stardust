@@ -5639,6 +5639,7 @@ extern "C" {
     extern float FLOAT0;
     extern float FLOAT1;
     extern float FLOAT400;
+    extern undefined1 pausemenu_entry_counts[8];
     extern undefined4 g_something_with_camera;
     extern double g_related_to_camera_turn_rate_and_stage_tilt;
     extern float camera_near_clip_z;
@@ -5989,6 +5990,9 @@ extern "C" {
     extern undefined4 g_current_pause_menu_entry_count;
     extern PauseMenuType  pausemenu_type;
     extern Status  g_pause_status;
+    extern undefined4 g_some_pausemenu_var;
+    extern undefined1 g_some_pausemenu_var2;
+    extern undefined4 g_some_pausemenu_var3;
     extern GRenderringFlags  g_some_render_flag;
     extern struct Vec g_mirror_pos1;
     extern struct Vec g_some_scale_vec3;
@@ -6227,6 +6231,7 @@ extern "C" {
     extern undefined4 g_maybe_smth_related_to_pausing;
     extern struct MemCardInfo memcard_infos[2];
     extern undefined1 g_last_used_memcard_slot;
+    extern undefined1 g_maybe_last_selected_memcard_slot;
     extern struct StoryModeSaveFile storymode_save_files[3];
     extern undefined1 g_storymode_unlock_entries_copy;
     extern undefined1 g_cm_unlock_entries_copy;
@@ -6373,6 +6378,7 @@ extern "C" {
     extern undefined1 selected_story_file_idx;
     extern undefined1 g_dataselect_menu_framecounter;
     extern StoryModeMenuState  storymode_menu_state;
+    extern undefined4 g_some_pausemenu_var4;
     extern struct Ape * g_some_ape;
     extern undefined4 view_stage_camera_x;
     extern undefined4 view_stage_camera_y;
@@ -8761,7 +8767,7 @@ extern "C" {
     undefined4 g_handle_bonus_wave_collision(float * param_1, float * param_2, float * param_3);
     WorldTheme get_stage_world_theme(int stage_id);
     WorldTheme get_stage_world_theme(int stage_id);
-    void g_some_draw_func2(int param_1);
+    int g_some_draw_func2(int param_1);
     int g_some_draw_func4(double param_1, int param_2);
     void g_smth_with_stage_anim_groups(int anim_group_id, uint param_2);
     BOOL32 g_smth_with_buttons(int anim_group_id, uint param_2);
@@ -9537,6 +9543,7 @@ extern "C" {
     undefined4 return_1(void);
     void empty_function(void);
     void g_something_with_card13(void);
+    void g_some_replay_func4(byte param_1, byte param_2, byte * param_3);
     void g_something_with_card3(void);
     void print_card_submode_error(byte * param_1);
     void g_memcard_func_1(struct MemCardInfo * info);
@@ -9561,6 +9568,9 @@ extern "C" {
     void g_something_with_card8(void);
     void g_something_with_card6(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
     void g_something_with_card2(int card_chan, int param_2);
+    void * g_some_replay_func(void * * param_1, uint * param_2);
+    undefined4 g_some_replay_func2(byte * param_1);
+    char * g_some_replay_func3(byte * param_1, char * param_2);
     uint g_something_with_fonts(void);
     void g_some_printf_function_6(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, int param_9, int param_10, int param_11, char * param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void smd_mini_ranking_init(void);

@@ -162,7 +162,6 @@ static void end_of_zone() {
     }
 }
 
-static patch::Tramp<decltype(&mkb::item_coin_disp)> s_item_coin_disp_tramp;
 static patch::Tramp<decltype(&mkb::create_hud_sprites)> s_create_hud_sprites_tramp;
 static patch::Tramp<decltype(&mkb::create_stage_loadin_text_sprites)> s_create_stage_loadin_text_sprites_tramp;
 

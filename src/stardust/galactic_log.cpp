@@ -9,6 +9,7 @@
 #include "internal/ui/widget_menu.h"
 #include "internal/ui/widget_text.h"
 #include "internal/ui/widget_window.h"
+#include "widget_input.h"
 #include "widget_sprite.h"
 
 namespace galactic_log {
@@ -22,8 +23,133 @@ TICKABLE_DEFINITION((
         .tick = tick, ))
 
 static patch::Tramp<decltype(&mkb::g_create_how_to_sprite)> s_g_create_how_to_sprite_tramp;
-static char badge_stage_name_buffer[10][64];
-char* format_str = "%d-%d %s";
+static char s_badge_stage_name_buffer[10][64];
+static char s_text_page_buffer[1024] = {0};
+static uint8_t s_log_page_number = 0; // Current index of page in log screen
+static uint8_t s_log_page_count = 0; // Number of pages in a log screen
+
+// All relevant pages of text here
+namespace {
+constexpr char* s_log_pages_about[8] = {
+    // About Page 1
+    "/bc00fffb/BADGES/bcFFFFFF/\n"
+    "\n"
+    "Each Story Mode stage has 3 objectives tracked in the Story Mode\n"
+    "section of the Galactic Log, each one represented by a circular badge.\n"
+    "\n"
+    "/bc009DFF/Clear Badge:/bcFFFFFF/ Complete that stage's normal goal\n"
+    "/bcC800FF/Stunt Badge:/bcFFFFFF/ Complete that stage's stunt goal\n"
+    "/bcFBFF00/Sweep Badge:/bcFFFFFF/ Complete that stage with every bunch collected in one run     \n"
+    "\n"
+    "Whenever you collect a new badge, its icon will briefly appear\n"
+    "in the bottom left corner above the stage name\n",
+
+    // About Page 2
+    "/bc00fffb/COSMIC BUNCHES/bcFFFFFF/\n"
+    "\n"
+    "Various types of /bcFBFF00/banana bunches/bcFFFFFF/ can be found in Story Mode.     \n"
+    "Cosmic bunches are larger, with small colored comets that\n"
+    "orbit around them\n"
+    "\n"
+    "/bcFBFF00/Normal Bunches/bcFFFFFF/ award /bcFBFF00/10/bcFFFFFF/ bananas\n"
+    "/bc00FF2F/Green Cosmic Bunches/bcFFFFFF/ award /bc00FF2F/20/bcFFFFFF/ bananas\n"
+    "/bc009DFF/Blue Cosmic Bunches/bcFFFFFF/ award /bc009DFF/30/bcFFFFFF/ bananas\n"
+    "/bcC800FF/Purple Cosmic Bunches/bcFFFFFF/ award /bcC800FF/50/bcFFFFFF/ bananas\n"
+    "\n"
+    "Collecting every single bunch on a stage will award\n"
+    "that stage's /bcFBFF00/Sweep Badge/bcFFFFFF/.\n"
+    "\n"
+    "Collecting a bunch will reveal a /bcFBFF00/counter/bcFFFFFF/ under the stage\n"
+    "name to help keep track of how many are left on the stage\n",
+
+    // About Page 3 (ONLY SHOW IF BONUS LOCKED)
+    "/bc00fffb/UNLOCKING BONUS MODES/bcFFFFFF/\n"
+    "\n"
+    "Unlock all bonus modes by claiming the following achievements:     \n"
+    "\n"
+    "/bcFF9900/BEAT THE GAME:/bcFFFFFF/ Complete Story Mode\n"
+    "/bcFF9900/STUNT PILOT:/bcFFFFFF/ Complete 1 /bcC800FF/Stunt Goal/bcFFFFFF/ in each world\n"
+    "\n"
+    "The list of all /bcFF9900/achievements/bcFFFFFF/ can be found in that section\n"
+    "of the Galactic log.\n",
+
+    // About Page 4 (ONLY SHOW IF BONUS UNLOCKED)
+    "/bc00fffb/INTERSTELLAR/bcFFFFFF/\n"
+    "\n"
+    "Interstellar is a bonus mode with 10 massive bonus stages\n"
+    "played back-to-back. You have 300 seconds to collect as\n"
+    "many /bcFBFF00/bananas/bcFFFFFF/ as possible on each stage.\n"
+    "High score runs can be viewed in the Interstellar section\n"
+    "of the Galactic log.\n"
+    "\n"
+    "/bcC800FF/Penalties & Bonuses:/bcFFFFFF/\n"
+    "\n"
+    "Falling out does NOT reset the timer or bunches collected.\n"
+    "Instead, there is a /bcFF9900/15 second penalty/bcFFFFFF/ each time you fall out.     \n"
+    "\n"
+    "Each stage has a goal which will award /bcFBFF00/50 bananas/bcFFFFFF/ upon\n"
+    "completion. The goal will bring you to the next stage, so\n"
+    "try to spend as much time as possible collecting bunches!\n",
+
+    // About Page 5 (ONLY SHOW IF BONUS UNLOCKED)
+    "/bc00fffb/INTERSTELLAR/bcFFFFFF/\n"
+    "\n"
+    "/bcC800FF/Ranks:/bcFFFFFF/\n"
+    "\n"
+    "There are 5 ranks based on the following milestones:\n"
+    "/bcB68E00/BRONZE RANK:/bcFFFFFF/ 1000+ bananas\n"
+    "/bcCCCCCC/SILVER RANK:/bcFFFFFF/ 2000+ bananas\n"
+    "/bcFFDD00/GOLD RANK:/bcFFFFFF/ 3000+ bananas\n"
+    "/bc6EFFFD/PLATIMUM RANK:/bcFFFFFF/ 4000+ bananas\n"
+    "/bcC800FF/STAR RANK:/bcFFFFFF/ 5000+ bananas\n"
+    "\n"
+    "Each rank will display a unique /bcC800FF/medallion/bcFFFFFF/ at the end of     \n"
+    "the run, and your best run's medallion will be displayed\n"
+    "in the center of /bc009DFF/Monuments/bcFFFFFF/.\n",
+
+    // About Page 6 (ONLY SHOW IF BONUS UNLOCKED)
+    "/bc00fffb/DEBUG/bcFFFFFF/\n"
+    "\n"
+    "Debug is a bonus mode made up of drafts, prototypes,\n"
+    "and joke stages. It's split up into 4 sub-sections:\n"
+    "\n"
+    "/bc00FF2F/Joke Stages:/bcFFFFFF/ Joke/troll stages that I made for fun\n"
+    "/bc009DFF/Stage Drafts:/bcFFFFFF/ Old revisions of stages that got re-made,\n"
+    "                  and concepts that didn't become stages\n"
+    "/bcC800FF/The Unplayable Zone:/bcFFFFFF/ Obnoxious/impossible joke stages     \n"
+    "\n"
+    "PLEASE NOTE: This is meant to be a silly showcase of\n"
+    "the inner workings of this pack's development. I'm fully\n"
+    "aware these stages are bad. /bc00FF2F/That's why they are here.\n"
+    "\n"
+    "/bcA1A1A1/* Stages can be skipped by holding B for 3 seconds./bcFFFFFF/\n",
+
+    // About Page 7 (ONLY SHOW IF BONUS UNLOCKED)
+    "/bc00fffb/MONUMENTS/bcFFFFFF/\n"
+    "\n"
+    "Monuments is a /bcC800FF/trophy room/bcFFFFFF/ for this pack's bonus goals!     \n"
+    "\n"
+    "The surrounding statues each represent one world, and\n"
+    "above you can see which /bcC800FF/badges/bcFFFFFF/ you have completed.\n"
+    "The world's Stage Challenge Achievement is marked as\n"
+    "an /bcFF9900/Achievement Icon/bcFFFFFF/ above those 3 rows.\n"
+    "\n"
+    "If you get all 10 /bcC800FF/stunt/bcFFFFFF/ or /bcFBFF00/sweep/bcFFFFFF/ badges in any world,\n"
+    "its statue will be decorated with a /bc009DFF/special effect/bcFFFFFF/!\n"
+    "\n"
+    "If you get all 100 /bcC800FF/stunt/bcFFFFFF/ or /bcFBFF00/sweep/bcFFFFFF/ badges, something\n"
+    "special will appear on the /bc009DFF/giant empty pedestals/bcFFFFFF/\n"
+    "outside the circle!\n",
+
+    // About Page 8 (ONLY SHOW IF BONUS UNLOCKED)
+    "/bc00fffb/MONUMENTS/bcFFFFFF/\n"
+    "\n"
+    "/bcC800FF/Continued:/bcFFFFFF/\n"
+    "\n"
+    "The center of the stage has a spinning /bc009DFF/medallion/bcFFFFFF/,\n"
+    "representing your best Interstellar rank!\n"
+};
+}
 
 void create_galactic_log_menu() {
     constexpr Vec2d center = Vec2d{640 / 2, 480 / 2};
@@ -76,9 +202,14 @@ void create_galactic_log_menu() {
     galactic_log_menu.add(new ui::Button("Close", close_handler));
 }
 
+
 void create_about_screen() {
     LOG("Creating about screen...");
     mkb::load_bmp_by_id(0xc);// TODO: do not rely on this, this wastes memory
+
+    // Initialize the correct page count/page index
+    s_log_page_number = 0;
+    s_log_page_count = 8; // TODO: hook into bonus locked/unlocked status
 
     // Parent widget, this is the pink screen
     auto& about_menu_screen = ui::get_widget_manager().add(new ui::Sprite(0x4b, Vec2d{0, 0}, Vec2d{64, 64}));
@@ -102,195 +233,49 @@ void create_about_screen() {
     title_box.set_alignment(mkb::ALIGN_CENTER);
 
     auto& title_text = title_box.add(new ui::Text("About"));
-    title_text.set_alignment(mkb::ALIGN_CENTER);
+    title_text.set_alignment(ui::CENTER);
     title_text.set_font_style(mkb::STYLE_TEGAKI);
 
     // Next arrow
     auto& next_arrow = about_menu_header_container.add(new ui::Sprite(0xc27, Vec2d{0, 0}, Vec2d{64, 64}));
     next_arrow.set_mirror(true);
 
-    /* // About Page 1
-    auto& about1_container = about_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640 - 5, 480 - 65 - 5}));
-    // Todo: pages. maybe a button with a callback that changes the active text, use sprintf to set the text perhaps?
-    auto& about1_text = about1_container.add(new ui::Text(
-        "/bc00fffb/BADGES/bcFFFFFF/\n"
-        "\n"
-        "Each Story Mode stage has 3 objectives tracked in the Story Mode\n"
-        "section of the Galactic Log, each one represented by a circular badge.\n"
-        "\n"
-        "/bc009DFF/Clear Badge:/bcFFFFFF/ Complete that stage's normal goal\n"
-        "/bcC800FF/Stunt Badge:/bcFFFFFF/ Complete that stage's stunt goal\n"
-        "/bcFBFF00/Sweep Badge:/bcFFFFFF/ Complete that stage with every bunch collected in one run     \n"
-        "\n"
-        "Whenever you collect a new badge, its icon will briefly appear\n"
-        "in the bottom left corner above the stage name\n"));
-    about1_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
-    about1_text.set_alignment(mkb::ALIGN_LOWER_RIGHT);
-    about1_text.set_drop_shadow(false);
-    about1_text.set_color({0x00, 0x00, 0x00}); */
-
-    /*// About Page 2
-    auto& about2_container = about_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640 - 5, 480 - 65 - 5}));
-    // Todo: pages. maybe a button with a callback that changes the active text, use sprintf to set the text perhaps?
-    auto& about2_text = about2_container.add(new ui::Text(
-        "/bc00fffb/COSMIC BUNCHES/bcFFFFFF/\n"
-        "\n"
-        "Various types of /bcFBFF00/banana bunches/bcFFFFFF/ can be found in Story Mode.     \n"
-        "Cosmic bunches are larger, with small colored comets that\n"
-        "orbit around them\n"
-        "\n"
-        "/bcFBFF00/Normal Bunches/bcFFFFFF/ award /bcFBFF00/10/bcFFFFFF/ bananas\n"
-        "/bc00FF2F/Green Cosmic Bunches/bcFFFFFF/ award /bc00FF2F/20/bcFFFFFF/ bananas\n"
-        "/bc009DFF/Blue Cosmic Bunches/bcFFFFFF/ award /bc009DFF/30/bcFFFFFF/ bananas\n"
-        "/bcC800FF/Purple Cosmic Bunches/bcFFFFFF/ award /bcC800FF/50/bcFFFFFF/ bananas\n"
-        "\n"
-        "Collecting every single bunch on a stage will award\n"
-        "that stage's /bcFBFF00/Sweep Badge/bcFFFFFF/.\n"
-        "\n"
-        "Collecting a bunch will reveal a /bcFBFF00/counter/bcFFFFFF/ under the stage\n"
-        "name to help keep track of how many are left on the stage\n"));
-    about2_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
-    about2_text.set_alignment(mkb::ALIGN_LOWER_RIGHT);
-    about2_text.set_drop_shadow(false);
-    about2_text.set_color({0x00, 0x00, 0x00}); */
-
-    /* // About Page 3 (ONLY SHOW IF BONUS LOCKED)
-    auto& about3_container = about_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640 - 5, 480 - 65 - 5}));
-    // Todo: pages. maybe a button with a callback that changes the active text, use sprintf to set the text perhaps?
-    auto& about3_text = about3_container.add(new ui::Text(
-        "/bc00fffb/UNLOCKING BONUS MODES/bcFFFFFF/\n"
-        "\n"
-        "Unlock all bonus modes by claiming the following achievements:     \n"
-        "\n"
-        "/bcFF9900/BEAT THE GAME:/bcFFFFFF/ Complete Story Mode\n"
-        "/bcFF9900/STUNT PILOT:/bcFFFFFF/ Complete 1 /bcC800FF/Stunt Goal/bcFFFFFF/ in each world\n"
-        "\n"
-        "The list of all /bcFF9900/achievements/bcFFFFFF/ can be found in that section\n"
-        "of the Galactic log.\n"));
-    about3_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
-    about3_text.set_alignment(mkb::ALIGN_LOWER_RIGHT);
-    about3_text.set_drop_shadow(false);
-    about3_text.set_color({0x00, 0x00, 0x00}); */
-
-    /* // About Page 4 (ONLY SHOW IF BONUS UNLOCKED)
-    auto& about4_container = about_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640 - 5, 480 - 65 - 5}));
-    // Todo: pages. maybe a button with a callback that changes the active text, use sprintf to set the text perhaps?
-    auto& about4_text = about4_container.add(new ui::Text(
-        "/bc00fffb/INTERSTELLAR/bcFFFFFF/\n"
-        "\n"
-        "Interstellar is a bonus mode with 10 massive bonus stages\n"
-        "played back-to-back. You have 300 seconds to collect as\n"
-        "many /bcFBFF00/bananas/bcFFFFFF/ as possible on each stage.\n"
-        "High score runs can be viewed in the Interstellar section\n"
-        "of the Galactic log.\n"
-        "\n"
-        "/bcC800FF/Penalties & Bonuses:/bcFFFFFF/\n"
-        "\n"
-        "Falling out does NOT reset the timer or bunches collected.\n"
-        "Instead, there is a /bcFF9900/15 second penalty/bcFFFFFF/ each time you fall out.     \n"
-        "\n"
-        "Each stage has a goal which will award /bcFBFF00/50 bananas/bcFFFFFF/ upon\n"
-        "completion. The goal will bring you to the next stage, so\n"
-        "try to spend as much time as possible collecting bunches!\n"));
-    about4_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
-    about4_text.set_alignment(mkb::ALIGN_LOWER_RIGHT);
-    about4_text.set_drop_shadow(false);
-    about4_text.set_color({0x00, 0x00, 0x00}); */
-
-    /* // About Page 5 (ONLY SHOW IF BONUS UNLOCKED)
-    auto& about5_container = about_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640 - 5, 480 - 65 - 5}));
-    // Todo: pages. maybe a button with a callback that changes the active text, use sprintf to set the text perhaps?
-    auto& about5_text = about5_container.add(new ui::Text(
-        "/bc00fffb/INTERSTELLAR/bcFFFFFF/\n"
-        "\n"
-        "/bcC800FF/Ranks:/bcFFFFFF/\n"
-        "\n"
-        "There are 5 ranks based on the following milestones:\n"
-        "/bcB68E00/BRONZE RANK:/bcFFFFFF/ 1000+ bananas\n"
-        "/bcCCCCCC/SILVER RANK:/bcFFFFFF/ 2000+ bananas\n"
-        "/bcFFDD00/GOLD RANK:/bcFFFFFF/ 3000+ bananas\n"
-        "/bc6EFFFD/PLATIMUM RANK:/bcFFFFFF/ 4000+ bananas\n"
-        "/bcC800FF/STAR RANK:/bcFFFFFF/ 5000+ bananas\n"
-        "\n"
-        "Each rank will display a unique /bcC800FF/medallion/bcFFFFFF/ at the end of     \n"
-        "the run, and your best run's medallion will be displayed\n"
-        "in the center of /bc009DFF/Monuments/bcFFFFFF/.\n"));
-    about5_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
-    about5_text.set_alignment(mkb::ALIGN_LOWER_RIGHT);
-    about5_text.set_drop_shadow(false);
-    about5_text.set_color({0x00, 0x00, 0x00}); */
-
-    /* // About Page 6 (ONLY SHOW IF BONUS UNLOCKED)
-    auto& about6_container = about_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640 - 5, 480 - 65 - 5}));
-    // Todo: pages. maybe a button with a callback that changes the active text, use sprintf to set the text perhaps?
-    auto& about6_text = about6_container.add(new ui::Text(
-        "/bc00fffb/DEBUG/bcFFFFFF/\n"
-        "\n"
-        "Debug is a bonus mode made up of drafts, prototypes,\n"
-        "and joke stages. It's split up into 4 sub-sections:\n"
-        "\n"
-        "/bc00FF2F/Joke Stages:/bcFFFFFF/ Joke/troll stages that I made for fun\n"
-        "/bc009DFF/Stage Drafts:/bcFFFFFF/ Old revisions of stages that got re-made,\n"
-        "                  and concepts that didn't become stages\n"
-        "/bcC800FF/The Unplayable Zone:/bcFFFFFF/ Obnoxious/impossible joke stages     \n"
-        "\n"
-        "PLEASE NOTE: This is meant to be a silly showcase of\n"
-        "the inner workings of this pack's development. I'm fully\n"
-        "aware these stages are bad. /bc00FF2F/That's why they are here.\n"
-        "\n"
-        "/bcA1A1A1/* Stages can be skipped by holding B for 3 seconds./bcFFFFFF/\n"));
-    about6_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
-    about6_text.set_alignment(mkb::ALIGN_LOWER_RIGHT);
-    about6_text.set_drop_shadow(false);
-    about6_text.set_color({0x00, 0x00, 0x00}); */
-
-    /* // About Page 7 (ONLY SHOW IF BONUS UNLOCKED)
-    auto& about7_container = about_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640 - 5, 480 - 65 - 5}));
-    // Todo: pages. maybe a button with a callback that changes the active text, use sprintf to set the text perhaps?
-    auto& about7_text = about7_container.add(new ui::Text(
-        "/bc00fffb/MONUMENTS/bcFFFFFF/\n"
-        "\n"
-        "Monuments is a /bcC800FF/trophy room/bcFFFFFF/ for this pack's bonus goals!     \n"
-        "\n"
-        "The surrounding statues each represent one world, and\n"
-        "above you can see which /bcC800FF/badges/bcFFFFFF/ you have completed.\n"
-        "The world's Stage Challenge Achievement is marked as\n"
-        "an /bcFF9900/Achievement Icon/bcFFFFFF/ above those 3 rows.\n"
-        "\n"
-        "If you get all 10 /bcC800FF/stunt/bcFFFFFF/ or /bcFBFF00/sweep/bcFFFFFF/ badges in any world,\n"
-        "its statue will be decorated with a /bc009DFF/special effect/bcFFFFFF/!\n"
-        "\n"
-        "If you get all 100 /bcC800FF/stunt/bcFFFFFF/ or /bcFBFF00/sweep/bcFFFFFF/ badges, something\n"
-        "special will appear on the /bc009DFF/giant empty pedestals/bcFFFFFF/\n"
-        "outside the circle!\n"));
-    about7_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
-    about7_text.set_alignment(mkb::ALIGN_LOWER_RIGHT);
-    about7_text.set_drop_shadow(false);
-    about7_text.set_color({0x00, 0x00, 0x00}); */
-
-    // About Page 8 (ONLY SHOW IF BONUS UNLOCKED)
-    auto& about8_container = about_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640 - 5, 480 - 65 - 5}));
-    // Todo: pages. maybe a button with a callback that changes the active text, use sprintf to set the text perhaps?
-    auto& about8_text = about8_container.add(new ui::Text(
-        "/bc00fffb/MONUMENTS/bcFFFFFF/\n"
-        "\n"
-        "/bcC800FF/Continued:/bcFFFFFF/\n"
-        "\n"
-        "The center of the stage has a spinning /bc009DFF/medallion/bcFFFFFF/,     \n"
-        "representing your best Interstellar rank!\n"));
-    about8_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
-    about8_text.set_alignment(mkb::ALIGN_LOWER_RIGHT);
-    about8_text.set_drop_shadow(false);
-    about8_text.set_color({0x00, 0x00, 0x00});
+    auto& about_container = about_menu_screen.add(new ui::Container(Vec2d{0, 65}, Vec2d{640, 480 - 65 - 5}));
+    mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
+    auto& about_text = about_container.add(new ui::Text(s_text_page_buffer));
+    about_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
+    about_text.set_alignment(ui::LEFT);
+    about_text.set_drop_shadow(false);
+    about_text.set_color({0x00, 0x00, 0x00});
 
     auto close_about = [&]() {
         ui::get_widget_manager().remove("galcred");
         create_galactic_log_menu();
     };
 
-    auto& close_handler = about_menu_screen.add(new ui::Button("", Vec2d{0, 0}, close_about));// TODO: generic input handler widget
-    close_handler.set_active(true);
-    close_handler.set_input(mkb::PAD_BUTTON_B);
+    // TODO: Handle the pages that aren't supposed to show up when bonus is locked
+    auto decrement_page_about = []() {
+      if (s_log_page_number == 0) {
+          s_log_page_number = s_log_page_count-1;
+      }
+      else {
+          mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[--s_log_page_number]);
+      }
+    };
+
+    // TODO: Handle the pages that aren't supposed to show up when bonus is locked
+    auto increment_page_about = []() {
+      if (s_log_page_number+1 >= s_log_page_count) {
+          s_log_page_number = 0;
+      }
+      else {
+          mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[++s_log_page_number]);
+      }
+    };
+
+    auto& close_handler = about_menu_screen.add(new ui::Input(mkb::PAD_BUTTON_B, close_about));
+    auto& previous_page_handler = about_menu_screen.add(new ui::Input(pad::DIR_LEFT, decrement_page_about));
+    auto& next_page_handler = about_menu_screen.add(new ui::Input(pad::DIR_RIGHT, increment_page_about));
 }
 
 void create_credits_screen() {
@@ -319,7 +304,7 @@ void create_credits_screen() {
     title_box.set_alignment(mkb::ALIGN_CENTER);
 
     auto& title_text = title_box.add(new ui::Text("Credits & Special Thanks"));
-    title_text.set_alignment(mkb::ALIGN_CENTER);
+    title_text.set_alignment(ui::CENTER);
     title_text.set_font_style(mkb::STYLE_TEGAKI);
 
     // Next arrow
@@ -371,7 +356,7 @@ void create_credits_screen() {
         "      (>^^)> My family & irl friends\n"
         "      (>^^)> YOU!\n"));
     credits2_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
-    credits2_text.set_alignment(mkb::ALIGN_LOWER_RIGHT);
+    credits2_text.set_alignment(ui::LEFT);
     credits2_text.set_drop_shadow(false);
     credits2_text.set_color({0x00, 0x00, 0x00});
 
@@ -411,7 +396,7 @@ void create_badge_screen() {
     title_box.set_alignment(mkb::ALIGN_CENTER);
 
     auto& title_text = title_box.add(new ui::Text("Story Mode"));
-    title_text.set_alignment(mkb::ALIGN_CENTER);
+    title_text.set_alignment(ui::CENTER);
     title_text.set_font_style(mkb::STYLE_TEGAKI);
 
     // Next arrow
@@ -436,9 +421,9 @@ void create_badge_screen() {
         char stage_name_buffer[64] = {0};
         mkb::read_stage_name_from_dvd(stage_id, stage_name_buffer, 64);
         LOG("Got name %s", stage_name_buffer)
-        mkb::sprintf(badge_stage_name_buffer[stage_idx], format_str, active_world_idx + 1, stage_idx + 1, stage_name_buffer);
-        LOG("Did sprintf to yield: %s", badge_stage_name_buffer[stage_idx])
-        auto& text = text_container.add(new ui::Text(badge_stage_name_buffer[stage_idx]));
+        mkb::sprintf(s_badge_stage_name_buffer[stage_idx], "%d-%d %s", active_world_idx + 1, stage_idx + 1, stage_name_buffer);
+        LOG("Did sprintf to yield: %s", s_badge_stage_name_buffer[stage_idx])
+        auto& text = text_container.add(new ui::Text(s_badge_stage_name_buffer[stage_idx]));
 
         // 0xc3b = blue, 0xc3a = purple, 0xc39 = sweep, 0xc3c = achievement, 0xc3d = empty
         // TODO: Hook into badge system!
@@ -453,7 +438,7 @@ void create_badge_screen() {
         purple.set_scale(Vec2d{0.5, 0.5});
         sweep.set_scale(Vec2d{0.5, 0.5});
 
-        text.set_alignment(mkb::ALIGN_LOWER_RIGHT);
+        text.set_alignment(ui::LEFT);
     }
 
     badge_container.set_alignment(mkb::ALIGN_UPPER_LEFT);

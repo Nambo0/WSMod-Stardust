@@ -517,9 +517,8 @@ void create_badge_screen() {
 
     // Only display up to the highest unlocked world (using story cutscene unlock info)
     s_log_page_count = 1;
-    for(u8 world = 1; world < 10; world++){
-        if (!savedata::consecutive_false_from_slot(savedata::CLEAR_BADGE_START + 10*world, 10)
-        || !savedata::consecutive_false_from_slot(savedata::STUNT_BADGE_START + 10*world, 10)){
+    for (u8 world = 1; world < 10; world++) {
+        if (!savedata::consecutive_false_from_slot(savedata::CLEAR_BADGE_START + 10 * world, 10) || !savedata::consecutive_false_from_slot(savedata::STUNT_BADGE_START + 10 * world, 10)) {
             s_log_page_count = world + 1;
         }
     }
@@ -561,7 +560,7 @@ void init_main_loop() {
     patch::hook_function(s_g_create_how_to_sprite_tramp, mkb::g_create_how_to_sprite, [](void) {
         mkb::g_some_pausemenu_var = 4;
         mkb::Sprite* pause_sprite = mkb::get_sprite_with_unique_id(mkb::SPRITE_HOW_TO);
-        pause_sprite->para1 = 6;
+        if (pause_sprite != nullptr) pause_sprite->para1 = 6;
         mkb::call_SoundReqID_arg_2(10);
         LOG("Heap free before: %dkb", heap::get_free_space() / 1024);
         create_galactic_log_menu();

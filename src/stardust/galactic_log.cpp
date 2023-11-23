@@ -277,7 +277,10 @@ void create_about_screen() {
 
     auto& close_handler = about_menu_screen.add(new ui::Input(mkb::PAD_BUTTON_B, close_about));
     auto& previous_page_handler = about_menu_screen.add(new ui::Input(pad::DIR_LEFT, decrement_page_about));
+    previous_page_handler.set_sound_effect_id(0x6f);
+
     auto& next_page_handler = about_menu_screen.add(new ui::Input(pad::DIR_RIGHT, increment_page_about));
+    next_page_handler.set_sound_effect_id(0x6f);
 }
 
 void create_credits_screen() {

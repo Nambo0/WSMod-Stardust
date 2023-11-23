@@ -291,10 +291,7 @@ void on_goal() {
         if (mkb::curr_difficulty == mkb::DIFF_ADVANCED && mkb::mode_info.cm_course_stage_num >= 90 && mkb::mode_info.cm_course_stage_num <= 110) {
             claim_achievement(36);
         }
-        // 37) UHHH GG | Complete Interstellar with 0 bananas
-        if (mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::g_current_stage_id == 230 && mkb::balls[mkb::curr_player_idx].banana_count == 0) {
-            claim_achievement(37);
-        }
+        // 37 and all interstellar achievements are in interstellar.cpp
         // 38) AAAAA | Clear a stage after traveling over 1,000 mph
         if (went_very_fast) claim_achievement(38);
     }// If valid
@@ -320,7 +317,7 @@ void on_goal() {
         }
     }
 
-    // Interstellar achievements
+    // 26) FINISH HIM | Get all 10 interstellar goals in 1 run
     if (mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::curr_difficulty == mkb::DIFF_BEGINNER) {
         u8 stage = mkb::g_current_stage_id - 220;
         switch (stage) {

@@ -9,6 +9,7 @@
 #include "internal/ui/widget_menu.h"
 #include "internal/ui/widget_text.h"
 #include "internal/ui/widget_window.h"
+#include "../stardust/unlock.h"
 #include "widget_input.h"
 #include "widget_sprite.h"
 
@@ -285,25 +286,49 @@ void create_about_screen() {
         create_galactic_log_menu();
     };
 
-    // TODO: Handle the pages that aren't supposed to show up when bonus is locked
     auto decrement_page_about = []() {
-      if (s_log_page_number == 0) {
-          s_log_page_number = s_log_page_count-1;
-      }
-      else {
-          --s_log_page_number;
-      }
+        // UNLOCKED: Skip page 3
+        // LOCKED: End on page 3
+        if(unlock::unlock_condition_met()){
+            if (s_log_page_number == 0) {
+                s_log_page_number = s_log_page_count-1;
+            }
+            else {
+                --s_log_page_number;
+            }
+            if (s_log_page_number == 2) s_log_page_number = 1; // Skip page 3
+        }
+        else{
+            if (s_log_page_number == 0) {
+                s_log_page_number = 2; // Wraparound to page 3
+            }
+            else {
+                --s_log_page_number;
+            }
+        }
       mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
     };
 
-    // TODO: Handle the pages that aren't supposed to show up when bonus is locked
     auto increment_page_about = []() {
-      if (s_log_page_number+1 >= s_log_page_count) {
-          s_log_page_number = 0;
-      }
-      else {
-          ++s_log_page_number;
-      }
+        // UNLOCKED: Skip page 3
+        // LOCKED: End on page 3
+        if (unlock::unlock_condition_met()){
+            if (s_log_page_number+1 >= s_log_page_count) {
+                s_log_page_number = 0;
+            }
+            else {
+                ++s_log_page_number;
+            }
+            if(s_log_page_number == 2) s_log_page_number = 3; // Skip page 3
+        }
+        else{
+            if (s_log_page_number+1 >= 3) { // End on page 3
+                s_log_page_number = 0;
+            }
+            else {
+                ++s_log_page_number;
+            }
+        }
       mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
     };
 

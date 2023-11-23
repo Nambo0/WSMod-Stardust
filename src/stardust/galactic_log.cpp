@@ -448,9 +448,9 @@ void create_badge_list() {
         uint32_t id_1 = 0xc3d;
         uint32_t id_2 = 0xc3d;
         uint32_t id_3 = 0xc3d;
-        if (savedata::true_in_slot(savedata::CLEAR_BADGE_START + s_log_page_number * 10 + (stage_idx + 1))) id_1 = 0xc3b;
-        if (savedata::true_in_slot(savedata::STUNT_BADGE_START + s_log_page_number * 10 + (stage_idx + 1))) id_2 = 0xc3a;
-        if (savedata::true_in_slot(savedata::SWEEP_BADGE_START + s_log_page_number * 10 + (stage_idx + 1))) id_3 = 0xc39;
+        if (savedata::true_in_slot(savedata::CLEAR_BADGE_START + s_log_page_number * 10 + stage_idx)) id_1 = 0xc3b;
+        if (savedata::true_in_slot(savedata::STUNT_BADGE_START + s_log_page_number * 10 + stage_idx)) id_2 = 0xc3a;
+        if (savedata::true_in_slot(savedata::SWEEP_BADGE_START + s_log_page_number * 10 + stage_idx)) id_3 = 0xc39;
         auto& blue = sprite_container.add(new ui::Sprite(id_1, Vec2d{32, 32}));
         auto& purple = sprite_container.add(new ui::Sprite(id_2, Vec2d{32, 32}));
         auto& sweep = sprite_container.add(new ui::Sprite(id_3, Vec2d{32, 32}));

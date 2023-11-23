@@ -35,7 +35,7 @@ void tick() {
 
     if (pad::button_pressed(mkb::PAD_BUTTON_Y)) {
         LOG_DEBUG("free: %dkb", heap::get_free_space() / 1024);
-        ui::get_widget_manager().clear();
+        //ui::get_widget_manager().clear();
         LOG_DEBUG("free: %dkb", heap::get_free_space() / 1024);
         // sent = false;
     }

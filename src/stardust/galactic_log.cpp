@@ -149,6 +149,38 @@ constexpr char* s_log_pages_about[8] = {
     "The center of the stage has a spinning /bc009DFF/medallion/bcFFFFFF/,\n"
     "representing your best Interstellar rank!\n"
 };
+constexpr char* s_log_pages_credits[2] = {
+    "/bcFFFFFF/NOTE: Credits.pdf (included with the ISO) has more     \n"
+        "annotated credits, including clickable /bc008CFF/links/bcFFFFFF/\n"
+        "\n"
+        "/bcC800FF/DIRECT CONTRIBUTIONS:/bcFFFFFF/\n"
+        "\n"
+        "/bc00fffb/Original Soundtrack/bcFFFFFF/\n"
+        "      (>^^)> Walkr (/bc008CFF/linktr.ee/walkrmusic/bcFFFFFF/)\n"
+        "      (>^^)> Relayer (/bc008CFF/wxokeys.bandcamp.com/bcFFFFFF/)\n"
+        "/bc00fffb/Custom Code/bcFFFFFF/\n"
+        "      (>^^)> Rehtrop, Bombsquad, Eucalyptus\n"
+        "/bc00fffb/Art/bcFFFFFF/\n"
+        "      (>^^)> Shadow (/bc008CFF/charredshadow.tumblr.com/bcFFFFFF/)\n"
+        "/bc00fffb/Playtesters/bcFFFFFF/\n"
+        "      (>^^)> Eddy, 42guy42, Rehtrop, Null\n"
+        "      (>^^)> Walkr, Goobz, Dyrude, Eucalyptus\n",
+        "/bcFFFFFF/NOTE: Credits.pdf (included with the ISO) has more     \n"
+        "annotated credits, including clickable /bc008CFF/links/bcFFFFFF/\n"
+        "\n"
+        "/bcC800FF/SPECIAL THANKS:/bcFFFFFF/\n"
+        "\n"
+        "/bc00fffb/Specific Mentions/bcFFFFFF/\n"
+        "      (>^^)> Zona, Ghost Ham, Sudachi\n"
+        "      (>^^)> PetresInc, Dwaitley, scrap651\n"
+        "      (>^^)> Petra, Yhouse, Jesse, Ariana, Shadow\n"
+        "/bc00fffb/Broad Shout-Outs/bcFFFFFF/\n"
+        "      (>^^)> Everyone listed on page 1\n"
+        "      (>^^)> Friends from Monkey Ball speedrunning\n"
+        "      (>^^)> Friends from Random Randos\n"
+        "      (>^^)> My family & irl friends\n"
+        "      (>^^)> YOU!\n"
+};
 }
 
 void create_galactic_log_menu() {
@@ -211,7 +243,7 @@ void create_about_screen() {
     s_log_page_number = 0;
     s_log_page_count = 8; // TODO: hook into bonus locked/unlocked status
 
-    // Parent widget, this is the pink screen
+    // Parent widget, this is the darkened screen
     auto& about_menu_screen = ui::get_widget_manager().add(new ui::Sprite(0x4b, Vec2d{0, 0}, Vec2d{64, 64}));
     about_menu_screen.set_label("galcred");
     about_menu_screen.set_scale(Vec2d{300, 200});
@@ -287,7 +319,11 @@ void create_credits_screen() {
     LOG("Creating credits screen...");
     mkb::load_bmp_by_id(0xc);// TODO: do not rely on this, this wastes memory
 
-    // Parent widget, this is the pink screen
+    // Initialize the correct page count/page index
+    s_log_page_number = 0;
+    s_log_page_count = 2;
+
+    // Parent widget, this is the darkened screen
     auto& credits_menu_screen = ui::get_widget_manager().add(new ui::Sprite(0x4b, Vec2d{0, 0}, Vec2d{64, 64}));
     credits_menu_screen.set_label("galcred");
     credits_menu_screen.set_scale(Vec2d{300, 200});
@@ -316,54 +352,14 @@ void create_credits_screen() {
     auto& next_arrow = credits_menu_header_container.add(new ui::Sprite(0xc27, Vec2d{0, 0}, Vec2d{64, 64}));
     next_arrow.set_mirror(true);
 
-    /*
     // Credits Page 1
-    auto& credits1_container = credits_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640 - 5, 480 - 65 - 5}));
-    // Todo: pages. maybe a button with a callback that changes the active text, use sprintf to set the text perhaps?
-    auto& credits1_text = credits1_container.add(new ui::Text(
-        "/bcFFFFFF/NOTE: Credits.pdf (included with the ISO) has more     \n"
-        "annotated credits, including clickable /bc008CFF/links/bcFFFFFF/\n"
-        "\n"
-        "/bcC800FF/DIRECT CONTRIBUTIONS:/bcFFFFFF/\n"
-        "\n"
-        "/bc00fffb/Original Soundtrack/bcFFFFFF/\n"
-        "      (>^^)> Walkr (/bc008CFF/linktr.ee/walkrmusic/bcFFFFFF/)\n"
-        "      (>^^)> Relayer (/bc008CFF/wxokeys.bandcamp.com/bcFFFFFF/)\n"
-        "/bc00fffb/Custom Code/bcFFFFFF/\n"
-        "      (>^^)> Rehtrop, Bombsquad, Eucalyptus\n"
-        "/bc00fffb/Art/bcFFFFFF/\n"
-        "      (>^^)> Shadow (/bc008CFF/charredshadow.tumblr.com/bcFFFFFF/)\n"
-        "/bc00fffb/Playtesters/bcFFFFFF/\n"
-        "      (>^^)> Eddy, 42guy42, Rehtrop, Null\n"
-        "      (>^^)> Walkr, Goobz, Dyrude, Eucalyptus\n"));
-    credits1_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
-    credits1_text.set_alignment(mkb::ALIGN_LOWER_RIGHT);
-    credits1_text.set_drop_shadow(false);
-    credits1_text.set_color({0x00, 0x00, 0x00}); */
-
-    // Credits Page 2
-    auto& credits2_container = credits_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640 - 5, 480 - 65 - 5}));
-    // Todo: pages. maybe a button with a callback that changes the active text, use sprintf to set the text perhaps?
-    auto& credits2_text = credits2_container.add(new ui::Text(
-        "/bcFFFFFF/NOTE: Credits.pdf (included with the ISO) has more     \n"
-        "annotated credits, including clickable /bc008CFF/links/bcFFFFFF/\n"
-        "\n"
-        "/bcC800FF/SPECIAL THANKS:/bcFFFFFF/\n"
-        "\n"
-        "/bc00fffb/Specific Mentions/bcFFFFFF/\n"
-        "      (>^^)> Zona, Ghost Ham, Sudachi\n"
-        "      (>^^)> PetresInc, Dwaitley, scrap651\n"
-        "      (>^^)> Petra, Yhouse, Jesse, Ariana, Shadow\n"
-        "/bc00fffb/Broad Shout-Outs/bcFFFFFF/\n"
-        "      (>^^)> Everyone listed on page 1\n"
-        "      (>^^)> Friends from Monkey Ball speedrunning\n"
-        "      (>^^)> Friends from Random Randos\n"
-        "      (>^^)> My family & irl friends\n"
-        "      (>^^)> YOU!\n"));
-    credits2_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
-    credits2_text.set_alignment(ui::LEFT);
-    credits2_text.set_drop_shadow(false);
-    credits2_text.set_color({0x00, 0x00, 0x00});
+    auto& credits_container = credits_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640 - 5, 480 - 65 - 5}));
+    mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
+    auto& credits_text = credits_container.add(new ui::Text(s_text_page_buffer));
+    credits_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
+    credits_text.set_alignment(mkb::ALIGN_LOWER_RIGHT);
+    credits_text.set_drop_shadow(false);
+    credits_text.set_color({0x00, 0x00, 0x00});
 
     auto close_credits = [&]() {
         ui::get_widget_manager().remove("galcred");
@@ -373,6 +369,31 @@ void create_credits_screen() {
     auto& close_handler = credits_menu_screen.add(new ui::Button("", Vec2d{0, 0}, close_credits));// TODO: generic input handler widget
     close_handler.set_active(true);
     close_handler.set_input(mkb::PAD_BUTTON_B);
+
+    auto decrement_page_credits = []() {
+      if (s_log_page_number == 0) {
+          s_log_page_number = s_log_page_count-1;
+      }
+      else {
+          --s_log_page_number;
+      }
+      mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
+    };
+
+    auto increment_page_credits = []() {
+      if (s_log_page_number+1 >= s_log_page_count) {
+          s_log_page_number = 0;
+      }
+      else {
+          ++s_log_page_number;
+      }
+      mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
+    };
+    auto& previous_page_handler = credits_menu_screen.add(new ui::Input(pad::DIR_LEFT, decrement_page_credits));
+    previous_page_handler.set_sound_effect_id(0x6f);
+
+    auto& next_page_handler = credits_menu_screen.add(new ui::Input(pad::DIR_RIGHT, increment_page_credits));
+    next_page_handler.set_sound_effect_id(0x6f);
 }
 
 void create_badge_screen() {

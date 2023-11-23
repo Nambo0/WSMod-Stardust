@@ -15,7 +15,7 @@ TICKABLE_DEFINITION((
         .init_main_loop = init,
         .tick = tick, ))
 
-u8 display_queue[] = {0, 0, 0, 0, 0};
+u8 display_queue[] = {0, 0, 0, 0, 0, 0, 0, 0};
 u8 display_timer = 0;
 u8 test_id = 1;
 
@@ -224,7 +224,7 @@ void create_achievement_sprite() {
 
 void add_achievement_to_display_queue(u8 id) {
     // Add to slot 1 (0 = active, 1 = "on deck")
-    for (u8 queue_slot = 1; queue_slot < 5; queue_slot++) {
+    for (u8 queue_slot = 1; queue_slot < 8; queue_slot++) {
         if (display_queue[queue_slot] == 0) {
             display_queue[queue_slot] = id;
             return;
@@ -244,10 +244,10 @@ void tick() {
     else {                                                         // Timer = 0
         if (display_queue[1] == 0) display_timer = 0;              // Queue empty
         else {                                                     // Queue active
-            for (u8 queue_slot = 0; queue_slot < 4; queue_slot++) {// Move queue forward
+            for (u8 queue_slot = 0; queue_slot < 7; queue_slot++) {// Move queue forward
                 display_queue[queue_slot] = display_queue[queue_slot + 1];
             }
-            display_queue[4] = 0;
+            display_queue[7] = 0;
             if (display_queue[0] != 0) display_timer = 180;
         }
     }

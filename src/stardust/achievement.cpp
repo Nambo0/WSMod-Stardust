@@ -138,7 +138,7 @@ void tick() {
         }
         // 38) AAAAA | Clear a stage after traveling over 1,000 mph
         if (mkb::math_sqrt(VEC_LEN_SQ(ball.vel) * (134.2198 * 134.2198)) > 999.0) went_very_fast = true;
-        if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) went_very_fast = false;
+        if (mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 2) went_very_fast = false;
 
     }// if currently valid
 

@@ -13,8 +13,7 @@ TICKABLE_DEFINITION((
         .description = "A",
         .enabled = true,
         .init_main_loop = init,
-        .tick = tick,
-        .on_goal = on_goal, ))
+        .tick = tick,))
 
 u8 display_queue[] = {0, 0, 0, 0, 0};
 u8 display_timer = 0;

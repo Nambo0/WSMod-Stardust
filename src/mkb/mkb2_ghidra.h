@@ -5882,6 +5882,7 @@ extern "C" {
     extern char s_cannot_read_file[18];
     extern pointer switchdataD_803c12c8;
     extern undefined * switchdataD_803c14b8;
+    extern undefined1 g_last_used_memcard_slot_2;
     extern pointer g_some_card_funcs;
     extern pointer g_some_card_funcs2;
     extern undefined * switchdataD_803ce82c;
@@ -5985,7 +5986,7 @@ extern "C" {
     extern void * sub_mode_destination;
     extern undefined4 test_draw_func_ptr;
     extern undefined1 g_repause_cooldown_counter;
-    extern undefined4 g_some_status_bitflag;
+    extern undefined4 g_some_status_bitflag_maybe_pause_related;
     extern undefined4 g_current_focused_pause_menu_entry;
     extern undefined4 g_current_pause_menu_entry_count;
     extern PauseMenuType  pausemenu_type;
@@ -6228,10 +6229,13 @@ extern "C" {
     extern undefined1 g_override_clear_r;
     extern undefined1 g_override_clear_g;
     extern undefined1 g_override_clear_b;
-    extern undefined4 g_maybe_smth_related_to_pausing;
+    extern undefined4 g_some_flag_relating_to_pausing;
     extern struct MemCardInfo memcard_infos[2];
     extern undefined1 g_last_used_memcard_slot;
+    extern undefined4 g_result_code;
+    extern undefined1 g_some_memcard_var;
     extern undefined1 g_maybe_last_selected_memcard_slot;
+    extern undefined g_storymode_file_memcard_buffer;
     extern struct StoryModeSaveFile storymode_save_files[3];
     extern undefined1 g_storymode_unlock_entries_copy;
     extern undefined1 g_cm_unlock_entries_copy;
@@ -8313,10 +8317,11 @@ extern "C" {
     void call_then_reset_sub_mode_destination(void);
     uint get_next_player_idx(void);
     int g_get_next_stage_id(void);
-    void g_construct_pause_menu_sprite(int param_1);
-    void g_check_input_in_pausemenu(int param_1);
-    void handle_pausemenu_selection(int param_1);
-    void g_pause_game(void);
+    void construct_pause_menu_sprite(struct Sprite * pause_sprite);
+    void check_pause_menu_input(struct Sprite * pause_sprite);
+    void handle_pausemenu_selection(struct Sprite * pause_sprite);
+    void g_some_pause_menu_selection_handler(struct Sprite * pause_sprite);
+    void pause_game(void);
     void init_events(void);
     void tick_events(void);
     void event_init(EventID  event_id);
@@ -8529,7 +8534,7 @@ extern "C" {
     void g_some_bmp_init_func(void);
     TplBuffer * load_bmp(char * filepath);
     void load_bmp_by_id_child(int g_idx);
-    void g_something_with_freeing_memory(int param_1);
+    void free_bmp_by_id(int id);
     void free_nl2ngc_tpl_buf_to_heap(struct TplBuffer * param_1);
     void g_zero_some_sprite_related_state(void);
     void g_some_sprite_reset_gx_state_func(void);
@@ -8838,6 +8843,7 @@ extern "C" {
     uint get_compressed_replay_size(void);
     uint compress_replay(void * outCompressedReplay);
     int g_smth_with_cmp_recplay(void * param_1);
+    undefined4 g_some_replay_func5(void);
     Replay * init_replay(struct Replay * replay, int stage_time_limit);
     undefined4 init_replay_playable_ig_and_seesaw_state(struct Replay * replay, short * param_2, int param_3, u32 playableIgAndSeesawSize);
     Replay * create_replay(int stage_time_limit);
@@ -9287,7 +9293,7 @@ extern "C" {
     void g_smth_with_drawing_all_sprites(int param_1);
     void draw_sprite(struct Sprite * sprite);
     void load_bmp_by_id(int param_1);
-    void g_call_smth_with_freeing_memory(int param_1);
+    void call_free_bmp_by_id(int param_1);
     void g_something_with_iteratively_freeing_memory(void);
     Sprite * create_sprite(void);
     Sprite * create_linked_sprite(struct Sprite * sprite);
@@ -9359,7 +9365,7 @@ extern "C" {
     void g_smth_with_playpoint_or_gift_msg(int param_1, char * param_2);
     void g_some_printf_function_4(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, int param_9, char * param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void create_pausemenu_sprite(void);
-    void g_smth_creates_gameover_sprite(undefined4 param_1, struct Sprite * sprite);
+    void g_something_with_pause_menu_and_game_over_sprite(undefined4 param_1, struct Sprite * sprite);
     void sprite_pausemenu_disp(struct Sprite * sprite);
     void create_titlescreen_press_start_sprites(int param_1);
     void sprite_titlescreen_press_start_tick(u8 * status, struct Sprite * sprite);
@@ -9536,6 +9542,7 @@ extern "C" {
     void g_mini_commend_draw_func(void);
     void g_something_with_rotation_not_aiai(struct Ape * ape);
     void g_something_with_drawing_apes(void);
+    uint g_check_flag_related_to_pausing(void);
     void event_commend_init(void);
     void event_commend_tick(double param_1, undefined4 param_2, undefined4 param_3, undefined4 param_4, undefined4 param_5, undefined4 param_6, undefined4 param_7, undefined4 param_8, undefined4 param_9);
     void event_commend_dest(void);
@@ -9567,6 +9574,11 @@ extern "C" {
     void g_something_with_card4(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
     void g_something_with_card8(void);
     void g_something_with_card6(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
+    byte g_check_some_memcard_field(void);
+    undefined4 g_get_result_code(void);
+    void g_get_some_memcard_var(void);
+    void g_get_last_used_memcard_slot(void);
+    void smd_game_over_save_child(void);
     void g_something_with_card2(int card_chan, int param_2);
     void * g_some_replay_func(void * * param_1, uint * param_2);
     undefined4 g_some_replay_func2(byte * param_1);

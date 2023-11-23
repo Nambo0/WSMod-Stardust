@@ -6574,7 +6574,7 @@
 8035784C:return_1
 80357854:empty_function
 80357858:g_something_with_card13
-80357990:FUN_80281758
+80357990:g_some_replay_func4
 80357D08:g_something_with_card3
 8035804C:print_card_submode_error
 803580B8:FUN_80281e80
@@ -6791,10 +6791,10 @@
 80360508:FUN_8028a2d0
 80360524:FUN_8028a2ec
 80360558:FUN_8028a320
-803605C0:FUN_8028a388
+803605C0:g_some_replay_func
 80360AA0:FUN_8028a868
-80360B0C:FUN_8028a8d4
-80360C34:FUN_8028a9fc
+80360B0C:g_some_replay_func2
+80360C34:g_some_replay_func3
 80360CC4:FUN_8028aa8c
 80360F3C:g_something_with_fonts
 80361024:FUN_8028adec
@@ -8030,6 +8030,7 @@
 803DD608:FLOAT0
 803DD60C:FLOAT1
 803DD618:FLOAT400
+803DD620:pausemenu_entry_counts
 803DDDF0:g_something_with_camera
 803DDE18:g_related_to_camera_turn_rate_and_stage_tilt
 803DDE74:camera_near_clip_z
@@ -8485,6 +8486,9 @@
 8054DCB8:g_current_pause_menu_entry_count
 8054DCBC:pausemenu_type
 8054DCC4:g_pause_status
+8054DCCC:g_some_pausemenu_var
+8054DCD0:g_some_pausemenu_var2
+8054DCD4:g_some_pausemenu_var3
 8054DCE0:g_some_render_flag
 8054DCE4:g_mirror_pos1
 8054DCE8:g_mirror_plane_height
@@ -9369,6 +9373,7 @@
 809800EE:selected_story_file_idx
 809800F2:g_dataselect_menu_framecounter
 809800F3:storymode_menu_state
+80982F30:g_some_pausemenu_var4
 80985A18:g_some_ape
 80985A48:view_stage_camera_x
 80985A4C:view_stage_camera_y

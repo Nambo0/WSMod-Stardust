@@ -8483,7 +8483,7 @@ extern "C" {
     void g_camera_func85(struct Camera * camera, struct Ball * ball);
     void g_camera_func91(struct Camera * camera, struct Ball * ball);
     void g_camera_func92(struct Camera * camera, struct Ball * ball);
-    bool g_is_sphere_visible(undefined8 radius, struct Vec * center);
+    bool g_is_sphere_visible(double radius, struct Vec * center);
     bool g_is_sphere_visible_scaled(double radius, double g_scale, struct Vec * center);
     void g_init_lights(void);
     void g_something_to_do_with_lights(void);

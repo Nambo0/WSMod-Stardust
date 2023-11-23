@@ -39,7 +39,7 @@ constexpr char* s_log_pages_about[8] = {
     "\n"
     "/bc009DFF/Clear Badge:/bcFFFFFF/ Complete that stage's normal goal\n"
     "/bcC800FF/Stunt Badge:/bcFFFFFF/ Complete that stage's stunt goal\n"
-    "/bcFBFF00/Sweep Badge:/bcFFFFFF/ Complete that stage with every bunch collected in one run     \n"
+    "/bcFBFF00/Sweep Badge:/bcFFFFFF/ Complete that stage with every bunch collected in one run\n"
     "\n"
     "Whenever you collect a new badge, its icon will briefly appear\n"
     "in the bottom left corner above the stage name\n",
@@ -47,7 +47,7 @@ constexpr char* s_log_pages_about[8] = {
     // About Page 2
     "/bc00fffb/COSMIC BUNCHES/bcFFFFFF/\n"
     "\n"
-    "Various types of /bcFBFF00/banana bunches/bcFFFFFF/ can be found in Story Mode.     \n"
+    "Various types of /bcFBFF00/banana bunches/bcFFFFFF/ can be found in Story Mode.\n"
     "Cosmic bunches are larger, with small colored comets that\n"
     "orbit around them\n"
     "\n"
@@ -85,7 +85,7 @@ constexpr char* s_log_pages_about[8] = {
     "/bcC800FF/Penalties & Bonuses:/bcFFFFFF/\n"
     "\n"
     "Falling out does NOT reset the timer or bunches collected.\n"
-    "Instead, there is a /bcFF9900/15 second penalty/bcFFFFFF/ each time you fall out.     \n"
+    "Instead, there is a /bcFF9900/15 second penalty/bcFFFFFF/ each time you fall out.\n"
     "\n"
     "Each stage has a goal which will award /bcFBFF00/50 bananas/bcFFFFFF/ upon\n"
     "completion. The goal will bring you to the next stage, so\n"
@@ -103,7 +103,7 @@ constexpr char* s_log_pages_about[8] = {
     "/bc6EFFFD/PLATIMUM RANK:/bcFFFFFF/ 4000+ bananas\n"
     "/bcC800FF/STAR RANK:/bcFFFFFF/ 5000+ bananas\n"
     "\n"
-    "Each rank will display a unique /bcC800FF/medallion/bcFFFFFF/ at the end of     \n"
+    "Each rank will display a unique /bcC800FF/medallion/bcFFFFFF/ at the end of\n"
     "the run, and your best run's medallion will be displayed\n"
     "in the center of /bc009DFF/Monuments/bcFFFFFF/.\n",
 
@@ -116,7 +116,7 @@ constexpr char* s_log_pages_about[8] = {
     "/bc00FF2F/Joke Stages:/bcFFFFFF/ Joke/troll stages that I made for fun\n"
     "/bc009DFF/Stage Drafts:/bcFFFFFF/ Old revisions of stages that got re-made,\n"
     "                  and concepts that didn't become stages\n"
-    "/bcC800FF/The Unplayable Zone:/bcFFFFFF/ Obnoxious/impossible joke stages     \n"
+    "/bcC800FF/The Unplayable Zone:/bcFFFFFF/ Obnoxious/impossible joke stages\n"
     "\n"
     "PLEASE NOTE: This is meant to be a silly showcase of\n"
     "the inner workings of this pack's development. I'm fully\n"
@@ -127,7 +127,7 @@ constexpr char* s_log_pages_about[8] = {
     // About Page 7 (ONLY SHOW IF BONUS UNLOCKED)
     "/bc00fffb/MONUMENTS/bcFFFFFF/\n"
     "\n"
-    "Monuments is a /bcC800FF/trophy room/bcFFFFFF/ for this pack's bonus goals!     \n"
+    "Monuments is a /bcC800FF/trophy room/bcFFFFFF/ for this pack's bonus goals!\n"
     "\n"
     "The surrounding statues each represent one world, and\n"
     "above you can see which /bcC800FF/badges/bcFFFFFF/ you have completed.\n"

@@ -37,10 +37,13 @@ static u32
 
 static mkb::CARDResult read_file_internal(const char* file_name,
                                           void** out_buf) {
-    mkb::CARDResult res = mkb::CARD_RESULT_READY;
+    mkb::CARDResult res = mkb::CARD_RESULT_BUSY;
 
     // Probe and mount card
-    mkb::CARDProbeEx(0, nullptr, nullptr);
+    do {
+        res = mkb::CARDProbeEx(0, nullptr, nullptr);
+    } while (res == mkb::CARD_RESULT_BUSY);
+
     mkb::CARDMountAsync(0, s_card_work_area, nullptr, nullptr);
     do {
         res = mkb::CARDGetResultCode(0);
@@ -107,11 +110,12 @@ static void finish_write(mkb::CARDResult res) {
 void init() {
     // Artificial delay so that the memcard has time to initialize
     // Probably not an issue on console, but if read speed emulation is disabled in Dolphin, this can cause issues
+    /*
     auto current_tick = mkb::OSGetTick();
     auto end_tick = current_tick + mkb::BUS_CLOCK_SPEED/32; // 0.125s delay
     while (current_tick < end_tick) {
         current_tick = mkb::OSGetTick();
-    }
+    }*/
 
     s_card_work_area = heap::alloc(mkb::CARD_WORKAREA_SIZE);
     modlink::set_card_work_area(s_card_work_area);
@@ -129,7 +133,11 @@ void tick() {
 
                 // Probe and begin mounting card A
                 s32 sector_size;
-                mkb::CARDProbeEx(0, nullptr, &sector_size);
+
+                do {
+                    res = mkb::CARDProbeEx(0, nullptr, nullptr);
+                } while (res == mkb::CARD_RESULT_BUSY);
+
                 s_write_size =
                     (s_write_params.buf_size + sector_size - 1) & ~(sector_size - 1);
                 mkb::CARDMountAsync(0, s_card_work_area, nullptr, nullptr);

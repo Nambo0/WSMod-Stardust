@@ -19,7 +19,7 @@ namespace savedata {
 Specific Values:
 380 = Widescreen (for widescreen_title_fix)
 */
-
+static bool card_error = false;
 
 static u8 savedata[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -83,6 +83,7 @@ void update_special_bools() {
 }
 
 void save() {
+    if(card_error) return;
     update_special_bools();
     to_buffer();
     cardio::write_file(FILENAME, card_buffer, sizeof(card_buffer),
@@ -179,9 +180,11 @@ s32 init() {
         mkb::OSReport("[stardust] Savedata loaded!");
         to_array(header);
         heap::free(header);
+        card_error = false;
     }
     else {
         mkb::OSReport("[stardust] Error loading savedata. Error type %d", result);
+        card_error = true;
     }
 
     return result;

@@ -208,6 +208,7 @@ constexpr char* s_log_pages_interstellar =
 }// namespace
 
 void create_galactic_log_menu() {
+
     constexpr Vec2d center = Vec2d{640 / 2, 480 / 2};
     constexpr Vec2d box_size = Vec2d{450, 220};
     constexpr Vec2d box_origin = Vec2d{center.x - (box_size.x / 2), center.y - (box_size.y) / 2};
@@ -254,6 +255,9 @@ void create_galactic_log_menu() {
 
     // Handle for 'Close' button
     auto close_handler = []() {
+      // Restores B button functionality (TODO: Start button fix)
+      patch::write_word(reinterpret_cast<void*>(0x80274b88), 0x40820030);
+
         ui::get_widget_manager().remove("galmenu");
         LOG("After closing free heap: %dkb", heap::get_free_space() / 1024);
         // TODO: go back to the pause menu?
@@ -268,12 +272,18 @@ void create_galactic_log_menu() {
     galactic_log_menu.add(new ui::Button("Credit & Special Thanks", open_credits_handler));
     galactic_log_menu.add(new ui::Button("Close", close_handler));
     galactic_log_menu.set_depth(0.002);
+
+    // Close handler for B button
+    //galactic_log_menu.add(new ui::Input(mkb::PAD_BUTTON_B, close_handler));
 }
 
 
 void create_about_screen() {
     LOG("Creating about screen...");
-    mkb::load_bmp_by_id(0xc);// TODO: do not rely on this, this wastes memory
+    mkb::load_bmp_by_id(0xc);// TODO: free this! memory leak!!
+
+    // Prevent B button from returning to pause menu
+    patch::write_nop(reinterpret_cast<void*>(0x80274b88));
 
     // Initialize the correct page count/page index
     s_log_page_number = 0;
@@ -380,6 +390,9 @@ void create_about_screen() {
 void create_credits_screen() {
     LOG("Creating credits screen...");
     mkb::load_bmp_by_id(0xc);// TODO: do not rely on this, this wastes memory
+
+    // Prevent B button from returning to pause menu
+    patch::write_nop(reinterpret_cast<void*>(0x80274b88));
 
     // Initialize the correct page count/page index
     s_log_page_number = 0;
@@ -505,6 +518,9 @@ void create_badge_screen() {
     LOG("Creating badge screen...");
     mkb::load_bmp_by_id(0xc);// TODO: do not rely on this, this wastes memory
 
+    // Prevent B button from returning to pause menu
+    patch::write_nop(reinterpret_cast<void*>(0x80274b88));
+
     s_log_page_number = 0;
     s_log_page_count = 10;
 
@@ -592,6 +608,9 @@ void create_interstellar_screen() {
     LOG("Creating interstellar screen...");
     mkb::load_bmp_by_id(0xc);// TODO: do not rely on this, this wastes memory
 
+    // Prevent B button from returning to pause menu
+    patch::write_nop(reinterpret_cast<void*>(0x80274b88));
+
     // Parent widget, this is the darkened screen
     auto& interstellar_menu_screen = ui::get_widget_manager().add(new ui::Sprite(0x4b, Vec2d{0, 0}, Vec2d{64, 64}));
     interstellar_menu_screen.set_label("galints");
@@ -658,6 +677,7 @@ void create_interstellar_screen() {
 }
 
 void init_main_loop() {
+    patch::write_nop(reinterpret_cast<void*>(0x80274b58)); // Prevents A button from returning to the pause menu when Galactic Log is open
     patch::hook_function(s_g_create_how_to_sprite_tramp, mkb::create_how_to_sprite, [](void) {
         mkb::g_some_pausemenu_var = 4;
         mkb::Sprite* pause_sprite = mkb::get_sprite_with_unique_id(mkb::SPRITE_HOW_TO);

@@ -161,6 +161,12 @@ u8 best_stellar_rank() {
     return 5;
 }
 
+void erase_all_data() {
+    for(u8 i = 0; i < 60; i++){
+        savedata[i] = 0;
+    }
+}
+
 void write_bool_to_slot(u16 slot, bool value) {
     write_bool_to_array(savedata, slot, value);
 }

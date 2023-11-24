@@ -162,6 +162,10 @@ u8 best_stellar_rank() {
     return 5;
 }
 
+u16 get_stellar_level(u8 level) {
+    return savedata[50 + level - 1];
+}
+
 void erase_all_data() {
     for(u8 i = 0; i < 60; i++){
         savedata[i] = 0;

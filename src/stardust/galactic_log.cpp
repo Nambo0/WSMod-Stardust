@@ -24,7 +24,7 @@ TICKABLE_DEFINITION((
         .init_main_game = init_main_game,
         .tick = tick, ))
 
-static patch::Tramp<decltype(&mkb::g_create_how_to_sprite)> s_g_create_how_to_sprite_tramp;
+static patch::Tramp<decltype(&mkb::create_how_to_sprite)> s_g_create_how_to_sprite_tramp;
 static char s_badge_stage_name_buffer[10][64];
 static char s_text_page_buffer[1024] = {0};
 static uint8_t s_log_page_number = 0;// Current index of page in log screen
@@ -557,7 +557,7 @@ void create_badge_screen() {
 }
 
 void init_main_loop() {
-    patch::hook_function(s_g_create_how_to_sprite_tramp, mkb::g_create_how_to_sprite, [](void) {
+    patch::hook_function(s_g_create_how_to_sprite_tramp, mkb::create_how_to_sprite, [](void) {
         mkb::g_some_pausemenu_var = 4;
         mkb::Sprite* pause_sprite = mkb::get_sprite_with_unique_id(mkb::SPRITE_HOW_TO);
         if (pause_sprite != nullptr) pause_sprite->para1 = 6;

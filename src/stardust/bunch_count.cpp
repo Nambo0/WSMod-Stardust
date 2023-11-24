@@ -44,6 +44,10 @@ static void sprite_bunch_count_tick(u8* status, mkb::Sprite* sprite) {
             mkb::sprintf(sprite->text, "%u/%u", bunches_collected, bunches_total);
         }
     }
+    else {
+        sprite->alpha -= 0.05;
+        if(sprite->alpha < 0) sprite->alpha = 0;
+    }
 }
 
 static void display_counter() {

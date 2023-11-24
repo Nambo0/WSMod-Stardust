@@ -105,6 +105,14 @@ static void finish_write(mkb::CARDResult res) {
 }
 
 void init() {
+    // Artificial delay so that the memcard has time to initialize
+    // Probably not an issue on console, but if read speed emulation is disabled in Dolphin, this can cause issues
+    auto current_tick = mkb::OSGetTick();
+    auto end_tick = current_tick + mkb::BUS_CLOCK_SPEED/32; // 0.125s delay
+    while (current_tick < end_tick) {
+        current_tick = mkb::OSGetTick();
+    }
+
     s_card_work_area = heap::alloc(mkb::CARD_WORKAREA_SIZE);
     modlink::set_card_work_area(s_card_work_area);
 }

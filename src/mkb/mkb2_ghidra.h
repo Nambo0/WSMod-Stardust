@@ -3156,6 +3156,8 @@ enum {
 };
 typedef undefined4 MinimapMode;
 
+typedef longlong OSTime;
+
 typedef struct DipSwitchesOld DipSwitchesOld, *PDipSwitchesOld;
 
 struct DipSwitchesOld { /* Unused struct - maybe I'll use it once Ghidra supports bitfields a bit nicer in the decompilation */
@@ -3482,6 +3484,104 @@ typedef signed char int8_t;
 typedef int bool_t;
 
 typedef int int32_t;
+
+typedef struct g_some_card_struct g_some_card_struct, *Pg_some_card_struct;
+
+typedef struct OSThreadQueue OSThreadQueue, *POSThreadQueue;
+
+typedef struct OSThread OSThread, *POSThread;
+
+typedef struct OSContext OSContext, *POSContext;
+
+typedef s32 OSPriority;
+
+typedef struct OSThreadLink OSThreadLink, *POSThreadLink;
+
+typedef struct OSMutex OSMutex, *POSMutex;
+
+typedef struct OSMutexQueue OSMutexQueue, *POSMutexQueue;
+
+typedef struct OSMutexLink OSMutexLink, *POSMutexLink;
+
+struct OSContext {
+    u32 gpr[32]; /* General-purpose registers */
+    u32 cr;
+    u32 lr;
+    u32 ctr;
+    u32 xer;
+    f64 fpr[32]; /* Floating-point registers */
+    u32 fpscr_pad;
+    u32 fpscr;
+    u32 ssr0; /* Exception handling registers */
+    u32 ssr1;
+    u16 mode; /* Context mode - since UIMM is 16 bits in PPC */
+    u16 state; /* OR-ed OS_CONTEXT_STATE_* */
+    u32 gqr[8]; /* Place Gekko regs at the end so we have minimal changes to existing code */
+    f64 psf[32];
+} __attribute__((__packed__));
+static_assert(sizeof(OSContext) == 0x2c4);
+
+struct OSThreadQueue {
+    struct OSThread * head;
+    struct OSThread * tail;
+} __attribute__((__packed__));
+static_assert(sizeof(OSThreadQueue) == 0x8);
+
+struct OSMutexQueue {
+    struct OSMutex * head;
+    struct OSMutex * tail;
+} __attribute__((__packed__));
+static_assert(sizeof(OSMutexQueue) == 0x8);
+
+struct OSThreadLink {
+    struct OSThread * next;
+    struct OSThread * prev;
+} __attribute__((__packed__));
+static_assert(sizeof(OSThreadLink) == 0x8);
+
+struct OSThread {
+    struct OSContext context; /* register context */
+    u16 state; /* OS_THREAD_STATE_* */
+    u16 attr; /* OS_THREAD_ATTR_* */
+    s32 suspend; /* suspended if the count is greater than zero */
+    OSPriority priority; /* effective scheduling priority */
+    OSPriority base; /* base scheduling priority */
+    void * val; /* exit value */
+    struct OSThreadQueue * queue; /* queue thread is on */
+    struct OSThreadLink link; /* queue link */
+    struct OSThreadQueue * queueJoin; /* list of threads waiting for termination (join) */
+    struct OSMutex * mutex; /* mutex trying to lock */
+    struct OSMutexQueue queueMutex; /* list of mutexes owned */
+    struct OSThreadLink linkActive; /* list of all threads for debugging */
+    u8 * stackBase; /* the thread's designated stack (high address) */
+    u32 * stackEnd; /* last word of stack (low address) */
+} __attribute__((__packed__));
+static_assert(sizeof(OSThread) == 0x304);
+
+struct OSMutexLink {
+    struct OSMutex * next;
+    struct OSMutex * prev;
+} __attribute__((__packed__));
+static_assert(sizeof(OSMutexLink) == 0x8);
+
+struct OSMutex {
+    struct OSThreadQueue queue;
+    struct OSThread * thread; /* the current owner */
+    s32 count; /* lock count */
+    struct OSMutexLink link; /* for OSThread.queueMutex */
+} __attribute__((__packed__));
+static_assert(sizeof(OSMutex) == 0x18);
+
+struct g_some_card_struct {
+    undefined field_0x0[0x4];
+    undefined4 field4_0x4;
+    undefined field_0x8[0x84];
+    struct OSThreadQueue field137_0x8c;
+    undefined field_0x94[0x4c];
+    undefined4 field214_0xe0;
+    undefined field_0xe4[0x2c];
+} __attribute__((__packed__));
+static_assert(sizeof(g_some_card_struct) == 0x110);
 
 typedef struct gSceneData gSceneData, *PgSceneData;
 
@@ -4142,91 +4242,6 @@ struct OSSectionInfo {
 } __attribute__((__packed__));
 static_assert(sizeof(OSSectionInfo) == 0x8);
 
-typedef struct OSThreadLink OSThreadLink, *POSThreadLink;
-
-typedef struct OSThread OSThread, *POSThread;
-
-typedef struct OSContext OSContext, *POSContext;
-
-typedef s32 OSPriority;
-
-typedef struct OSThreadQueue OSThreadQueue, *POSThreadQueue;
-
-typedef struct OSMutex OSMutex, *POSMutex;
-
-typedef struct OSMutexQueue OSMutexQueue, *POSMutexQueue;
-
-typedef struct OSMutexLink OSMutexLink, *POSMutexLink;
-
-struct OSThreadLink {
-    struct OSThread * next;
-    struct OSThread * prev;
-} __attribute__((__packed__));
-static_assert(sizeof(OSThreadLink) == 0x8);
-
-struct OSMutexLink {
-    struct OSMutex * next;
-    struct OSMutex * prev;
-} __attribute__((__packed__));
-static_assert(sizeof(OSMutexLink) == 0x8);
-
-struct OSThreadQueue {
-    struct OSThread * head;
-    struct OSThread * tail;
-} __attribute__((__packed__));
-static_assert(sizeof(OSThreadQueue) == 0x8);
-
-struct OSMutex {
-    struct OSThreadQueue queue;
-    struct OSThread * thread; /* the current owner */
-    s32 count; /* lock count */
-    struct OSMutexLink link; /* for OSThread.queueMutex */
-} __attribute__((__packed__));
-static_assert(sizeof(OSMutex) == 0x18);
-
-struct OSContext {
-    u32 gpr[32]; /* General-purpose registers */
-    u32 cr;
-    u32 lr;
-    u32 ctr;
-    u32 xer;
-    f64 fpr[32]; /* Floating-point registers */
-    u32 fpscr_pad;
-    u32 fpscr;
-    u32 ssr0; /* Exception handling registers */
-    u32 ssr1;
-    u16 mode; /* Context mode - since UIMM is 16 bits in PPC */
-    u16 state; /* OR-ed OS_CONTEXT_STATE_* */
-    u32 gqr[8]; /* Place Gekko regs at the end so we have minimal changes to existing code */
-    f64 psf[32];
-} __attribute__((__packed__));
-static_assert(sizeof(OSContext) == 0x2c4);
-
-struct OSMutexQueue {
-    struct OSMutex * head;
-    struct OSMutex * tail;
-} __attribute__((__packed__));
-static_assert(sizeof(OSMutexQueue) == 0x8);
-
-struct OSThread {
-    struct OSContext context; /* register context */
-    u16 state; /* OS_THREAD_STATE_* */
-    u16 attr; /* OS_THREAD_ATTR_* */
-    s32 suspend; /* suspended if the count is greater than zero */
-    OSPriority priority; /* effective scheduling priority */
-    OSPriority base; /* base scheduling priority */
-    void * val; /* exit value */
-    struct OSThreadQueue * queue; /* queue thread is on */
-    struct OSThreadLink link; /* queue link */
-    struct OSThreadQueue * queueJoin; /* list of threads waiting for termination (join) */
-    struct OSMutex * mutex; /* mutex trying to lock */
-    struct OSMutexQueue queueMutex; /* list of mutexes owned */
-    struct OSThreadLink linkActive; /* list of all threads for debugging */
-    u8 * stackBase; /* the thread's designated stack (high address) */
-    u32 * stackEnd; /* last word of stack (low address) */
-} __attribute__((__packed__));
-static_assert(sizeof(OSThread) == 0x304);
-
 enum {
     GX_NONE=0,
     GX_DIRECT=1,
@@ -4804,6 +4819,22 @@ enum {
 };
 typedef undefined4 GXPosNrmMtx;
 
+typedef struct OSCalendarTime OSCalendarTime, *POSCalendarTime;
+
+struct OSCalendarTime {
+    int sec; /* seconds after the minute [0, 61] */
+    int min; /* minutes after the hour [0, 59] */
+    int hour; /* hours since midnight [0, 23] */
+    int mday; /* day of the month [1, 31] */
+    int mon; /* month since January [0, 11] */
+    int year; /* years in AD [1, ...] */
+    int wday; /* days since Sunday [0, 6] */
+    int yday; /* days since January 1 [0, 365] */
+    int msec; /* milliseconds after the second [0,999] */
+    int usec; /* microseconds after the millisecond [0,999] */
+} __attribute__((__packed__));
+static_assert(sizeof(OSCalendarTime) == 0x28);
+
 enum {
     GX_PF_RGB8_Z24=0,
     GX_PF_RGBA6_Z24=1,
@@ -5178,22 +5209,6 @@ enum {
     GX_MAX_ITSCALE=9
 };
 typedef undefined4 GXIndTexScale;
-
-typedef struct OSCalendarTime OSCalendarTime, *POSCalendarTime;
-
-struct OSCalendarTime {
-    int sec; /* seconds after the minute [0, 61] */
-    int min; /* minutes after the hour [0, 59] */
-    int hour; /* hours since midnight [0, 23] */
-    int mday; /* day of the month [1, 31] */
-    int mon; /* month since January [0, 11] */
-    int year; /* years in AD [1, ...] */
-    int wday; /* days since Sunday [0, 6] */
-    int yday; /* days since January 1 [0, 365] */
-    int msec; /* milliseconds after the second [0,999] */
-    int usec; /* microseconds after the millisecond [0,999] */
-} __attribute__((__packed__));
-static_assert(sizeof(OSCalendarTime) == 0x28);
 
 typedef s16 __OSInterrupt;
 
@@ -6498,7 +6513,7 @@ extern "C" {
     extern struct Ape * menu_apes[4];
     extern undefined4 g_menu_color_overlay_timer;
     extern undefined g_something_with_preview_textures;
-    extern undefined4 g_some_game_data_flag;
+    extern undefined4 option_game_data_current_operation;
     extern undefined4 g_current_game_data_selection;
     extern undefined4 g_replay_stage_id_to_load;
     extern undefined1 g_gift_menu_cursor_pos;
@@ -6889,12 +6904,12 @@ extern "C" {
     void OSWakeupThread(int * param_1);
     undefined4 OSSetThreadPriority(int param_1, int param_2);
     undefined4 OSGetThreadPriority(int param_1);
-    void OSGetTime(void);
+    OSTime OSGetTime(void);
     OSTick OSGetTick(void);
     ulonglong __OSGetSystemTime(void);
     undefined8 __OSTimeToSystemTime(int param_1, uint param_2);
     void GetDates(int param_1, int param_2);
-    void OSTicksToCalendarTime(uint param_1, uint param_2, int * param_3);
+    void OSTicksToCalendarTime(OSTime ticks, struct OSCalendarTime * td);
     void init_cpp_wrapper(void);
     void __init_cpp(void);
     void ppc_halt_wrapper(void);

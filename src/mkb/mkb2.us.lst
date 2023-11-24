@@ -10077,7 +10077,7 @@
 80949E38:menu_apes
 80949E50:g_menu_color_overlay_timer
 80949E58:g_something_with_preview_textures
-8094A4A0:g_some_game_data_flag
+8094A4A0:option_game_data_current_operation
 8094A4A4:g_current_game_data_selection
 809527E4:g_replay_stage_id_to_load
 80952863:g_gift_menu_cursor_pos

@@ -187,8 +187,24 @@ constexpr char* s_stellar_ranks[6] = {
     "/bcCCCCCC/SILVER/bcFFFFFF/",
     "/bcFFDD00/GOLD/bcFFFFFF/",
     "/bc6EFFFD/PLATIMUM/bcFFFFFF/",
-    "/bcC800FF/STAR/bcFFFFFF/",
-};
+    "/bcC800FF/STAR/bcFFFFFF/"};
+constexpr char* s_log_pages_interstellar =
+    "/bc00fffb/BEST RUN/bcFFFFFF/\n"
+    "\n"
+    "/bcFFFFFF/Grand Total: /bcFBFF00/%d/bcFFFFFF/\n"
+    "\n"
+    "Rank: %s\n"
+    "\n"
+    "World 1: /bcFBFF00/%d/bcFFFFFF/\n"
+    "World 2: /bcFBFF00/%d/bcFFFFFF/\n"
+    "World 3: /bcFBFF00/%d/bcFFFFFF/\n"
+    "World 4: /bcFBFF00/%d/bcFFFFFF/\n"
+    "World 5: /bcFBFF00/%d/bcFFFFFF/\n"
+    "World 6: /bcFBFF00/%d/bcFFFFFF/\n"
+    "World 7: /bcFBFF00/%d/bcFFFFFF/\n"
+    "World 8: /bcFBFF00/%d/bcFFFFFF/\n"
+    "World 9: /bcFBFF00/%d/bcFFFFFF/\n"
+    "World 10: /bcFBFF00/%d/bcFFFFFF/\n";
 }// namespace
 
 void create_galactic_log_menu() {
@@ -351,7 +367,9 @@ void create_about_screen() {
         mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
     };
 
-    auto& close_handler = about_menu_screen.add(new ui::Input(mkb::PAD_BUTTON_B, close_about));
+    // Close handler
+    about_menu_screen.add(new ui::Input(mkb::PAD_BUTTON_B, close_about));
+
     auto& previous_page_handler = about_menu_screen.add(new ui::Input(pad::DIR_LEFT, decrement_page_about));
     previous_page_handler.set_sound_effect_id(0x6f);
 
@@ -566,7 +584,8 @@ void create_badge_screen() {
     auto& next_page_handler = badge_menu_screen.add(new ui::Input(pad::DIR_RIGHT, increment_page_badge));
     next_page_handler.set_sound_effect_id(0x6f);
 
-    auto& close_handler = badge_menu_screen.add(new ui::Input(mkb::PAD_BUTTON_B, close_badge));
+    // Close handler
+    badge_menu_screen.add(new ui::Input(mkb::PAD_BUTTON_B, close_badge));
 }
 
 void create_interstellar_screen() {
@@ -575,7 +594,7 @@ void create_interstellar_screen() {
 
     // Parent widget, this is the darkened screen
     auto& interstellar_menu_screen = ui::get_widget_manager().add(new ui::Sprite(0x4b, Vec2d{0, 0}, Vec2d{64, 64}));
-    interstellar_menu_screen.set_label("galcred");
+    interstellar_menu_screen.set_label("galints");
     interstellar_menu_screen.set_scale(Vec2d{300, 200});
     interstellar_menu_screen.set_alpha(0.6666f);
     interstellar_menu_screen.set_mult_color({0x00, 0x00, 0x00});// black
@@ -604,38 +623,23 @@ void create_interstellar_screen() {
 
     // Interstellar Page 1
     auto& interstellar_container = interstellar_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640 - 5, 480 - 65 - 5}));
-    if(unlock::unlock_condition_met()) { // If unlocked: Display best run
-        mkb::sprintf(s_text_page_buffer, 
-        "/bc00fffb/BEST RUN/bcFFFFFF/\n"
-        "\n"
-        "/bcFFFFFF/Grand Total: /bcFBFF00/%d/bcFFFFFF/\n"
-        "\n"
-        "Rank: %s\n"
-        "\n"
-        "World 1: /bcFBFF00/%d/bcFFFFFF/\n"
-        "World 2: /bcFBFF00/%d/bcFFFFFF/\n"
-        "World 3: /bcFBFF00/%d/bcFFFFFF/\n"
-        "World 4: /bcFBFF00/%d/bcFFFFFF/\n"
-        "World 5: /bcFBFF00/%d/bcFFFFFF/\n"
-        "World 6: /bcFBFF00/%d/bcFFFFFF/\n"
-        "World 7: /bcFBFF00/%d/bcFFFFFF/\n"
-        "World 8: /bcFBFF00/%d/bcFFFFFF/\n"
-        "World 9: /bcFBFF00/%d/bcFFFFFF/\n"
-        "World 10: /bcFBFF00/%d/bcFFFFFF/\n", 
-        savedata::stellar_best_run_total()*10,
-        s_stellar_ranks[savedata::best_stellar_rank()],
-        savedata::get_stellar_level(1)*10,
-        savedata::get_stellar_level(2)*10,
-        savedata::get_stellar_level(3)*10,
-        savedata::get_stellar_level(4)*10,
-        savedata::get_stellar_level(5)*10,
-        savedata::get_stellar_level(6)*10,
-        savedata::get_stellar_level(7)*10,
-        savedata::get_stellar_level(8)*10,
-        savedata::get_stellar_level(9)*10,
-        savedata::get_stellar_level(10)*10);
+    if (unlock::unlock_condition_met()) {// If unlocked: Display best run
+        mkb::sprintf(s_text_page_buffer,
+                     s_log_pages_interstellar,
+                     savedata::stellar_best_run_total() * 10,
+                     s_stellar_ranks[savedata::best_stellar_rank()],
+                     savedata::get_stellar_level(1) * 10,
+                     savedata::get_stellar_level(2) * 10,
+                     savedata::get_stellar_level(3) * 10,
+                     savedata::get_stellar_level(4) * 10,
+                     savedata::get_stellar_level(5) * 10,
+                     savedata::get_stellar_level(6) * 10,
+                     savedata::get_stellar_level(7) * 10,
+                     savedata::get_stellar_level(8) * 10,
+                     savedata::get_stellar_level(9) * 10,
+                     savedata::get_stellar_level(10) * 10);
     }
-    else { // If locked: Display a copy of about page 3 (Unlock condition)
+    else {// If locked: Display a copy of about page 3 (Unlock condition)
         mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[2]);
     }
     auto& interstellar_text = interstellar_container.add(new ui::Text(s_text_page_buffer));
@@ -644,14 +648,13 @@ void create_interstellar_screen() {
     interstellar_text.set_drop_shadow(false);
     interstellar_text.set_color({0x00, 0x00, 0x00});
 
-    auto close_interstellar = [&]() {
-        ui::get_widget_manager().remove("galcred");
+    auto close_interstellar = []() {
+        ui::get_widget_manager().remove("galints");
         create_galactic_log_menu();
     };
 
-    auto& close_handler = interstellar_menu_screen.add(new ui::Button("", Vec2d{0, 0}, close_interstellar));// TODO: generic input handler widget
-    close_handler.set_active(true);
-    close_handler.set_input(mkb::PAD_BUTTON_B);
+    // Close handler
+    interstellar_menu_screen.add(new ui::Input(mkb::PAD_BUTTON_B, close_interstellar));
 }
 
 void init_main_loop() {

@@ -42,6 +42,7 @@ static mkb::CARDResult read_file_internal(const char* file_name,
     // Probe and mount card
     do {
         res = mkb::CARDProbeEx(0, nullptr, nullptr);
+        if (res != mkb::CARD_RESULT_READY && res != mkb::CARD_RESULT_BUSY) return res;
     } while (res == mkb::CARD_RESULT_BUSY);
 
     mkb::CARDMountAsync(0, s_card_work_area, nullptr, nullptr);
@@ -133,9 +134,9 @@ void tick() {
 
                 // Probe and begin mounting card A
                 s32 sector_size;
-
                 do {
-                    res = mkb::CARDProbeEx(0, nullptr, nullptr);
+                    res = mkb::CARDProbeEx(0, nullptr, &sector_size);
+                    if (res != mkb::CARD_RESULT_READY && res != mkb::CARD_RESULT_BUSY) finish_write(res);
                 } while (res == mkb::CARD_RESULT_BUSY);
 
                 s_write_size =

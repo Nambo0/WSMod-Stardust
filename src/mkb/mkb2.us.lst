@@ -6181,8 +6181,8 @@
 80333F1C:caseD_c
 80333F1C:caseD_11
 80333F4C:caseD_ffffffff
-80333F5C:g_create_how_to_sprite
-80334104:g_sprite_how_to_tick
+80333F5C:create_how_to_sprite
+80334104:sprite_how_to_tick
 80334974:switchD
 80334978:caseD_3
 80334A54:caseD_4
@@ -6200,7 +6200,7 @@
 80335098:caseD_e
 80335B08:g_how_to_sprite_draw_controller_tooltips
 803362E0:g_how_to_sprite_draw_rules_page
-80337114:g_sprite_how_to_disp
+80337114:sprite_how_to_disp
 80337A00:switchD
 80337A04:caseD_3
 80337A68:caseD_4
@@ -6230,7 +6230,7 @@
 80337F28:caseD_b
 80337F28:caseD_c
 80337F28:caseD_e
-80338008:g_sprite_how_to_dest
+80338008:sprite_how_to_dest
 8033802C:FUN_80261df4
 80338118:FUN_80261ee0
 8033814C:create_hud_sprites
@@ -6775,15 +6775,15 @@
 8036002C:g_get_result_code
 8036003C:FUN_80289e04
 803600A8:g_get_some_memcard_var
-803600B8:FUN_80289e80
+803600B8:g_sprintf_memcard_error
 80360144:FUN_80289f0c
 80360188:FUN_80289f50
 8036019C:g_get_last_used_memcard_slot
 803601AC:FUN_80289f74
 80360224:FUN_80289fec
 80360294:FUN_8028a05c
-803602C8:FUN_8028a090
-80360348:FUN_8028a110
+803602C8:g_save_game_data
+80360348:g_some_loading_function
 803603DC:FUN_8028a1a4
 80360410:smd_game_over_save_child
 80360478:g_something_with_card2
@@ -8728,6 +8728,7 @@
 805F22A0:g_textdraw_unk8
 805F26C0:g_font_char_var_1
 805F26C4:g_font_char_var_2
+805F5038:g_smth_with_how_to_sprite_mode
 805F5048:g_how_to_bg_scale_x
 805F504C:g_how_to_bg_scale_y
 805F5090:g_banana_disp_efc_req_count
@@ -9873,7 +9874,7 @@
 80910350:g_something_with_menus5
 809105CC:FUN_80566534
 80910AB8:FUN_80566a20
-80910AF8:FUN_80566a60
+80910AF8:g_set_some_option_menu_sprite_param
 80910B38:g_load_select_apes
 80910C10:FUN_80566b78
 80910C54:g_load_some_apes
@@ -9900,9 +9901,9 @@
 80912F48:FUN_80568eb0
 80912FF8:FUN_80568f60
 8091301C:FUN_80568f84
-8091304C:FUN_80568fb4
-809137DC:FUN_80569744
-80913864:FUN_805697cc
+8091304C:sprite_gamedata_disp
+809137DC:create_gamedata_sprite
+80913864:menu_option_game_data_tick_child
 809138A8:switchD
 809138AC:caseD_0
 80913A10:caseD_2
@@ -9913,7 +9914,7 @@
 80913F8C:caseD_6
 8091407C:caseD_7
 809141B8:caseD_8
-8091425C:FUN_8056a1c4
+8091425C:destroy_gamedata_sprite
 80914280:FUN_8056a1e8
 809146D0:FUN_8056a638
 80914750:FUN_8056a6b8
@@ -10076,6 +10077,8 @@
 80949E38:menu_apes
 80949E50:g_menu_color_overlay_timer
 80949E58:g_something_with_preview_textures
+8094A4A0:g_some_game_data_flag
+8094A4A4:g_current_game_data_selection
 809527E4:g_replay_stage_id_to_load
 80952863:g_gift_menu_cursor_pos
 808F40B0:FUN_8058e5e0

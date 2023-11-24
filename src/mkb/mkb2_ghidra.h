@@ -1519,6 +1519,7 @@ enum {
     SPRITE_COPYRIGHT_TEXT_2=38,
     SPRITE_COPYRIGHT_TEXT_3=39,
     SPRITE_DEMO_MES=58,
+    SPRITE_GAMEDATA=95,
     SPRITE_HUD_KIWAKU_WORLD=112,
     SPRITE_TITLE=113
 };
@@ -6211,8 +6212,9 @@ extern "C" {
     extern undefined4 g_textdraw_unk8;
     extern undefined4 g_font_char_var_1;
     extern undefined4 g_font_char_var_2;
-    extern undefined4 g_how_to_bg_scale_x;
-    extern undefined4 g_how_to_bg_scale_y;
+    extern undefined4 g_smth_with_how_to_sprite_mode;
+    extern float g_how_to_bg_scale_x;
+    extern float g_how_to_bg_scale_y;
     extern u8 g_banana_disp_efc_req_count;
     extern undefined g_banana_disp_efc_stack[10];
     extern undefined4 global_ape_lod;
@@ -6496,6 +6498,8 @@ extern "C" {
     extern struct Ape * menu_apes[4];
     extern undefined4 g_menu_color_overlay_timer;
     extern undefined g_something_with_preview_textures;
+    extern undefined4 g_some_game_data_flag;
+    extern undefined4 g_current_game_data_selection;
     extern undefined4 g_replay_stage_id_to_load;
     extern undefined1 g_gift_menu_cursor_pos;
     extern undefined * switchdataD_80590050;
@@ -9429,12 +9433,12 @@ extern "C" {
     void sprite_save_disp(struct Sprite * sprite);
     void sprite_monkey_counter_icon_disp(struct Sprite * sprite);
     undefined4 g_smth_with_get_active_monkey_icon(undefined4 param_1, int param_2, int param_3);
-    void g_create_how_to_sprite(void);
-    void g_sprite_how_to_tick(u8 * status, struct Sprite * sprite);
+    void create_how_to_sprite(void);
+    void sprite_how_to_tick(u8 * status, struct Sprite * sprite);
     void g_how_to_sprite_draw_controller_tooltips(int param_1, int param_2, struct SpriteDrawRequest * param_3);
     void g_how_to_sprite_draw_rules_page(char param_1, struct Sprite * sprite, struct SpriteDrawRequest * req, char param_4, char param_5, char param_6, char param_7);
-    void g_sprite_how_to_disp(struct Sprite * sprite);
-    void g_sprite_how_to_dest(void);
+    void sprite_how_to_disp(struct Sprite * sprite);
+    void sprite_how_to_dest(void);
     void create_hud_sprites(void);
     void create_score_sprites(float pos_x, float pos_y);
     void create_timer_sprites(float param_1, float param_2);
@@ -9577,7 +9581,10 @@ extern "C" {
     byte g_check_some_memcard_field(void);
     undefined4 g_get_result_code(void);
     void g_get_some_memcard_var(void);
+    void g_sprintf_memcard_error(int param_1, char * param_2);
     void g_get_last_used_memcard_slot(void);
+    void g_save_game_data(void);
+    void g_some_loading_function(void);
     void smd_game_over_save_child(void);
     void g_something_with_card2(int card_chan, int param_2);
     void * g_some_replay_func(void * * param_1, uint * param_2);
@@ -10062,6 +10069,7 @@ extern "C" {
     void sprite_button_disp(struct Sprite * param_1);
     void g_blink_selected_menu_item(void);
     void g_something_with_menus5(void);
+    void g_set_some_option_menu_sprite_param(void);
     void g_load_select_apes(void);
     void g_load_some_apes(void);
     void menu_draw_background(void);
@@ -10074,6 +10082,10 @@ extern "C" {
     void sprite_practice_stage_preview_disp(struct Sprite * sprite);
     void sprite_practice_stage_preview_mask_disp(u8 * status, struct Sprite * sprite);
     void create_practice_mode_preview_sprites(void);
+    void sprite_gamedata_disp(int param_1);
+    void create_gamedata_sprite(void);
+    void menu_option_game_data_tick_child(void);
+    void destroy_gamedata_sprite(void);
     void g_draw_controller_sprites(void);
     void g_draw_gift_menu(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, u32 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void empty_function(void);

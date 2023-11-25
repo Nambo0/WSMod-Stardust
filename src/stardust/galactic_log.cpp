@@ -343,7 +343,8 @@ void create_galactic_log_menu() {
     auto close_handler = []() {
       // Restores B button functionality (TODO: Start button fix)
       patch::write_word(reinterpret_cast<void*>(0x80274b88), 0x40820030);
-
+      // Restores pausemenu dim
+      patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x43b40000);
         ui::get_widget_manager().remove("galmenu");
         LOG("After closing free heap: %dkb", heap::get_free_space() / 1024);
         // TODO: go back to the pause menu?

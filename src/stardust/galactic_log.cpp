@@ -26,6 +26,7 @@ TICKABLE_DEFINITION((
 
 static patch::Tramp<decltype(&mkb::create_how_to_sprite)> s_g_create_how_to_sprite_tramp;
 static char s_badge_stage_name_buffer[10][64];
+static char s_achievement_name_buffer[7][256];
 static char s_text_page_buffer[1024] = {0};
 static uint8_t s_log_page_number = 0;// Current index of page in log screen
 static uint8_t s_log_page_count = 0; // Number of pages in a log screen
@@ -205,6 +206,86 @@ constexpr char* s_log_pages_interstellar =
     "World 8: /bcFBFF00/%d/bcFFFFFF/\n"
     "World 9: /bcFBFF00/%d/bcFFFFFF/\n"
     "World 10: /bcFBFF00/%d/bcFFFFFF/\n";
+constexpr char* s_achievement_names[39] = {
+    "",
+    "/bcFF9900/DOUBLE TAKE/bcFFFFFF/ - 1-8 Double Time\n"
+    "Clear the stunt goal at both spinning speeds on back to back attempts",
+    "/bcFF9900/UP, UP, AND AWAY/bcFFFFFF/ - 2-6 Liftoff\n"
+    "Soar higher than the highest cloud onstage",
+    "/bcFF9900/DEFUSED/bcFFFFFF/ - 3-10 Detonation\n"
+    "Clear the blue goal without activating the bomb switch",
+    "/bcFF9900/I WANNA BE THE BACK GOAL/bcFFFFFF/ - 4-9 Avoidance\n"
+    "Enter the blue goal from the back side",
+    "/bcFF9900/BEHIND LOCKED DOORS/bcFFFFFF/ - 5-6 Door Dash\n"
+    "Clear the blue goal without opening any doors",
+    "/bcFF9900/MONOCHROMATIC/bcFFFFFF/ - 6-1 Recolor\n"
+    "Clear the stage without entering a color-changing portal",
+    "/bcFF9900/TARGET MASTER/bcFFFFFF/ - 7-10 Break the Targets\n"
+    "Break all 8 targets and finish with time bonus (150s)",
+    "/bcFF9900/POTASSIUM ALLERGY/bcFFFFFF/ - 8-4 Frequencies\n"
+    "Clear the stage without collecting any bananas",
+    "/bcFF9900/FLIP WIZARD/bcFFFFFF/ - 9-3 Flip Switches\n"
+    "Clear the stage without flipping the switches once",
+    "/bcFF9900/STARSTRUCK/bcFFFFFF/ - 10-10 Impact\n"
+    "Clear the stunt goal after it shoots into the sky",
+    "/bcFF9900/BEAT THE GAME/bcFFFFFF/\n"
+    "Complete Story Mode",
+    "/bcFF9900/STUNT TRAINEE/bcFFFFFF/\n"
+    "Complete 1 /bcC800FF/Stunt Goal/bcFFFFFF/\n",
+    "/bcFF9900/STUNT PILOT/bcFFFFFF/\n"
+    "Complete 1 /bcC800FF/Stunt Goal/bcFFFFFF/ in each world\n",
+    "/bcFF9900/STUNT SPECIALIST/bcFFFFFF/\n"
+    "Complete all 10 /bcC800FF/Stunt Goals/bcFFFFFF/ in any world\n",
+    "/bcFF9900/STUNT ACE/bcFFFFFF/\n"
+    "Complete all 100 /bcC800FF/Stunt Goals/bcFFFFFF/ in Story Mode\n",
+    "/bcFF9900/EATER OF SOULS/bcFFFFFF/\n"
+    "Reach /bcFBFF00/5,000 bananas/bcFFFFFF/ in Story Mode\n",
+    "/bcFF9900/EATER OF WORLDS/bcFFFFFF/\n"
+    "Reach /bcFBFF00/9,999 bananas/bcFFFFFF/ in Story Mode\n",
+    "???",
+    "???",
+    "???",
+    "/bcFF9900/BRONZE RANK/bcFFFFFF/\n"
+    "Finish an Interstellar run with /bcFBFF00/1,000+ bananas/bcFFFFFF/\n",
+    "/bcFF9900/SILVER RANK/bcFFFFFF/\n"
+    "Finish an Interstellar run with /bcFBFF00/2,000+ bananas/bcFFFFFF/\n",
+    "/bcFF9900/GOLD RANK/bcFFFFFF/\n"
+    "Finish an Interstellar run with /bcFBFF00/3,000+ bananas/bcFFFFFF/\n",
+    "/bcFF9900/PLATINUM RANK/bcFFFFFF/\n"
+    "Finish an Interstellar run with /bcFBFF00/4,000+ bananas/bcFFFFFF/\n",
+    "/bcFF9900/STAR RANK/bcFFFFFF/\n"
+    "Finish an Interstellar run with /bcFBFF00/5,000+ bananas/bcFFFFFF/\n",
+    "/bcFF9900/FINISH HIM!/bcFFFFFF/\n"
+    "Get all 10 /bc009DFF/goals/bcFFFFFF/ in a single run\n",
+    "???",
+    "???",
+    "???",
+    "???",
+    "/bcFF9900/HEY GOOBZ PLAY DEBUG/bcFFFFFF/ /bc707070/(shadow achievement)/bcFFFFFF/\n"
+    "Complete or skip through any of the debug sub-categories",
+    "/bcFF9900/A COMPLEX JOKE/bcFFFFFF/ /bc707070/(shadow achievement)/bcFFFFFF/\n"
+    "Clear a stage with exactly 54.13 on the timer",
+    "/bcFF9900/YOU-DA-BACON/bcFFFFFF/ /bc707070/(shadow achievement)/bcFFFFFF/\n"
+    "Clear a stage 10x in a row",
+    "/bcFF9900/SPLEEF RULES LAWYER/bcFFFFFF/ /bc707070/(shadow achievement)/bcFFFFFF/\n"
+    "Clear the stunt goal on Spleef without pressing any blue buttons",
+    "/bcFF9900/CURRENTS RULES LAWYER/bcFFFFFF/ /bc707070/(shadow achievement)/bcFFFFFF/\n"
+    "Clear the stunt goal on Currents without clicking the stunt goal button",
+    "/bcFF9900/ACUTALLY PLAYABLE/bcFFFFFF/ /bc707070/(shadow achievement)/bcFFFFFF/\n"
+    "Clear a stage from The Unplayable Zone in debug",
+    "/bcFF9900/UHHH GG/bcFFFFFF/ /bc707070/(shadow achievement)/bcFFFFFF/\n"
+    "Complete Interstellar with 0 bananas",
+    "/bcFF9900/AAAAA/bcFFFFFF/ /bc707070/(shadow achievement)/bcFFFFFF/\n"
+    "Clear a stage after traveling over 1,000 mph"};
+constexpr char* s_achievement_page_titles[6] = {
+    "/bc00fffb/STAGE CHALLENGES (1/2)/bcFFFFFF/",
+    "/bc00fffb/STAGE CHALLENGES (2/2)/bcFFFFFF/",
+    "/bc00fffb/STORY MODE/bcFFFFFF/",
+    "/bc00fffb/INTERSTELLAR/bcFFFFFF/",
+    "/bc00fffb/SECRET (?/?)/bcFFFFFF/\n"
+    "(These are easter eggs, not meant to be treated as real achievements)",
+    "/bc00fffb/SECRET (?/?)/bcFFFFFF/"
+    "(These are easter eggs, not meant to be treated as real achievements)"};
 }// namespace
 
 void create_galactic_log_menu() {
@@ -250,6 +331,11 @@ void create_galactic_log_menu() {
         create_interstellar_screen();
     };
 
+    auto open_achievement_handler = []() {
+        ui::get_widget_manager().remove("galmenu");
+        create_achievement_screen();
+    };
+
     // Placeholder handle... does nothing
     auto placeholder_handler = []() {};
 
@@ -267,7 +353,7 @@ void create_galactic_log_menu() {
     galactic_log_menu.set_depth(0.0055);
     galactic_log_menu.add(new ui::Button("Story Mode", open_badge_handler));
     galactic_log_menu.add(new ui::Button("Interstellar", open_interstellar_handler));
-    galactic_log_menu.add(new ui::Button("Achievements", placeholder_handler));
+    galactic_log_menu.add(new ui::Button("Achievements", open_achievement_handler));
     galactic_log_menu.add(new ui::Button("About", open_about_handler));
     galactic_log_menu.add(new ui::Button("Credit & Special Thanks", open_credits_handler));
     galactic_log_menu.add(new ui::Button("Close", close_handler));
@@ -291,7 +377,7 @@ void create_about_screen() {
 
     // Parent widget, this is the darkened screen
     auto& about_menu_screen = ui::get_widget_manager().add(new ui::Sprite(0x4b, Vec2d{0, 0}, Vec2d{64, 64}));
-    about_menu_screen.set_label("galcred");
+    about_menu_screen.set_label("galabou");
     about_menu_screen.set_scale(Vec2d{300, 200});
     about_menu_screen.set_alpha(0.6666f);
     about_menu_screen.set_mult_color({0x00, 0x00, 0x00});// black
@@ -327,7 +413,7 @@ void create_about_screen() {
     about_text.set_color({0x00, 0x00, 0x00});
 
     auto close_about = [&]() {
-        ui::get_widget_manager().remove("galcred");
+        ui::get_widget_manager().remove("galabou");
         create_galactic_log_menu();
     };
 
@@ -674,6 +760,250 @@ void create_interstellar_screen() {
 
     // Close handler
     interstellar_menu_screen.add(new ui::Input(mkb::PAD_BUTTON_B, close_interstellar));
+}
+
+static bool played_world(u8 world) {
+    if((!savedata::consecutive_false_from_slot(10*(world-1), 10) || !savedata::consecutive_false_from_slot(100 + 10*(world-1), 10))) return true;
+    else return false;
+}
+
+void create_achievement_list() {
+    auto& achievement_menu_screen = ui::get_widget_manager().find("galachv");
+
+    auto& achievement_container = achievement_menu_screen.add(new ui::Container(Vec2d{0, 65}, Vec2d{640, 480 - 65}));
+    achievement_container.set_label("galachl");
+    achievement_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
+
+    // Page title
+    auto& layout_row_page_title = achievement_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{630, 32}));
+    layout_row_page_title.set_margin(0);
+    layout_row_page_title.set_layout_spacing(0);
+    layout_row_page_title.set_layout(ui::ContainerLayout::HORIZONTAL);
+    auto& text_container_page_title = layout_row_page_title.add(new ui::Container(Vec2d{0, 0}, Vec2d{470, 32}));
+    mkb::sprintf(s_text_page_buffer, "%s", s_achievement_page_titles[s_log_page_number]);
+    auto& text_page_title = text_container_page_title.add(new ui::Text(s_text_page_buffer));
+    text_page_title.set_alignment(ui::LEFT);
+    text_page_title.set_drop_shadow(false);// temporary
+
+    // Fill 7 rows with achievements
+    for (uint32_t curr_row = 0; curr_row < 7; curr_row++) {
+        auto& layout_row = achievement_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{630, 32}));
+        layout_row.set_margin(0);
+        layout_row.set_layout_spacing(0);
+        layout_row.set_layout(ui::ContainerLayout::HORIZONTAL);
+        auto& text_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{470, 32}));
+        auto& sprite_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{160, 32}));
+        sprite_container.set_layout(ui::ContainerLayout::HORIZONTAL);
+
+        u8 curr_id = 0; // Current achievement being displayed (0 = empty w/ badge, 100 = empty w/out badge)
+        // Show list of achievements (based on current page # & some conditionals)
+        switch(s_log_page_number) {
+            case 0: { // Stage Challenges (1/2)
+                switch(curr_row) {
+                    // Show id 1
+                    case 0: curr_id = 1; break;
+                    // If played world, show id 2-5
+                    case 1 ... 4: if(played_world(curr_row + 1)) curr_id = curr_row + 1; break;
+                    case 5 ... 6: curr_id = 100; break; // Empty rows w/out badge
+                }
+                break;
+            }
+            case 1: { // Stage Challenges (2/2)
+                switch(curr_row) {
+                    // If played world, show id 6-10
+                    case 0 ... 4: if(played_world(curr_row + 6)) curr_id = curr_row + 6; break;
+                    case 5 ... 6: curr_id = 100; break; // Empty rows w/out badge
+                }
+                break;
+            }
+            case 2: { // Story Mode
+                switch(curr_row) {
+                    // Show id 11-17
+                    case 0 ... 6: curr_id = curr_row + 11; break;
+                }
+                break;
+            }
+            case 3: { // Interstellar
+                switch(curr_row) {
+                    // Show id 21-26
+                    case 0 ... 5: curr_id = curr_row + 21; break;
+                    case 6: curr_id = 100; break; // Empty rows w/out badge
+                }
+                break;
+            }
+            case 4: { // Secret (1/2)
+                switch(curr_row) {
+                    // If completed, show id 31-34
+                    case 0 ... 3: if(savedata::true_in_slot(331 + curr_row - 1)) curr_id = curr_row + 31; break;
+                    case 4 ... 6: curr_id = 100; break; // Empty rows w/out badge
+                }
+                break;
+            }
+            case 5: { // Secret (1/2)
+                switch(curr_row) {
+                    // If completed, show id 35-38
+                    case 0 ... 3: if(savedata::true_in_slot(335 + curr_row - 1)) curr_id = curr_row + 35; break;
+                    case 4 ... 6: curr_id = 100; break; // Empty rows w/out badge
+                }
+                break;
+            }
+        }
+
+        mkb::sprintf(s_achievement_name_buffer[curr_row], "%s", s_achievement_names[curr_id]);
+        auto& text = text_container.add(new ui::Text(s_achievement_name_buffer[curr_row]));
+        
+        if(curr_id != 100) { // 100 = no badge
+            // 0xc3b = blue, 0xc3a = purple, 0xc39 = sweep, 0xc3c = achievement, 0xc3d = empty
+            uint32_t id_1 = 0xc3d;
+            if (savedata::true_in_slot(300 + curr_id - 1)) id_1 = 0xc3c;
+            auto& ach_icon = sprite_container.add(new ui::Sprite(id_1, Vec2d{32, 32}));
+
+            ach_icon.set_scale(Vec2d{0.5, 0.5});
+        }
+
+        text.set_alignment(ui::LEFT);
+        text.set_drop_shadow(false);// temporary
+    }
+}
+
+/*
+static void show_achievement(u8 id, auto& container) {
+    mkb::sprintf(s_text_page_buffer, "%s", s_achievement_names[id]);
+    auto& achievement_text = container.add(new ui::Text(s_text_page_buffer));
+    container.set_alignment(mkb::ALIGN_UPPER_LEFT);
+    achievement_text.set_alignment(ui::LEFT);
+    achievement_text.set_drop_shadow(false);
+    achievement_text.set_color({0x00, 0x00, 0x00});
+    // TODO: Add badge
+} */
+
+/* static void show_achievement(u8 id, u8 row) {
+    achievement_row[row] = s_achievement_names[id];
+} */
+
+void create_achievement_screen() {
+    LOG("Creating achievement screen...");
+    mkb::load_bmp_by_id(0xc);// TODO: free this! memory leak!!
+
+    // Prevent B button from returning to pause menu
+    patch::write_nop(reinterpret_cast<void*>(0x80274b88));
+
+    // Initialize the correct page count/page index
+    s_log_page_number = 0;
+    s_log_page_count = 6;
+
+    // Parent widget, this is the darkened screen
+    auto& achievement_menu_screen = ui::get_widget_manager().add(new ui::Sprite(0x4b, Vec2d{0, 0}, Vec2d{64, 64}));
+    achievement_menu_screen.set_label("galachv");
+    achievement_menu_screen.set_scale(Vec2d{300, 200});
+    achievement_menu_screen.set_alpha(0.6666f);
+    achievement_menu_screen.set_mult_color({0x00, 0x00, 0x00});// black
+    achievement_menu_screen.set_depth(0.02);
+
+    // Header container
+    auto& achievement_menu_header_container = achievement_menu_screen.add(new ui::Container(Vec2d{0, 0}, Vec2d{640, 128}));
+    achievement_menu_header_container.set_margin(0);
+    achievement_menu_header_container.set_layout_spacing(64);
+    achievement_menu_header_container.set_layout(ui::ContainerLayout::HORIZONTAL);
+
+    // Back arrow
+    achievement_menu_header_container.add(new ui::Sprite(0xc27, Vec2d{0, 0}, Vec2d{64, 64}));
+
+    // Title box
+    auto& title_box = achievement_menu_header_container.add(new ui::Window(Vec2d{0, 0}, Vec2d{384, 64}));
+    title_box.set_alignment(mkb::ALIGN_CENTER);
+
+    auto& title_text = title_box.add(new ui::Text("Achievements"));
+    title_text.set_alignment(ui::CENTER);
+    title_text.set_font_style(mkb::STYLE_TEGAKI);
+
+    // Next arrow
+    auto& next_arrow = achievement_menu_header_container.add(new ui::Sprite(0xc27, Vec2d{0, 0}, Vec2d{64, 64}));
+    next_arrow.set_mirror(true);
+
+    create_achievement_list();
+
+    auto close_achievement = [&]() {
+        ui::get_widget_manager().remove("galachv");
+        create_galactic_log_menu();
+    };
+
+    auto decrement_page_achievement = []() {
+        // Initialize which pages get skipped
+        // (For some reason initializing this outside the lambda function causes "not captured" errors)
+        bool is_page_shown[6] = {
+            // Stage Challenges (1/2), always show
+            true,
+            // Stage Challenges (2/2), only show if a stage w6+ has been beaten
+            (!savedata::consecutive_false_from_slot(50, 50) || !savedata::consecutive_false_from_slot(150, 50)),
+            // Story Mode, always show
+            true,
+            // Interstellar, show if unlocked
+            unlock::unlock_condition_met(),
+            // Secret (1/2), show if any secrets 1-4 are complete
+            !savedata::consecutive_false_from_slot(330, 4),
+            // Secret (2/2), show if any secrets 5-8 are complete
+            !savedata::consecutive_false_from_slot(334, 4)};
+
+        auto& achievement_menu_screen = ui::get_widget_manager().find("galachv");
+        achievement_menu_screen.remove("galachl");
+        // Loop until we reach a shown page.
+        while(true){
+            if (s_log_page_number == 0) {
+                s_log_page_number = s_log_page_count - 1;
+            }
+            else {
+                --s_log_page_number;
+            }
+            // Stop the loop if we've reached a shown page
+            if(is_page_shown[s_log_page_number]) break;
+        }
+        // mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_achievement[s_log_page_number]);
+        create_achievement_list();
+    };
+
+    auto increment_page_achievement = []() {
+        // Initialize which pages get skipped
+        // (For some reason initializing this outside the lambda function causes "not captured" errors)
+        bool is_page_shown[6] = {
+            // Stage Challenges (1/2), always show
+            true,
+            // Stage Challenges (2/2), only show if a stage w6+ has been beaten
+            (!savedata::consecutive_false_from_slot(50, 50) || !savedata::consecutive_false_from_slot(150, 50)),
+            // Story Mode, always show
+            true,
+            // Interstellar, show if unlocked
+            unlock::unlock_condition_met(),
+            // Secret (1/2), show if any secrets 1-4 are complete
+            !savedata::consecutive_false_from_slot(330, 4),
+            // Secret (2/2), show if any secrets 5-8 are complete
+            !savedata::consecutive_false_from_slot(334, 4)};
+
+        auto& achievement_menu_screen = ui::get_widget_manager().find("galachv");
+        achievement_menu_screen.remove("galachl");
+        // Loop until we reach a shown page.
+        while(true){
+            if (s_log_page_number + 1 >= s_log_page_count) {
+                s_log_page_number = 0;
+            }
+            else {
+                ++s_log_page_number;
+            }
+            // Stop the loop if we've reached a shown page
+            if(is_page_shown[s_log_page_number]) break;
+        }
+        // mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_achievement[s_log_page_number]);
+        create_achievement_list();
+    };
+
+    // Close handler
+    achievement_menu_screen.add(new ui::Input(mkb::PAD_BUTTON_B, close_achievement));
+
+    auto& previous_page_handler = achievement_menu_screen.add(new ui::Input(pad::DIR_LEFT, decrement_page_achievement));
+    previous_page_handler.set_sound_effect_id(0x6f);
+
+    auto& next_page_handler = achievement_menu_screen.add(new ui::Input(pad::DIR_RIGHT, increment_page_achievement));
+    next_page_handler.set_sound_effect_id(0x6f);
 }
 
 void init_main_loop() {

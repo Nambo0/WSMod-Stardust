@@ -257,7 +257,8 @@ void create_galactic_log_menu() {
     auto close_handler = []() {
       // Restores B button functionality (TODO: Start button fix)
       patch::write_word(reinterpret_cast<void*>(0x80274b88), 0x40820030);
-
+      // Restores pausemenu dim
+      patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x43b40000);
         ui::get_widget_manager().remove("galmenu");
         LOG("After closing free heap: %dkb", heap::get_free_space() / 1024);
         // TODO: go back to the pause menu?
@@ -679,6 +680,7 @@ void create_interstellar_screen() {
 void init_main_loop() {
     patch::write_nop(reinterpret_cast<void*>(0x80274b58)); // Prevents A button from returning to the pause menu when Galactic Log is open
     patch::hook_function(s_g_create_how_to_sprite_tramp, mkb::create_how_to_sprite, [](void) {
+        patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x00000000);
         mkb::g_some_pausemenu_var = 4;
         mkb::Sprite* pause_sprite = mkb::get_sprite_with_unique_id(mkb::SPRITE_HOW_TO);
         if (pause_sprite != nullptr) pause_sprite->para1 = 6;

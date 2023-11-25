@@ -184,7 +184,6 @@ void init_main_loop() {
     patch::write_branch(
         reinterpret_cast<void*>(mkb::create_final_stage_sprite),
         reinterpret_cast<void*>(create_new_final_stage_sprite));
-    patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x43b40000);
     patch::write_word(reinterpret_cast<void*>(0x8032e0e4), (0x6400a100));
     patch::write_word(reinterpret_cast<void*>(0x8032e798), (0x6400a100));
     patch::write_word(reinterpret_cast<void*>(0x8032f268), (0x6400a100));
@@ -200,6 +199,12 @@ void init_main_loop() {
 // not enough space in their create functions to add a widescreen translation field
 
 void tick() {
+    if (mkb::g_some_pausemenu_var == 0xffffffff) {
+        patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x43b40000);
+    }
+    else {
+        patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x00000000);
+    }
     if (mkb::sub_mode == mkb::SMD_SEL_NGC_MAIN) {
         patch::write_word(reinterpret_cast<void*>(0x80287cf8), 0x418200a8);
     }

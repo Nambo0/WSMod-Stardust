@@ -209,7 +209,7 @@ constexpr char* s_log_pages_interstellar =
 constexpr char* s_achievement_names[39] = {
     "",
     "/bcFF9900/DOUBLE TAKE/bcFFFFFF/ - 1-8 Double Time\n"
-    "Clear the stunt goal at both spinning speeds on back to back attempts",
+    "Clear the stunt goal at both speeds back to back",
     "/bcFF9900/UP, UP, AND AWAY/bcFFFFFF/ - 2-6 Liftoff\n"
     "Soar higher than the highest cloud onstage",
     "/bcFF9900/DEFUSED/bcFFFFFF/ - 3-10 Detonation\n"
@@ -219,7 +219,7 @@ constexpr char* s_achievement_names[39] = {
     "/bcFF9900/BEHIND LOCKED DOORS/bcFFFFFF/ - 5-6 Door Dash\n"
     "Clear the blue goal without opening any doors",
     "/bcFF9900/MONOCHROMATIC/bcFFFFFF/ - 6-1 Recolor\n"
-    "Clear the stage without entering a color-changing portal",
+    "Clear the stage without entering any portals",
     "/bcFF9900/TARGET MASTER/bcFFFFFF/ - 7-10 Break the Targets\n"
     "Break all 8 targets and finish with time bonus (150s)",
     "/bcFF9900/POTASSIUM ALLERGY/bcFFFFFF/ - 8-4 Frequencies\n"
@@ -262,30 +262,30 @@ constexpr char* s_achievement_names[39] = {
     "???",
     "???",
     "/bcFF9900/HEY GOOBZ PLAY DEBUG/bcFFFFFF/ /bc707070/(shadow achievement)/bcFFFFFF/\n"
-    "Complete or skip through any of the debug sub-categories",
+    "Complete or skip through any of the debug zones",
     "/bcFF9900/A COMPLEX JOKE/bcFFFFFF/ /bc707070/(shadow achievement)/bcFFFFFF/\n"
     "Clear a stage with exactly 54.13 on the timer",
     "/bcFF9900/YOU-DA-BACON/bcFFFFFF/ /bc707070/(shadow achievement)/bcFFFFFF/\n"
     "Clear a stage 10x in a row",
     "/bcFF9900/SPLEEF RULES LAWYER/bcFFFFFF/ /bc707070/(shadow achievement)/bcFFFFFF/\n"
-    "Clear the stunt goal on Spleef without pressing any blue buttons",
+    "Clear the stunt goal on Spleef without pressing blue buttons",
     "/bcFF9900/CURRENTS RULES LAWYER/bcFFFFFF/ /bc707070/(shadow achievement)/bcFFFFFF/\n"
-    "Clear the stunt goal on Currents without clicking the stunt goal button",
+    "Clear the stunt goal on Currents without clicking the button",
     "/bcFF9900/ACUTALLY PLAYABLE/bcFFFFFF/ /bc707070/(shadow achievement)/bcFFFFFF/\n"
-    "Clear a stage from The Unplayable Zone in debug",
+    "Clear a stage from The Unplayable Zone",
     "/bcFF9900/UHHH GG/bcFFFFFF/ /bc707070/(shadow achievement)/bcFFFFFF/\n"
     "Complete Interstellar with 0 bananas",
     "/bcFF9900/AAAAA/bcFFFFFF/ /bc707070/(shadow achievement)/bcFFFFFF/\n"
-    "Clear a stage after traveling over 1,000 mph"};
+    "Clear a stage after travelling >1,000 mph"};
 constexpr char* s_achievement_page_titles[6] = {
     "/bc00fffb/STAGE CHALLENGES (1/2)/bcFFFFFF/",
     "/bc00fffb/STAGE CHALLENGES (2/2)/bcFFFFFF/",
     "/bc00fffb/STORY MODE/bcFFFFFF/",
     "/bc00fffb/INTERSTELLAR/bcFFFFFF/",
     "/bc00fffb/SECRET (?/?)/bcFFFFFF/\n"
-    "(These are easter eggs, not meant to be treated as real achievements)",
-    "/bc00fffb/SECRET (?/?)/bcFFFFFF/"
-    "(These are easter eggs, not meant to be treated as real achievements)"};
+    "(Easter eggs, not intended as real achievements)",
+    "/bc00fffb/SECRET (?/?)/bcFFFFFF/\n"
+    "(Easter eggs, not intended as real achievements)"};
 }// namespace
 
 void create_galactic_log_menu() {
@@ -336,8 +336,8 @@ void create_galactic_log_menu() {
         create_achievement_screen();
     };
 
-    // Placeholder handle... does nothing
-    auto placeholder_handler = []() {};
+    /* // Placeholder handle... does nothing
+    auto placeholder_handler = []() {}; */
 
     // Handle for 'Close' button
     auto close_handler = []() {
@@ -776,11 +776,13 @@ void create_achievement_list() {
     achievement_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
 
     // Page title
-    auto& layout_row_page_title = achievement_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{630, 32}));
+    float page_title_height = 32; // Page title is 2 lines on the shadow achievement pages (5 & 6)
+    if(s_log_page_number == 4 || s_log_page_number == 5) page_title_height = 64;
+    auto& layout_row_page_title = achievement_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{630, page_title_height - (page_title_height / 4)}));
     layout_row_page_title.set_margin(0);
     layout_row_page_title.set_layout_spacing(0);
     layout_row_page_title.set_layout(ui::ContainerLayout::HORIZONTAL);
-    auto& text_container_page_title = layout_row_page_title.add(new ui::Container(Vec2d{0, 0}, Vec2d{470, 32}));
+    auto& text_container_page_title = layout_row_page_title.add(new ui::Container(Vec2d{0, 0}, Vec2d{640, page_title_height}));
     mkb::sprintf(s_text_page_buffer, "%s", s_achievement_page_titles[s_log_page_number]);
     auto& text_page_title = text_container_page_title.add(new ui::Text(s_text_page_buffer));
     text_page_title.set_alignment(ui::LEFT);
@@ -788,12 +790,12 @@ void create_achievement_list() {
 
     // Fill 7 rows with achievements
     for (uint32_t curr_row = 0; curr_row < 7; curr_row++) {
-        auto& layout_row = achievement_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{630, 32}));
+        auto& layout_row = achievement_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{630, 32+16}));
         layout_row.set_margin(0);
         layout_row.set_layout_spacing(0);
         layout_row.set_layout(ui::ContainerLayout::HORIZONTAL);
-        auto& text_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{470, 32}));
-        auto& sprite_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{160, 32}));
+        auto& text_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{470+100, 32+32}));
+        auto& sprite_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{32, 32}));
         sprite_container.set_layout(ui::ContainerLayout::HORIZONTAL);
 
         u8 curr_id = 0; // Current achievement being displayed (0 = empty w/ badge, 100 = empty w/out badge)
@@ -859,7 +861,7 @@ void create_achievement_list() {
             if (savedata::true_in_slot(300 + curr_id - 1)) id_1 = 0xc3c;
             auto& ach_icon = sprite_container.add(new ui::Sprite(id_1, Vec2d{32, 32}));
 
-            ach_icon.set_scale(Vec2d{0.5, 0.5});
+            ach_icon.set_scale(Vec2d{1.0, 1.0});
         }
 
         text.set_alignment(ui::LEFT);

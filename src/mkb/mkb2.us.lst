@@ -3349,7 +3349,7 @@
 80273290:caseD_c
 80273290:caseD_d
 80273338:check_pause_menu_input
-80273B28:handle_pausemenu_selection
+80273B28:handle_paused_input_in_menu
 80273B88:switchD
 80273B8C:caseD_0
 80273CA4:caseD_1
@@ -3360,7 +3360,7 @@
 80274570:caseD_6
 80274904:caseD_7
 80274988:caseD_8
-802749A0:g_some_pause_menu_selection_handler
+802749A0:handle_paused_input_out_of_menu
 80274D5C:pause_game
 80274EE8:switchD
 80274EEC:caseD_3c
@@ -6231,8 +6231,8 @@
 80337F28:caseD_c
 80337F28:caseD_e
 80338008:sprite_how_to_dest
-8033802C:FUN_80261df4
-80338118:FUN_80261ee0
+8033802C:g_how_to_sprite_mtx_setup_stuff
+80338118:g_how_to_sprite_mtx_cleanup
 8033814C:create_hud_sprites
 803382A0:create_score_sprites
 8033843C:create_timer_sprites
@@ -8482,6 +8482,7 @@
 8054DC9C:sub_mode_destination
 8054DCA0:test_draw_func_ptr
 8054DCA8:g_repause_cooldown_counter
+8054DCAC:g_related_to_pause_menu_input
 8054DCB0:g_some_status_bitflag_maybe_pause_related
 8054DCB4:g_current_focused_pause_menu_entry
 8054DCB8:g_current_pause_menu_entry_count
@@ -8511,6 +8512,7 @@
 8054DF27:g_focused_maingame_menu
 8054DF28:selected_cm_difficulty2
 8054DF29:selected_cm_difficulty
+8054DF4B:g_how_to_sprite_var_7
 8054DF78:selected_characters
 8054DF84:sel_menu_info
 8054DF85:g_menu_stack
@@ -8729,8 +8731,15 @@
 805F26C0:g_font_char_var_1
 805F26C4:g_font_char_var_2
 805F5038:g_smth_with_how_to_sprite_mode
+805F503C:g_how_to_sprite_var_3
+805F503D:g_how_to_sprite_var_1
+805F503E:g_how_to_sprite_var_4
+805F503F:g_how_to_sprite_var_6
+805F5040:g_how_to_sprite_var_8
+805F5041:g_how_to_sprite_var_5
 805F5048:g_how_to_bg_scale_x
 805F504C:g_how_to_bg_scale_y
+805F5088:g_how_to_sprite_var_2
 805F5090:g_banana_disp_efc_req_count
 805F5094:g_banana_disp_efc_stack
 80615340:global_ape_lod

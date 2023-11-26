@@ -6002,6 +6002,7 @@ extern "C" {
     extern void * sub_mode_destination;
     extern undefined4 test_draw_func_ptr;
     extern undefined1 g_repause_cooldown_counter;
+    extern undefined4 g_related_to_pause_menu_input;
     extern undefined4 g_some_status_bitflag_maybe_pause_related;
     extern undefined4 g_current_focused_pause_menu_entry;
     extern undefined4 g_current_pause_menu_entry_count;
@@ -6030,6 +6031,7 @@ extern "C" {
     extern undefined1 g_focused_maingame_menu;
     extern undefined1 selected_cm_difficulty2;
     extern undefined1 selected_cm_difficulty;
+    extern undefined1 g_how_to_sprite_var_7;
     extern u8 selected_characters[4];
     extern struct SelMenuInfo sel_menu_info;
     extern s8 number_of_starting_monkeys;
@@ -6228,8 +6230,15 @@ extern "C" {
     extern undefined4 g_font_char_var_1;
     extern undefined4 g_font_char_var_2;
     extern undefined4 g_smth_with_how_to_sprite_mode;
+    extern undefined1 g_how_to_sprite_var_3;
+    extern undefined1 g_how_to_sprite_var_1;
+    extern undefined1 g_how_to_sprite_var_4;
+    extern undefined1 g_how_to_sprite_var_6;
+    extern undefined1 g_how_to_sprite_var_8;
+    extern undefined1 g_how_to_sprite_var_5;
     extern float g_how_to_bg_scale_x;
     extern float g_how_to_bg_scale_y;
+    extern undefined1 g_how_to_sprite_var_2;
     extern u8 g_banana_disp_efc_req_count;
     extern undefined g_banana_disp_efc_stack[10];
     extern undefined4 global_ape_lod;
@@ -8338,8 +8347,8 @@ extern "C" {
     int g_get_next_stage_id(void);
     void construct_pause_menu_sprite(struct Sprite * pause_sprite);
     void check_pause_menu_input(struct Sprite * pause_sprite);
-    void handle_pausemenu_selection(struct Sprite * pause_sprite);
-    void g_some_pause_menu_selection_handler(struct Sprite * pause_sprite);
+    void handle_paused_input_in_menu(struct Sprite * pause_sprite);
+    void handle_paused_input_out_of_menu(struct Sprite * pause_sprite);
     void pause_game(void);
     void init_events(void);
     void tick_events(void);
@@ -9454,6 +9463,8 @@ extern "C" {
     void g_how_to_sprite_draw_rules_page(char param_1, struct Sprite * sprite, struct SpriteDrawRequest * req, char param_4, char param_5, char param_6, char param_7);
     void sprite_how_to_disp(struct Sprite * sprite);
     void sprite_how_to_dest(void);
+    void g_how_to_sprite_mtx_setup_stuff(void);
+    void g_how_to_sprite_mtx_cleanup(void);
     void create_hud_sprites(void);
     void create_score_sprites(float pos_x, float pos_y);
     void create_timer_sprites(float param_1, float param_2);

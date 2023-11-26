@@ -337,14 +337,24 @@ void create_galactic_log_menu() {
     };
 
     // Handle for 'Close' button
-    auto close_handler = [](ui::Widget&, void*) {
+    auto close_handler = [](ui::Widget& widget, void*) {
       // Restores B button functionality (TODO: Start button fix)
       patch::write_word(reinterpret_cast<void*>(0x80274b88), 0x40820030);
       // Restores pausemenu dim
       patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x43b40000);
-        ui::get_widget_manager().remove("galmenu");
-        LOG("After closing free heap: %dkb", heap::get_free_space() / 1024);
-        // TODO: go back to the pause menu?
+
+      auto& input_widget = (ui::Input&)widget;
+
+      // Go back to the pause menu
+      if (input_widget.get_input() == mkb::PAD_BUTTON_A) {
+          mkb::call_SoundReqID_arg_1(0x70);
+          mkb::g_some_status_bitflag_maybe_pause_related &=  0xfffffffe;
+          mkb::g_some_pausemenu_var = -1;
+
+      }
+
+      ui::get_widget_manager().remove("galmenu");
+      LOG("After closing free heap: %dkb", heap::get_free_space() / 1024);
     };
 
     // Hack for making these children widgets appear above the pause menu screen overlay
@@ -857,8 +867,6 @@ void init_main_loop() {
     patch::write_nop(reinterpret_cast<void*>(0x80274b58)); // Prevents A button from returning to the pause menu when Galactic Log is open
     patch::hook_function(s_g_create_how_to_sprite_tramp, mkb::create_how_to_sprite, [](void) {
         mkb::g_some_pausemenu_var = 4;
-        mkb::Sprite* pause_sprite = mkb::get_sprite_with_unique_id(mkb::SPRITE_HOW_TO);
-        if (pause_sprite != nullptr) pause_sprite->para1 = 6;
         mkb::call_SoundReqID_arg_2(10);
         LOG("Heap free before: %dkb", heap::get_free_space() / 1024);
         create_galactic_log_menu();

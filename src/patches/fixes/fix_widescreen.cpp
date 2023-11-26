@@ -199,12 +199,14 @@ void init_main_loop() {
 // not enough space in their create functions to add a widescreen translation field
 
 void tick() {
+    /*
     if (mkb::g_some_pausemenu_var == 0xffffffff) {
         patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x43b40000);
     }
     else {
         patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x00000000);
     }
+     */
     if (mkb::sub_mode == mkb::SMD_SEL_NGC_MAIN) {
         patch::write_word(reinterpret_cast<void*>(0x80287cf8), 0x418200a8);
     }

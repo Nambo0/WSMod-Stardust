@@ -372,6 +372,9 @@ ui::Widget& create_common_galactic_log_page_layout(
     // Load bmp_how.tpl (must be freed when closed.. TODO)
     mkb::load_bmp_by_id(0xc);
 
+    // No pause menu dim
+    patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x00000000);
+
     // Prevent B button from returning to pause menu
     patch::write_nop(reinterpret_cast<void*>(0x80274b88));
 
@@ -416,6 +419,7 @@ ui::Widget& create_common_galactic_log_page_layout(
     }
 
     auto close_handler = [](ui::Widget&, void* close_label) {
+        patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x43b40000);
         const char* label = static_cast<const char*>(close_label);
         ui::get_widget_manager().remove(label);
         create_galactic_log_menu();

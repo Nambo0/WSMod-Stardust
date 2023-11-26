@@ -308,36 +308,36 @@ void create_galactic_log_menu() {
     galactic_log_menu.set_depth(0.002);
 
     // Handler for the 'About' button
-    auto open_about_handler = [&]() {
+    auto open_about_handler = [](ui::Widget&, void*) {
         // TODO: preserve selected menu state, so we can return back to it
         ui::get_widget_manager().remove("galmenu");
         create_about_screen();
     };
 
     // Handler for the 'Credits & Special Thanks' button
-    auto open_credits_handler = [&]() {
+    auto open_credits_handler = [](ui::Widget&, void*) {
         // TODO: preserve selected menu state, so we can return back to it
         ui::get_widget_manager().remove("galmenu");
         create_credits_screen();
     };
 
-    auto open_badge_handler = []() {
+    auto open_badge_handler = [](ui::Widget&, void*) {
         ui::get_widget_manager().remove("galmenu");
         create_badge_screen();
     };
 
-    auto open_interstellar_handler = []() {
+    auto open_interstellar_handler = [](ui::Widget&, void*) {
         ui::get_widget_manager().remove("galmenu");
         create_interstellar_screen();
     };
 
-    auto open_achievement_handler = []() {
+    auto open_achievement_handler = [](ui::Widget&, void*) {
         ui::get_widget_manager().remove("galmenu");
         create_achievement_screen();
     };
 
     // Handle for 'Close' button
-    auto close_handler = []() {
+    auto close_handler = [](ui::Widget&, void*) {
       // Restores B button functionality (TODO: Start button fix)
       patch::write_word(reinterpret_cast<void*>(0x80274b88), 0x40820030);
       // Restores pausemenu dim
@@ -361,16 +361,12 @@ void create_galactic_log_menu() {
     galactic_log_menu.add(new ui::Input(mkb::PAD_BUTTON_B, close_handler));
 }
 
-void close_functor(const char* label) {
-    create_galactic_log_menu();
-}
-
 // Common/shared elements in Galactic Log go here to avoid code duplication
 ui::Widget& create_common_galactic_log_page_layout(
     const char* title,
     const char* label,
-    etl::delegate<void()> previous_page_handler,
-    etl::delegate<void()> next_page_handler) {
+    ui::WidgetCallback previous_page_handler,
+    ui::WidgetCallback next_page_handler) {
     LOG("Creating Galactic log screen...");
 
     // Load bmp_how.tpl (must be freed when closed.. TODO)
@@ -419,15 +415,15 @@ ui::Widget& create_common_galactic_log_page_layout(
         next_page_input_widget.set_sound_effect_id(0x6f);
     }
 
-    /*
-    auto close_handler = []() {
-      ui::get_widget_manager().remove(label);
-      create_galactic_log_menu();
+    auto close_handler = [](ui::Widget&, void* close_label) {
+        const char* label = static_cast<const char*>(close_label);
+        ui::get_widget_manager().remove(label);
+        create_galactic_log_menu();
     };
-     */
 
     // Close handler
-    //menu_screen.add(new ui::Input(mkb::PAD_BUTTON_B, close_functor(label)));
+    auto& close_handler_widget = menu_screen.add(new ui::Input(mkb::PAD_BUTTON_B, close_handler));
+    close_handler_widget.set_user_data((void*)label);
 
     return menu_screen;
 }
@@ -437,7 +433,7 @@ void create_about_screen() {
     s_log_page_number = 0;
     s_log_page_count = 8;
 
-    auto previous_page_handler = []() {
+    auto previous_page_handler = [](ui::Widget&, void*) {
       // UNLOCKED: Skip page 3
       // LOCKED: End on page 3
       if (unlock::unlock_condition_met()) {
@@ -460,7 +456,7 @@ void create_about_screen() {
       mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
     };
 
-    auto next_page_handler = []() {
+    auto next_page_handler = [](ui::Widget&, void*) {
       // UNLOCKED: Skip page 3
       // LOCKED: End on page 3
       if (unlock::unlock_condition_met()) {
@@ -501,7 +497,7 @@ void create_credits_screen() {
     s_log_page_number = 0;
     s_log_page_count = 2;
 
-    auto previous_page_handler = []() {
+    auto previous_page_handler = [](ui::Widget&, void*) {
       if (s_log_page_number == 0) {
           s_log_page_number = s_log_page_count - 1;
       }
@@ -511,7 +507,7 @@ void create_credits_screen() {
       mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
     };
 
-    auto next_page_handler = []() {
+    auto next_page_handler = [](ui::Widget&, void*) {
       if (s_log_page_number + 1 >= s_log_page_count) {
           s_log_page_number = 0;
       }
@@ -582,7 +578,7 @@ void create_badge_screen() {
     s_log_page_number = 0;
     s_log_page_count = 10;
 
-    auto previous_page_handler = []() {
+    auto previous_page_handler = [](ui::Widget&, void*) {
       auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
       badge_menu_screen.remove("galbdgc");
       if (s_log_page_number == 0) {
@@ -594,7 +590,7 @@ void create_badge_screen() {
       create_badge_list();
     };
 
-    auto next_page_handler = []() {
+    auto next_page_handler = [](ui::Widget&, void*) {
       auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
       badge_menu_screen.remove("galbdgc");
       if (s_log_page_number + 1 >= s_log_page_count) {
@@ -622,7 +618,7 @@ void create_badge_screen() {
 }
 
 void create_interstellar_screen() {
-    auto empty_handler = etl::delegate<void()>();
+    auto empty_handler = ui::WidgetCallback();
 
     // Create common layout
     auto& interstellar_menu_screen = create_common_galactic_log_page_layout("Interstellar", "galints", empty_handler, empty_handler);
@@ -781,7 +777,7 @@ void create_achievement_screen() {
     s_log_page_number = 0;
     s_log_page_count = 6;
 
-    auto previous_page_handler = []() {
+    auto previous_page_handler = [](ui::Widget&, void*) {
       // Initialize which pages get skipped
       // (For some reason initializing this outside the lambda function causes "not captured" errors)
       bool is_page_shown[6] = {
@@ -815,7 +811,7 @@ void create_achievement_screen() {
       create_achievement_list();
     };
 
-    auto next_page_handler = []() {
+    auto next_page_handler = [](ui::Widget&, void*) {
       // Initialize which pages get skipped
       // (For some reason initializing this outside the lambda function causes "not captured" errors)
       bool is_page_shown[6] = {

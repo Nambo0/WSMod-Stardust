@@ -424,7 +424,7 @@ ui::Widget& create_common_galactic_log_page_layout(
     auto& title_box = menu_header_container.add(new ui::Window(Vec2d{0, 0}, Vec2d{384, 64}));
     title_box.set_alignment(mkb::ALIGN_CENTER);
 
-    auto& title_text = title_box.add(new ui::Text(label));
+    auto& title_text = title_box.add(new ui::Text(title));
     title_text.set_alignment(ui::CENTER);
     title_text.set_font_style(mkb::STYLE_TEGAKI);
 

@@ -420,6 +420,10 @@ ui::Widget& create_common_galactic_log_page_layout(
         previous_page_input_widget.set_sound_effect_id(0x6f);
     }
 
+    else {
+        menu_header_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{64, 64})); // TODO: memory-efficient spacer of some kind
+    }
+
     // Title box
     auto& title_box = menu_header_container.add(new ui::Window(Vec2d{0, 0}, Vec2d{384, 64}));
     title_box.set_alignment(mkb::ALIGN_CENTER);

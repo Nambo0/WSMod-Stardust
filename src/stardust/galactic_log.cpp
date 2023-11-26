@@ -352,10 +352,10 @@ void create_galactic_log_menu() {
           auto pause_menu_sprite = mkb::get_sprite_with_unique_id(mkb::SPRITE_PAUSE_MENU);
           if (pause_menu_sprite) pause_menu_sprite->para1 = 1;
           mkb::g_some_pausemenu_var = -1;
+          s_menu_op_mutex = true;
 
       }
 
-      s_menu_op_mutex = true;
       ui::get_widget_manager().remove("galmenu");
       LOG("After closing free heap: %dkb", heap::get_free_space() / 1024);
     };
@@ -378,7 +378,9 @@ void create_galactic_log_menu() {
     galactic_log_menu.set_depth(0.002);
 
     // Close handler for B button
-    galactic_log_menu.add(new ui::Input(mkb::PAD_BUTTON_B, close_handler));
+    auto& close_handler_widget = galactic_log_menu.add(new ui::Input(mkb::PAD_BUTTON_B, close_handler));
+    close_handler_widget.set_sound_effect_id(0x70);
+
 }
 
 // Common/shared elements in Galactic Log go here to avoid code duplication
@@ -452,6 +454,7 @@ ui::Widget& create_common_galactic_log_page_layout(
     // Close handler
     auto& close_handler_widget = menu_screen.add(new ui::Input(mkb::PAD_BUTTON_B, close_handler));
     close_handler_widget.set_user_data((void*)label);
+    close_handler_widget.set_sound_effect_id(0x70);
 
     return menu_screen;
 }
@@ -885,7 +888,7 @@ void init_main_loop() {
             return;
         }
         mkb::g_some_pausemenu_var = 4;
-        mkb::call_SoundReqID_arg_2(10);
+        mkb::call_SoundReqID_arg_1(10);
         LOG("Heap free before: %dkb", heap::get_free_space() / 1024);
         create_galactic_log_menu();
         mkb::g_some_other_flags = mkb::g_some_other_flags | mkb::OF_GAME_PAUSED;

@@ -7,7 +7,6 @@
 #include "internal/patch.h"
 #include "internal/tickable.h"
 #include "internal/ui/ui_manager.h"
-#include "internal/ui/widget_button.h"
 #include "internal/ui/widget_menu.h"
 #include "internal/ui/widget_text.h"
 #include "internal/ui/widget_window.h"
@@ -30,6 +29,7 @@ static char s_achievement_name_buffer[7][256];
 static char s_text_page_buffer[1024] = {0};
 static uint8_t s_log_page_number = 0;// Current index of page in log screen
 static uint8_t s_log_page_count = 0; // Number of pages in a log screen
+static bool s_menu_op_mutex = false;
 
 // All relevant pages of text here
 namespace {
@@ -346,25 +346,35 @@ void create_galactic_log_menu() {
       auto& input_widget = (ui::Input&)widget;
 
       // Go back to the pause menu
-      if (input_widget.get_input() == mkb::PAD_BUTTON_A) {
+      if (input_widget.get_label() == "galclos") {
           mkb::call_SoundReqID_arg_1(0x70);
-          mkb::g_some_status_bitflag_maybe_pause_related &=  0xfffffffe;
+          mkb::g_some_status_bitflag_maybe_pause_related =  mkb::g_some_status_bitflag_maybe_pause_related & 0xfffffffe;
+          auto pause_menu_sprite = mkb::get_sprite_with_unique_id(mkb::SPRITE_PAUSE_MENU);
+          if (pause_menu_sprite) pause_menu_sprite->para1 = 1;
           mkb::g_some_pausemenu_var = -1;
 
       }
 
+      s_menu_op_mutex = true;
       ui::get_widget_manager().remove("galmenu");
       LOG("After closing free heap: %dkb", heap::get_free_space() / 1024);
     };
 
     // Hack for making these children widgets appear above the pause menu screen overlay
     galactic_log_menu.set_depth(0.0055);
-    galactic_log_menu.add(new ui::Button("Story Mode", open_badge_handler));
-    galactic_log_menu.add(new ui::Button("Interstellar", open_interstellar_handler));
-    galactic_log_menu.add(new ui::Button("Achievements", open_achievement_handler));
-    galactic_log_menu.add(new ui::Button("About", open_about_handler));
-    galactic_log_menu.add(new ui::Button("Credit & Special Thanks", open_credits_handler));
-    galactic_log_menu.add(new ui::Button("Close", close_handler));
+    auto& open_badge = galactic_log_menu.add(new ui::Text("Story Mode"));
+    open_badge.set_callback(open_badge_handler);
+    auto& open_interstellar = galactic_log_menu.add(new ui::Text("Interstellar"));
+    open_interstellar.set_callback(open_interstellar_handler);
+    auto& open_achievement = galactic_log_menu.add(new ui::Text("Achievements"));
+    open_achievement.set_callback(open_achievement_handler);
+    auto& open_about = galactic_log_menu.add(new ui::Text("About"));
+    open_about.set_callback(open_about_handler);
+    auto& open_credits = galactic_log_menu.add(new ui::Text("Credit & Special Thanks"));
+    open_credits.set_callback(open_credits_handler);
+    auto& close = galactic_log_menu.add(new ui::Text("Close"));
+    close.set_label("galclos");
+    close.set_callback(close_handler);
     galactic_log_menu.set_depth(0.002);
 
     // Close handler for B button
@@ -866,6 +876,10 @@ void create_achievement_screen() {
 void init_main_loop() {
     patch::write_nop(reinterpret_cast<void*>(0x80274b58)); // Prevents A button from returning to the pause menu when Galactic Log is open
     patch::hook_function(s_g_create_how_to_sprite_tramp, mkb::create_how_to_sprite, [](void) {
+        if (s_menu_op_mutex) {
+            s_menu_op_mutex = false;
+            return;
+        }
         mkb::g_some_pausemenu_var = 4;
         mkb::call_SoundReqID_arg_2(10);
         LOG("Heap free before: %dkb", heap::get_free_space() / 1024);

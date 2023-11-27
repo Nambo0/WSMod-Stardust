@@ -29,7 +29,6 @@ static char s_achievement_name_buffer[7][256];
 static char s_text_page_buffer[1024] = {0};
 static uint8_t s_log_page_number = 0;// Current index of page in log screen
 static uint8_t s_log_page_count = 0; // Number of pages in a log screen
-static bool s_menu_op_mutex = false;
 
 // All relevant pages of text here
 namespace {
@@ -290,6 +289,8 @@ constexpr char* s_achievement_page_titles[6] = {
 
 // The menu for accessing the various pages
 void create_galactic_log_menu() {
+    patch::write_nop(reinterpret_cast<void*>(0x80274b5c)); // Prevents A button from returning to the pause menu when Galactic Log is open
+
     constexpr Vec2d center = Vec2d{640 / 2, 480 / 2};
     constexpr Vec2d box_size = Vec2d{450, 220};
     constexpr Vec2d box_origin = Vec2d{center.x - (box_size.x / 2), center.y - (box_size.y) / 2};
@@ -347,13 +348,8 @@ void create_galactic_log_menu() {
 
       // Go back to the pause menu
       if (input_widget.get_label() == "galclos") {
-          mkb::call_SoundReqID_arg_1(0x70);
-          mkb::g_some_status_bitflag_maybe_pause_related =  mkb::g_some_status_bitflag_maybe_pause_related & 0xfffffffe;
-          auto pause_menu_sprite = mkb::get_sprite_with_unique_id(mkb::SPRITE_PAUSE_MENU);
-          if (pause_menu_sprite) pause_menu_sprite->para1 = 1;
-          mkb::g_some_pausemenu_var = -1;
-          s_menu_op_mutex = true;
-
+          // Restore A button close functionality
+          patch::write_word(reinterpret_cast<void*>(0x80274b5c), 0x4082005c); // bne ...
       }
 
       ui::get_widget_manager().remove("galmenu");
@@ -881,12 +877,7 @@ void create_achievement_screen() {
 }
 
 void init_main_loop() {
-    patch::write_nop(reinterpret_cast<void*>(0x80274b58)); // Prevents A button from returning to the pause menu when Galactic Log is open
     patch::hook_function(s_g_create_how_to_sprite_tramp, mkb::create_how_to_sprite, [](void) {
-        if (s_menu_op_mutex) {
-            s_menu_op_mutex = false;
-            return;
-        }
         mkb::g_some_pausemenu_var = 4;
         mkb::call_SoundReqID_arg_1(10);
         LOG("Heap free before: %dkb", heap::get_free_space() / 1024);

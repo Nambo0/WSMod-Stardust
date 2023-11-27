@@ -1,5 +1,5 @@
 #include "interstellar.h"
-
+#include "pausecooldown.h"
 #include "../internal/pad.h"
 #include "../internal/patch.h"
 #include "../internal/tickable.h"
@@ -309,7 +309,9 @@ void on_fallout() {
         if (mkb::main_game_mode == mkb::CHALLENGE_MODE) {
             // Fallout Timer Penalty
             if (mkb::mode_info.stage_time_frames_remaining > 15 * 60) {
-                frames_left = mkb::mode_info.stage_time_frames_remaining - 15 * 60;
+                if (mkb::mode_info.stage_time_frames_remaining < 300 * 60) {
+                    frames_left = mkb::mode_info.stage_time_frames_remaining - 15 * 60;
+                }
             }
             else {
                 // Cause bonus finish if time is over
@@ -363,6 +365,9 @@ void on_spin_in() {
                 if (anim_states & (1 << mkb::stagedef->coli_header_list[i].anim_group_id)) {
                     mkb::itemgroups[i].playback_state = 0;
                 }
+            }
+            if (pausecooldown::is_retry == true && mkb::mode_info.stage_time_frames_remaining < 300 * 60) {
+                create_penalty_sprite();
             }
         }
         if (mkb::main_game_mode == mkb::PRACTICE_MODE) {

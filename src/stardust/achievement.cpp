@@ -29,6 +29,7 @@ static bool flipped_yet = false;        // For 9-3 Flip Switches
 static u8 last_stellar_goal = 0;        // For Finish Him
 static u16 last_completed_stage_id = 0; // For You-Da-Bacon
 static u8 completions_in_a_row = 0;     // For You-Da-Bacon
+static bool last_attempt_won = false;   // For You-Da-Bacon
 static bool went_very_fast = false;     // For AAAAA
 
 void claim_achievement(int id) {
@@ -140,6 +141,11 @@ void tick() {
         if (mkb::math_sqrt(VEC_LEN_SQ(ball.vel) * (134.2198 * 134.2198)) > 999.0) went_very_fast = true;
         if (mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 2) went_very_fast = false;
 
+        // 33) YOU-DA-BACON | Clear a stage 10x in a row
+        if(mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 2) {
+            if(last_attempt_won) last_attempt_won = false;
+            else completions_in_a_row = 0;
+        }
     }// if currently valid
 
     // Reset last stellar goal when the mode starts

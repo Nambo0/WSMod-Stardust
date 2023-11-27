@@ -337,7 +337,7 @@ void on_goal() {
     }
 
     // 27) ALL K | (Practice Mode) Get all 100 bunches and finish on any stage
-    if(badge::detect_sweep()) {
+    if(badge::detect_sweep() && mkb::main_game_mode == mkb::PRACTICE_MODE) {
         claim_achievement(27);
     }
 }

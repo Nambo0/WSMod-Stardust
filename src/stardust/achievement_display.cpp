@@ -226,7 +226,7 @@ void add_achievement_to_display_queue(u8 id) {
     // Add to slot 1 (0 = active, 1 = "on deck")
     for (u8 queue_slot = 1; queue_slot < 8; queue_slot++) {
         // Interstellar ranks: Only display highest rank (replace lower ones in the queue)
-        if(id >= 21 && id <= 25 && display_queue[queue_slot] < id){
+        if (id >= 21 && id <= 25 && display_queue[queue_slot] < id) {
             display_queue[queue_slot] = id;
             return;
         }

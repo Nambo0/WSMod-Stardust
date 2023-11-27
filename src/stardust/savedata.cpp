@@ -83,7 +83,7 @@ void update_special_bools() {
 }
 
 void save() {
-    if(card_error) return;
+    if (card_error) return;
     update_special_bools();
     to_buffer();
     cardio::write_file(FILENAME, card_buffer, sizeof(card_buffer),
@@ -125,7 +125,7 @@ bool consecutive_true_from_slot(u16 slot, u16 count) {
     return true;
 }
 
-bool consecutive_false_from_slot(u16 slot, u16 count){
+bool consecutive_false_from_slot(u16 slot, u16 count) {
     for (int i = slot; i < slot + count; i++) {
         if (read_bool_from_array(savedata, i)) return false;
     }
@@ -167,7 +167,7 @@ u16 get_stellar_level(u8 level) {
 }
 
 void erase_all_data() {
-    for(u8 i = 0; i < 60; i++){
+    for (u8 i = 0; i < 60; i++) {
         savedata[i] = 0;
     }
 }

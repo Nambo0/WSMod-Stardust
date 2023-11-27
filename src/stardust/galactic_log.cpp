@@ -32,7 +32,7 @@ static char s_text_page_buffer[1024] = {0};
 static uint8_t s_log_page_number = 0;// Current index of page in log screen
 static uint8_t s_log_page_count = 0; // Number of pages in a log screen
 static etl::optional<size_t> s_galactic_log_index;
-static bool s_pause_menu_input_lock = false; // Pause menu input not handled if 'true'
+static bool s_pause_menu_input_lock = false;// Pause menu input not handled if 'true'
 
 // All relevant pages of text here
 namespace {
@@ -164,7 +164,7 @@ constexpr char* s_log_pages_credits[2] = {
     "      (>^^)> Walkr (/bc008CFF/linktr.ee/walkrmusic/bcFFFFFF/)\n"
     "      (>^^)> Relayer (/bc008CFF/wxokeys.bandcamp.com/bcFFFFFF/)\n"
     "/bc00fffb/Custom Code/bcFFFFFF/\n"
-    "      (>^^)> Rehtrop, Bombsquad, Eucalyptus\n"
+    "      (>^^)> Rehtrop, The BombSquad, Eucalyptus\n"
     "/bc00fffb/Art/bcFFFFFF/\n"
     "      (>^^)> Shadow (/bc008CFF/charredshadow.tumblr.com/bcFFFFFF/)\n"
     "/bc00fffb/Playtesters/bcFFFFFF/\n"
@@ -293,8 +293,8 @@ constexpr char* s_achievement_page_titles[6] = {
 
 // The menu for accessing the various pages
 void create_galactic_log_menu() {
-    patch::write_nop(reinterpret_cast<void*>(0x80274b5c)); // Prevent A button from returning to the pause menu when Galactic Log is open
-    patch::write_word(reinterpret_cast<void*>(0x80274ba8), PPC_INSTR_LI(PPC_R0, 0x00000000)); // Prevent Start button from returning to pause menu
+    patch::write_nop(reinterpret_cast<void*>(0x80274b5c));                                   // Prevent A button from returning to the pause menu when Galactic Log is open
+    patch::write_word(reinterpret_cast<void*>(0x80274ba8), PPC_INSTR_LI(PPC_R0, 0x00000000));// Prevent Start button from returning to pause menu
 
     constexpr Vec2d center = Vec2d{640 / 2, 480 / 2};
     constexpr Vec2d box_size = Vec2d{450, 220};
@@ -327,56 +327,56 @@ void create_galactic_log_menu() {
 
     // Handler for the 'Credits & Special Thanks' button
     auto open_credits_handler = [](ui::Widget&, void*) {
-      auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
-      s_galactic_log_index = menu.get_active_index();
-      ui::get_widget_manager().remove(menu);
+        auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
+        s_galactic_log_index = menu.get_active_index();
+        ui::get_widget_manager().remove(menu);
         create_credits_screen();
     };
 
     auto open_badge_handler = [](ui::Widget&, void*) {
-      auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
-      s_galactic_log_index = menu.get_active_index();
-      ui::get_widget_manager().remove(menu);
+        auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
+        s_galactic_log_index = menu.get_active_index();
+        ui::get_widget_manager().remove(menu);
         create_badge_screen();
     };
 
     auto open_interstellar_handler = [](ui::Widget&, void*) {
-      auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
-      s_galactic_log_index = menu.get_active_index();
-      ui::get_widget_manager().remove(menu);
+        auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
+        s_galactic_log_index = menu.get_active_index();
+        ui::get_widget_manager().remove(menu);
         create_interstellar_screen();
     };
 
     auto open_achievement_handler = [](ui::Widget&, void*) {
-      auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
-      s_galactic_log_index = menu.get_active_index();
-      ui::get_widget_manager().remove(menu);
+        auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
+        s_galactic_log_index = menu.get_active_index();
+        ui::get_widget_manager().remove(menu);
         create_achievement_screen();
     };
 
     // Handle for 'Close' button
     auto close_handler = [](ui::Widget& widget, void*) {
-      // Restores B button functionality (TODO: Start button fix)
-      patch::write_word(reinterpret_cast<void*>(0x80274b88), 0x40820030);
-      // Restores start button functionality
-      patch::write_word(reinterpret_cast<void*>(0x80274ba8), 0xa0030018);
-      // Restores pausemenu dim
-      patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x43b40000);
+        // Restores B button functionality
+        patch::write_word(reinterpret_cast<void*>(0x80274b88), 0x40820030);
+        // Restores start button functionality
+        patch::write_word(reinterpret_cast<void*>(0x80274ba8), 0xa0030018);
+        // Restores pausemenu dim
+        patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x43b40000);
 
-      s_pause_menu_input_lock = true; // Avoids race condition
+        s_pause_menu_input_lock = true;// Avoids race condition
 
-      auto& input_widget = (ui::Input&)widget;
+        auto& input_widget = (ui::Input&) widget;
 
-      // Go back to the pause menu
-      if (input_widget.get_label() == "galclos") {
-          // Restore A button close functionality
-          patch::write_word(reinterpret_cast<void*>(0x80274b5c), 0x4082005c); // bne ...
-      }
+        // Go back to the pause menu
+        if (input_widget.get_label() == "galclos") {
+            // Restore A button close functionality
+            patch::write_word(reinterpret_cast<void*>(0x80274b5c), 0x4082005c);// bne ...
+        }
 
-      s_galactic_log_index.reset();
+        s_galactic_log_index.reset();
 
-      ui::get_widget_manager().remove("galmenu");
-      LOG("After closing free heap: %dkb", heap::get_free_space() / 1024);
+        ui::get_widget_manager().remove("galmenu");
+        LOG("After closing free heap: %dkb", heap::get_free_space() / 1024);
     };
 
     // Hack for making these children widgets appear above the pause menu screen overlay
@@ -399,7 +399,6 @@ void create_galactic_log_menu() {
     // Close handler for B button
     auto& close_handler_widget = galactic_log_menu.add(new ui::Input(mkb::PAD_BUTTON_B, close_handler));
     close_handler_widget.set_sound_effect_id(0x70);
-
 }
 
 // Common/shared elements in Galactic Log go here to avoid code duplication
@@ -424,7 +423,7 @@ ui::Widget& create_common_galactic_log_page_layout(
     menu_screen.set_label(label);
     menu_screen.set_scale(Vec2d{300, 200});
     menu_screen.set_alpha(0.6666f);
-    menu_screen.set_mult_color({0x00, 0x00, 0x00}); // black
+    menu_screen.set_mult_color({0x00, 0x00, 0x00});// black
     menu_screen.set_depth(0.05);
 
     // Header container
@@ -443,7 +442,7 @@ ui::Widget& create_common_galactic_log_page_layout(
     }
 
     else {
-        menu_header_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{64, 64})); // TODO: memory-efficient spacer of some kind
+        menu_header_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{64, 64}));// TODO: memory-efficient spacer of some kind
     }
 
     // Title box
@@ -473,7 +472,7 @@ ui::Widget& create_common_galactic_log_page_layout(
 
     // Close handler
     auto& close_handler_widget = menu_screen.add(new ui::Input(mkb::PAD_BUTTON_B, close_handler));
-    close_handler_widget.set_user_data((void*)label);
+    close_handler_widget.set_user_data((void*) label);
     close_handler_widget.set_sound_effect_id(0x70);
 
     return menu_screen;
@@ -485,49 +484,49 @@ void create_about_screen() {
     s_log_page_count = 8;
 
     auto previous_page_handler = [](ui::Widget&, void*) {
-      // UNLOCKED: Skip page 3
-      // LOCKED: End on page 3
-      if (unlock::unlock_condition_met()) {
-          if (s_log_page_number == 0) {
-              s_log_page_number = s_log_page_count - 1;
-          }
-          else {
-              --s_log_page_number;
-          }
-          if (s_log_page_number == 2) s_log_page_number = 1;// Skip page 3
-      }
-      else {
-          if (s_log_page_number == 0) {
-              s_log_page_number = 2;// Wraparound to page 3
-          }
-          else {
-              --s_log_page_number;
-          }
-      }
-      mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
+        // UNLOCKED: Skip page 3
+        // LOCKED: End on page 3
+        if (unlock::unlock_condition_met()) {
+            if (s_log_page_number == 0) {
+                s_log_page_number = s_log_page_count - 1;
+            }
+            else {
+                --s_log_page_number;
+            }
+            if (s_log_page_number == 2) s_log_page_number = 1;// Skip page 3
+        }
+        else {
+            if (s_log_page_number == 0) {
+                s_log_page_number = 2;// Wraparound to page 3
+            }
+            else {
+                --s_log_page_number;
+            }
+        }
+        mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
     };
 
     auto next_page_handler = [](ui::Widget&, void*) {
-      // UNLOCKED: Skip page 3
-      // LOCKED: End on page 3
-      if (unlock::unlock_condition_met()) {
-          if (s_log_page_number + 1 >= s_log_page_count) {
-              s_log_page_number = 0;
-          }
-          else {
-              ++s_log_page_number;
-          }
-          if (s_log_page_number == 2) s_log_page_number = 3;// Skip page 3
-      }
-      else {
-          if (s_log_page_number + 1 >= 3) {// End on page 3
-              s_log_page_number = 0;
-          }
-          else {
-              ++s_log_page_number;
-          }
-      }
-      mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
+        // UNLOCKED: Skip page 3
+        // LOCKED: End on page 3
+        if (unlock::unlock_condition_met()) {
+            if (s_log_page_number + 1 >= s_log_page_count) {
+                s_log_page_number = 0;
+            }
+            else {
+                ++s_log_page_number;
+            }
+            if (s_log_page_number == 2) s_log_page_number = 3;// Skip page 3
+        }
+        else {
+            if (s_log_page_number + 1 >= 3) {// End on page 3
+                s_log_page_number = 0;
+            }
+            else {
+                ++s_log_page_number;
+            }
+        }
+        mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
     };
 
     // Create common layout
@@ -549,23 +548,23 @@ void create_credits_screen() {
     s_log_page_count = 2;
 
     auto previous_page_handler = [](ui::Widget&, void*) {
-      if (s_log_page_number == 0) {
-          s_log_page_number = s_log_page_count - 1;
-      }
-      else {
-          --s_log_page_number;
-      }
-      mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
+        if (s_log_page_number == 0) {
+            s_log_page_number = s_log_page_count - 1;
+        }
+        else {
+            --s_log_page_number;
+        }
+        mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
     };
 
     auto next_page_handler = [](ui::Widget&, void*) {
-      if (s_log_page_number + 1 >= s_log_page_count) {
-          s_log_page_number = 0;
-      }
-      else {
-          ++s_log_page_number;
-      }
-      mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
+        if (s_log_page_number + 1 >= s_log_page_count) {
+            s_log_page_number = 0;
+        }
+        else {
+            ++s_log_page_number;
+        }
+        mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
     };
 
     // Create common layout
@@ -630,27 +629,27 @@ void create_badge_screen() {
     s_log_page_count = 10;
 
     auto previous_page_handler = [](ui::Widget&, void*) {
-      auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
-      badge_menu_screen.remove("galbdgc");
-      if (s_log_page_number == 0) {
-          s_log_page_number = s_log_page_count - 1;
-      }
-      else {
-          --s_log_page_number;
-      }
-      create_badge_list();
+        auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
+        badge_menu_screen.remove("galbdgc");
+        if (s_log_page_number == 0) {
+            s_log_page_number = s_log_page_count - 1;
+        }
+        else {
+            --s_log_page_number;
+        }
+        create_badge_list();
     };
 
     auto next_page_handler = [](ui::Widget&, void*) {
-      auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
-      badge_menu_screen.remove("galbdgc");
-      if (s_log_page_number + 1 >= s_log_page_count) {
-          s_log_page_number = 0;
-      }
-      else {
-          ++s_log_page_number;
-      }
-      create_badge_list();
+        auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
+        badge_menu_screen.remove("galbdgc");
+        if (s_log_page_number + 1 >= s_log_page_count) {
+            s_log_page_number = 0;
+        }
+        else {
+            ++s_log_page_number;
+        }
+        create_badge_list();
     };
 
     // Create common layout
@@ -703,7 +702,7 @@ void create_interstellar_screen() {
 }
 
 static bool played_world(u8 world) {
-    if((!savedata::consecutive_false_from_slot(10*(world-1), 10) || !savedata::consecutive_false_from_slot(100 + 10*(world-1), 10))) return true;
+    if ((!savedata::consecutive_false_from_slot(10 * (world - 1), 10) || !savedata::consecutive_false_from_slot(100 + 10 * (world - 1), 10))) return true;
     else return false;
 }
 
@@ -715,8 +714,8 @@ void create_achievement_list() {
     achievement_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
 
     // Page title
-    float page_title_height = 32; // Page title is 2 lines on the shadow achievement pages (5 & 6)
-    if(s_log_page_number == 4 || s_log_page_number == 5) page_title_height = 64;
+    float page_title_height = 32;// Page title is 2 lines on the shadow achievement pages (5 & 6)
+    if (s_log_page_number == 4 || s_log_page_number == 5) page_title_height = 64;
     auto& layout_row_page_title = achievement_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{630, page_title_height - (page_title_height / 4)}));
     layout_row_page_title.set_margin(0);
     layout_row_page_title.set_layout_spacing(0);
@@ -729,63 +728,87 @@ void create_achievement_list() {
 
     // Fill 7 rows with achievements
     for (uint32_t curr_row = 0; curr_row < 7; curr_row++) {
-        auto& layout_row = achievement_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{630, 32+16}));
+        auto& layout_row = achievement_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{630, 32 + 16}));
         layout_row.set_margin(0);
         layout_row.set_layout_spacing(0);
         layout_row.set_layout(ui::ContainerLayout::HORIZONTAL);
-        auto& text_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{470+100, 32+32}));
+        auto& text_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{470 + 100, 32 + 32}));
         auto& sprite_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{32, 32}));
         sprite_container.set_layout(ui::ContainerLayout::HORIZONTAL);
 
-        u8 curr_id = 0; // Current achievement being displayed (0 = empty w/ badge, 100 = empty w/out badge)
+        u8 curr_id = 0;// Current achievement being displayed (0 = empty w/ badge, 100 = empty w/out badge)
         // Show list of achievements (based on current page # & some conditionals)
-        switch(s_log_page_number) {
-            case 0: { // Stage Challenges (1/2)
-                switch(curr_row) {
+        switch (s_log_page_number) {
+            case 0: {// Stage Challenges (1/2)
+                switch (curr_row) {
                     // Show id 1
-                    case 0: curr_id = 1; break;
+                    case 0:
+                        curr_id = 1;
+                        break;
                     // If played world, show id 2-5
-                    case 1 ... 4: if(played_world(curr_row + 1)) curr_id = curr_row + 1; break;
-                    case 5 ... 6: curr_id = 100; break; // Empty rows w/out badge
+                    case 1 ... 4:
+                        if (played_world(curr_row + 1)) curr_id = curr_row + 1;
+                        break;
+                    case 5 ... 6:
+                        curr_id = 100;
+                        break;// Empty rows w/out badge
                 }
                 break;
             }
-            case 1: { // Stage Challenges (2/2)
-                switch(curr_row) {
+            case 1: {// Stage Challenges (2/2)
+                switch (curr_row) {
                     // If played world, show id 6-10
-                    case 0 ... 4: if(played_world(curr_row + 6)) curr_id = curr_row + 6; break;
-                    case 5 ... 6: curr_id = 100; break; // Empty rows w/out badge
+                    case 0 ... 4:
+                        if (played_world(curr_row + 6)) curr_id = curr_row + 6;
+                        break;
+                    case 5 ... 6:
+                        curr_id = 100;
+                        break;// Empty rows w/out badge
                 }
                 break;
             }
-            case 2: { // Story Mode
-                switch(curr_row) {
+            case 2: {// Story Mode
+                switch (curr_row) {
                     // Show id 11-17
-                    case 0 ... 6: curr_id = curr_row + 11; break;
+                    case 0 ... 6:
+                        curr_id = curr_row + 11;
+                        break;
                 }
                 break;
             }
-            case 3: { // Interstellar
-                switch(curr_row) {
+            case 3: {// Interstellar
+                switch (curr_row) {
                     // Show id 21-26
-                    case 0 ... 5: curr_id = curr_row + 21; break;
-                    case 6: curr_id = 100; break; // Empty rows w/out badge
+                    case 0 ... 5:
+                        curr_id = curr_row + 21;
+                        break;
+                    case 6:
+                        curr_id = 100;
+                        break;// Empty rows w/out badge
                 }
                 break;
             }
-            case 4: { // Secret (1/2)
-                switch(curr_row) {
+            case 4: {// Secret (1/2)
+                switch (curr_row) {
                     // If completed, show id 31-34
-                    case 0 ... 3: if(savedata::true_in_slot(331 + curr_row - 1)) curr_id = curr_row + 31; break;
-                    case 4 ... 6: curr_id = 100; break; // Empty rows w/out badge
+                    case 0 ... 3:
+                        if (savedata::true_in_slot(331 + curr_row - 1)) curr_id = curr_row + 31;
+                        break;
+                    case 4 ... 6:
+                        curr_id = 100;
+                        break;// Empty rows w/out badge
                 }
                 break;
             }
-            case 5: { // Secret (1/2)
-                switch(curr_row) {
+            case 5: {// Secret (1/2)
+                switch (curr_row) {
                     // If completed, show id 35-38
-                    case 0 ... 3: if(savedata::true_in_slot(335 + curr_row - 1)) curr_id = curr_row + 35; break;
-                    case 4 ... 6: curr_id = 100; break; // Empty rows w/out badge
+                    case 0 ... 3:
+                        if (savedata::true_in_slot(335 + curr_row - 1)) curr_id = curr_row + 35;
+                        break;
+                    case 4 ... 6:
+                        curr_id = 100;
+                        break;// Empty rows w/out badge
                 }
                 break;
             }
@@ -793,8 +816,8 @@ void create_achievement_list() {
 
         mkb::sprintf(s_achievement_name_buffer[curr_row], "%s", s_achievement_names[curr_id]);
         auto& text = text_container.add(new ui::Text(s_achievement_name_buffer[curr_row]));
-        
-        if(curr_id != 100) { // 100 = no badge
+
+        if (curr_id != 100) {// 100 = no badge
             // 0xc3b = blue, 0xc3a = purple, 0xc39 = sweep, 0xc3c = achievement, 0xc3d = empty
             uint32_t id_1 = 0xc3d;
             if (savedata::true_in_slot(300 + curr_id - 1)) id_1 = 0xc3c;
@@ -829,71 +852,71 @@ void create_achievement_screen() {
     s_log_page_count = 6;
 
     auto previous_page_handler = [](ui::Widget&, void*) {
-      // Initialize which pages get skipped
-      // (For some reason initializing this outside the lambda function causes "not captured" errors)
-      bool is_page_shown[6] = {
-          // Stage Challenges (1/2), always show
-          true,
-          // Stage Challenges (2/2), only show if a stage w6+ has been beaten
-          (!savedata::consecutive_false_from_slot(50, 50) || !savedata::consecutive_false_from_slot(150, 50)),
-          // Story Mode, always show
-          true,
-          // Interstellar, show if unlocked
-          unlock::unlock_condition_met(),
-          // Secret (1/2), show if any secrets 1-4 are complete
-          !savedata::consecutive_false_from_slot(330, 4),
-          // Secret (2/2), show if any secrets 5-8 are complete
-          !savedata::consecutive_false_from_slot(334, 4)};
+        // Initialize which pages get skipped
+        // (For some reason initializing this outside the lambda function causes "not captured" errors)
+        bool is_page_shown[6] = {
+            // Stage Challenges (1/2), always show
+            true,
+            // Stage Challenges (2/2), only show if a stage w6+ has been beaten
+            (!savedata::consecutive_false_from_slot(50, 50) || !savedata::consecutive_false_from_slot(150, 50)),
+            // Story Mode, always show
+            true,
+            // Interstellar, show if unlocked
+            unlock::unlock_condition_met(),
+            // Secret (1/2), show if any secrets 1-4 are complete
+            !savedata::consecutive_false_from_slot(330, 4),
+            // Secret (2/2), show if any secrets 5-8 are complete
+            !savedata::consecutive_false_from_slot(334, 4)};
 
-      auto& achievement_menu_screen = ui::get_widget_manager().find("galachv");
-      achievement_menu_screen.remove("galachl");
-      // Loop until we reach a shown page.
-      while(true){
-          if (s_log_page_number == 0) {
-              s_log_page_number = s_log_page_count - 1;
-          }
-          else {
-              --s_log_page_number;
-          }
-          // Stop the loop if we've reached a shown page
-          if(is_page_shown[s_log_page_number]) break;
-      }
-      // mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_achievement[s_log_page_number]);
-      create_achievement_list();
+        auto& achievement_menu_screen = ui::get_widget_manager().find("galachv");
+        achievement_menu_screen.remove("galachl");
+        // Loop until we reach a shown page.
+        while (true) {
+            if (s_log_page_number == 0) {
+                s_log_page_number = s_log_page_count - 1;
+            }
+            else {
+                --s_log_page_number;
+            }
+            // Stop the loop if we've reached a shown page
+            if (is_page_shown[s_log_page_number]) break;
+        }
+        // mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_achievement[s_log_page_number]);
+        create_achievement_list();
     };
 
     auto next_page_handler = [](ui::Widget&, void*) {
-      // Initialize which pages get skipped
-      // (For some reason initializing this outside the lambda function causes "not captured" errors)
-      bool is_page_shown[6] = {
-          // Stage Challenges (1/2), always show
-          true,
-          // Stage Challenges (2/2), only show if a stage w6+ has been beaten
-          (!savedata::consecutive_false_from_slot(50, 50) || !savedata::consecutive_false_from_slot(150, 50)),
-          // Story Mode, always show
-          true,
-          // Interstellar, show if unlocked
-          unlock::unlock_condition_met(),
-          // Secret (1/2), show if any secrets 1-4 are complete
-          !savedata::consecutive_false_from_slot(330, 4),
-          // Secret (2/2), show if any secrets 5-8 are complete
-          !savedata::consecutive_false_from_slot(334, 4)};
+        // Initialize which pages get skipped
+        // (For some reason initializing this outside the lambda function causes "not captured" errors)
+        bool is_page_shown[6] = {
+            // Stage Challenges (1/2), always show
+            true,
+            // Stage Challenges (2/2), only show if a stage w6+ has been beaten
+            (!savedata::consecutive_false_from_slot(50, 50) || !savedata::consecutive_false_from_slot(150, 50)),
+            // Story Mode, always show
+            true,
+            // Interstellar, show if unlocked
+            unlock::unlock_condition_met(),
+            // Secret (1/2), show if any secrets 1-4 are complete
+            !savedata::consecutive_false_from_slot(330, 4),
+            // Secret (2/2), show if any secrets 5-8 are complete
+            !savedata::consecutive_false_from_slot(334, 4)};
 
-      auto& achievement_menu_screen = ui::get_widget_manager().find("galachv");
-      achievement_menu_screen.remove("galachl");
-      // Loop until we reach a shown page.
-      while(true){
-          if (s_log_page_number + 1 >= s_log_page_count) {
-              s_log_page_number = 0;
-          }
-          else {
-              ++s_log_page_number;
-          }
-          // Stop the loop if we've reached a shown page
-          if(is_page_shown[s_log_page_number]) break;
-      }
-      // mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_achievement[s_log_page_number]);
-      create_achievement_list();
+        auto& achievement_menu_screen = ui::get_widget_manager().find("galachv");
+        achievement_menu_screen.remove("galachl");
+        // Loop until we reach a shown page.
+        while (true) {
+            if (s_log_page_number + 1 >= s_log_page_count) {
+                s_log_page_number = 0;
+            }
+            else {
+                ++s_log_page_number;
+            }
+            // Stop the loop if we've reached a shown page
+            if (is_page_shown[s_log_page_number]) break;
+        }
+        // mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_achievement[s_log_page_number]);
+        create_achievement_list();
     };
 
     create_common_galactic_log_page_layout("Achievements", "galachv", previous_page_handler, next_page_handler);

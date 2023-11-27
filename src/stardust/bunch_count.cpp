@@ -46,7 +46,7 @@ static void sprite_bunch_count_tick(u8* status, mkb::Sprite* sprite) {
     }
     else {
         sprite->alpha -= 0.05;
-        if(sprite->alpha < 0) sprite->alpha = 0;
+        if (sprite->alpha < 0) sprite->alpha = 0;
     }
 }
 

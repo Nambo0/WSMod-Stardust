@@ -4,9 +4,9 @@
 #include "../internal/patch.h"
 #include "../internal/tickable.h"
 #include "../mkb/mkb.h"
+#include "../stardust/achievement.h"
 #include "../stardust/badge.h"
 #include "../stardust/savedata.h"
-#include "../stardust/achievement.h"
 
 
 namespace interstellar {
@@ -71,11 +71,11 @@ static void finished_run_calculations() {
     if (bunches_collected_total() > savedata::stellar_best_run_total()) {
         save_finished_run_total();
         // Collect rank achievement(s) (ID: 21-25)
-        for(u16 rank = 1; rank <= 5; rank++){
-            if(mkb::balls[mkb::curr_player_idx].banana_count >= rank*1000) achievement::claim_achievement(20 + rank);
+        for (u16 rank = 1; rank <= 5; rank++) {
+            if (mkb::balls[mkb::curr_player_idx].banana_count >= rank * 1000) achievement::claim_achievement(20 + rank);
         }
         // Ach ID: 37) UHHH GG | Complete Interstellar with 0 bananas
-        if(mkb::balls[mkb::curr_player_idx].banana_count == 0) achievement::claim_achievement(37);
+        if (mkb::balls[mkb::curr_player_idx].banana_count == 0) achievement::claim_achievement(37);
     }
 }
 

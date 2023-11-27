@@ -93,6 +93,9 @@ static void set_sprite_achievement_name(mkb::Sprite* sprite) {
         case 26:
             mkb::strcpy(sprite->text, "Finish Him!");
             break;
+        case 27:
+            mkb::strcpy(sprite->text, "Extreme Potassium Overload");
+            break;
         // Secret/Shadow
         case 31:
             mkb::strcpy(sprite->text, "Hey Goobz Play Debug");

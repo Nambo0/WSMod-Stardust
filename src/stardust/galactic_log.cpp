@@ -267,7 +267,7 @@ constexpr char* s_achievement_names[39] = {
     "Finish an Interstellar run with /bcFBFF00/5,000+ bananas/bcFFFFFF/\n",
     "/bcFF9900/FINISH HIM!/bcFFFFFF/\n"
     "Get all 10 /bc009DFF/goals/bcFFFFFF/ in a single run\n",
-    "/bcFF9900/ALL K/bcFFFFFF/\n"
+    "/bcFF9900/EXTREME POTASSIUM OVERLOAD/bcFFFFFF/\n"
     "(Practice Mode) Get all /bcFBFF00/100 bunches/bcFFFFFF/ and finish on any stage",
     "???",
     "???",

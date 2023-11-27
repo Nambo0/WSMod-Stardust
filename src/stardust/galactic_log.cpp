@@ -218,25 +218,25 @@ constexpr char* s_log_pages_interstellar =
     "World 10: /bcFBFF00/%d/bcFFFFFF/\n";
 constexpr char* s_achievement_names[39] = {
     "",
-    "/bcFF9900/DOUBLE TAKE/bcFFFFFF/ - 1-8 Double Time\n"
+    "/bcFF9900/DOUBLE TAKE/bcFFFFFF/ | 1-8 Double Time\n"
     "Clear the stunt goal at both speeds back to back",
-    "/bcFF9900/UP, UP, AND AWAY/bcFFFFFF/ - 2-6 Liftoff\n"
+    "/bcFF9900/UP, UP, AND AWAY/bcFFFFFF/ | 2-6 Liftoff\n"
     "Soar higher than the highest cloud onstage",
-    "/bcFF9900/DEFUSED/bcFFFFFF/ - 3-10 Detonation\n"
+    "/bcFF9900/DEFUSED/bcFFFFFF/ | 3-10 Detonation\n"
     "Clear the blue goal without activating the bomb switch",
-    "/bcFF9900/I WANNA BE THE BACK GOAL/bcFFFFFF/ - 4-9 Avoidance\n"
+    "/bcFF9900/I WANNA BE THE BACK GOAL/bcFFFFFF/ | 4-9 Avoidance\n"
     "Enter the blue goal from the back side",
-    "/bcFF9900/BEHIND LOCKED DOORS/bcFFFFFF/ - 5-6 Door Dash\n"
+    "/bcFF9900/BEHIND LOCKED DOORS/bcFFFFFF/ | 5-6 Door Dash\n"
     "Clear the blue goal without opening any doors",
-    "/bcFF9900/MONOCHROMATIC/bcFFFFFF/ - 6-1 Recolor\n"
+    "/bcFF9900/MONOCHROMATIC/bcFFFFFF/ | 6-1 Recolor\n"
     "Clear the stage without entering any portals",
-    "/bcFF9900/TARGET MASTER/bcFFFFFF/ - 7-10 Break the Targets\n"
+    "/bcFF9900/TARGET MASTER/bcFFFFFF/ | 7-10 Break the Targets\n"
     "Break all 8 targets and finish with time bonus (150s)",
-    "/bcFF9900/POTASSIUM ALLERGY/bcFFFFFF/ - 8-4 Frequencies\n"
+    "/bcFF9900/POTASSIUM ALLERGY/bcFFFFFF/ | 8-4 Frequencies\n"
     "Clear the stage without collecting any bananas",
-    "/bcFF9900/FLIP WIZARD/bcFFFFFF/ - 9-3 Flip Switches\n"
+    "/bcFF9900/FLIP WIZARD/bcFFFFFF/ | 9-3 Flip Switches\n"
     "Clear the stage without flipping the switches once",
-    "/bcFF9900/STARSTRUCK/bcFFFFFF/ - 10-10 Impact\n"
+    "/bcFF9900/STARSTRUCK/bcFFFFFF/ | 10-10 Impact\n"
     "Clear the stunt goal after it shoots into the sky",
     "/bcFF9900/BEAT THE GAME/bcFFFFFF/\n"
     "Complete Story Mode",

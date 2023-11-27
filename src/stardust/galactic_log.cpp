@@ -34,7 +34,10 @@ static char s_text_page_buffer[1024] = {0};
 static uint8_t s_log_page_number = 0;// Current index of page in log screen
 static uint8_t s_log_page_count = 0; // Number of pages in a log screen
 static etl::optional<size_t> s_galactic_log_index;
-static bool s_pause_menu_input_lock = false;// Pause menu input not handled if 'true'
+static bool s_following_frame_input_lock = false; // Pause menu input not handled if 'true'
+static bool s_main_menu_input_lock = false; // Main menu input not processed if 'true'
+static uint8_t s_input_frame_lock_buffer = 0;
+constexpr uint8_t INPUT_FRAME_LOCK_DELAY = 5;
 
 // All relevant pages of text here
 namespace {
@@ -299,6 +302,11 @@ constexpr char* s_achievement_page_titles[6] = {
 
 // The menu for accessing the various pages
 void create_galactic_log_menu() {
+    if (mkb::main_mode == mkb::MD_SEL) {
+        s_main_menu_input_lock = true;
+
+    }
+
     patch::write_nop(reinterpret_cast<void*>(0x80274b5c));                                   // Prevent A button from returning to the pause menu when Galactic Log is open
     patch::write_word(reinterpret_cast<void*>(0x80274ba8), PPC_INSTR_LI(PPC_R0, 0x00000000));// Prevent Start button from returning to pause menu
 
@@ -369,7 +377,7 @@ void create_galactic_log_menu() {
         // Restores pausemenu dim
         patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x43b40000);
 
-        s_pause_menu_input_lock = true;// Avoids race condition
+        s_following_frame_input_lock = true;// Avoids race condition
 
         auto& input_widget = (ui::Input&) widget;
 
@@ -382,9 +390,9 @@ void create_galactic_log_menu() {
         s_galactic_log_index.reset();
 
         // Title screen fix
-        if (mkb::main_game_mode != mkb::MD_GAME) {
-            mkb::g_some_pausemenu_var = -1;
-            mkb::g_some_other_flags = mkb::g_some_other_flags & ~mkb::OF_GAME_PAUSED;
+        if (mkb::main_mode != mkb::MD_GAME) {
+            s_main_menu_input_lock = false;
+            s_input_frame_lock_buffer = INPUT_FRAME_LOCK_DELAY;
         }
 
         ui::get_widget_manager().remove("galmenu");
@@ -935,18 +943,20 @@ void create_achievement_screen() {
 
 void init_main_loop() {
     patch::hook_function(s_g_create_how_to_sprite_tramp, mkb::create_how_to_sprite, [](void) {
-        mkb::g_some_pausemenu_var = 4;
+        if (mkb::main_mode == mkb::MD_GAME) {
+            mkb::g_some_pausemenu_var = 4;
+            mkb::g_some_other_flags = mkb::g_some_other_flags | mkb::OF_GAME_PAUSED;
+        }
         mkb::call_SoundReqID_arg_1(10);
         LOG("Heap free before: %dkb", heap::get_free_space() / 1024);
         create_galactic_log_menu();
-        mkb::g_some_other_flags = mkb::g_some_other_flags | mkb::OF_GAME_PAUSED;
         LOG("Heap free after: %dkb", heap::get_free_space() / 1024);
         return;
     });
 
     patch::hook_function(s_check_pause_menu_input, mkb::check_pause_menu_input, [](mkb::Sprite* s) {
-        if (s_pause_menu_input_lock) {
-            s_pause_menu_input_lock = false;
+        if (s_following_frame_input_lock) {
+            s_following_frame_input_lock = false;
             return;
         }
 
@@ -958,12 +968,21 @@ void init_main_game() {
 
 void init_sel_ngc() {
     patch::hook_function(s_did_any_pad_press_input, mkb::did_any_pad_press_input, [](mkb::PadInputID id) {
-        if (s_pause_menu_input_lock) {
-            s_pause_menu_input_lock = false;
+        if (s_main_menu_input_lock) {
             return false;
         }
-
-        return s_did_any_pad_press_input.dest(id);
+        else if (s_following_frame_input_lock) {
+            if (s_input_frame_lock_buffer-- > 0) {
+                return false;
+            }
+            else {
+                s_following_frame_input_lock = false;
+                return false;
+            }
+        }
+        else {
+            return s_did_any_pad_press_input.dest(id);
+        }
     });
 }
 

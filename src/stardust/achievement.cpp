@@ -335,6 +335,11 @@ void on_goal() {
             }
         }
     }
+
+    // 27) ONE K | (Practice Mode) Get all 100 bunches and finish on any stage
+    if(badge::detect_sweep()) {
+        claim_achievement(27);
+    }
 }
 
 void init() {

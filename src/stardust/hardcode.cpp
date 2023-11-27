@@ -9,6 +9,7 @@
 #include "../stardust/savedata.h"
 #include "../stardust/validate.h"
 #include "../utils/vecutil.h"
+#include "log.h"
 
 namespace hardcode {
 
@@ -421,7 +422,10 @@ void tick() {
     if (mkb::world_theme == 0x00120000) patch::write_word(reinterpret_cast<void*>(0x802f4eac), 0xc07f001c);
     else patch::write_word(reinterpret_cast<void*>(0x802f4eac), 0xc07f0038);
     // Hurry up removal for frozen/count-up timers
-    if ((mkb::main_game_mode == mkb::PRACTICE_MODE && (mkb::curr_difficulty == mkb::DIFF_BEGINNER)) || (mkb::current_stage_id == 267) || (mkb::current_stage_id == 77)) {
+    if (mkb::main_mode == mkb::MD_GAME &&
+        ((mkb::main_game_mode == mkb::PRACTICE_MODE && (mkb::curr_difficulty == mkb::DIFF_BEGINNER))
+        || (mkb::current_stage_id == 267)
+        || (mkb::current_stage_id == 77))) {
         patch::write_nop(reinterpret_cast<void*>(0x80339da0));
         patch::write_nop(reinterpret_cast<void*>(0x80339f14));
         patch::write_word(reinterpret_cast<void*>(0x808f5108), 0x2c00ff01);

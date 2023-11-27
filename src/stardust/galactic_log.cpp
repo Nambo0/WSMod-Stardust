@@ -293,10 +293,8 @@ constexpr char* s_achievement_page_titles[6] = {
     "/bc00fffb/STAGE CHALLENGES (2/2)/bcFFFFFF/",
     "/bc00fffb/STORY MODE/bcFFFFFF/",
     "/bc00fffb/INTERSTELLAR/bcFFFFFF/",
-    "/bc00fffb/SECRET (?/?)/bcFFFFFF/\n"
-    "(Easter eggs, not intended as real achievements)",
-    "/bc00fffb/SECRET (?/?)/bcFFFFFF/\n"
-    "(Easter eggs, not intended as real achievements)"};
+    "/bc00fffb/SECRET (?/?)/bcFFFFFF/ /bc707070/(Not intended as real achievements)/bcFFFFFF/",
+    "/bc00fffb/SECRET (?/?)/bcFFFFFF/ /bc707070/(Not intended as real achievements)/bcFFFFFF/"};
 }// namespace
 
 // The menu for accessing the various pages
@@ -743,8 +741,8 @@ void create_achievement_list() {
     achievement_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
 
     // Page title
-    float page_title_height = 32;// Page title is 2 lines on the shadow achievement pages (5 & 6)
-    if (s_log_page_number == 4 || s_log_page_number == 5) page_title_height = 64;
+    float page_title_height = 32;// Page title WAS 2 lines on the shadow achievement pages (5 & 6)
+    // if (s_log_page_number == 4 || s_log_page_number == 5) page_title_height = 64;
     auto& layout_row_page_title = achievement_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{630, page_title_height - (page_title_height / 4)}));
     layout_row_page_title.set_margin(0);
     layout_row_page_title.set_layout_spacing(0);

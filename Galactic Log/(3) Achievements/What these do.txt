@@ -36,6 +36,7 @@ Here's all the achievements I have planned so far |
 24) PLATINUM RANK | Finish an Interstellar run with 4000+ bananas
 25) STAR RANK | Finish an Interstellar run with 5000+ bananas
 26) FINISH HIM | Get all 10 goals in a single run
+27) ALL K | (Practice Mode) Get all 100 bunches and finish on any stage
 
 = SECRET =
 31) HEY GOOBZ PLAY DEBUG | Complete or skip through any of the debug sub-categories             (on-goal)

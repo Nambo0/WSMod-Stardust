@@ -751,7 +751,7 @@ void create_achievement_list() {
             }
             case 3: { // Interstellar
                 switch(curr_row) {
-                    // Show id 21-26
+                    // Show id 21-27
                     case 0 ... 6: curr_id = curr_row + 21; break;
                 }
                 break;

@@ -77,7 +77,10 @@ constexpr char* s_log_pages_about[8] = {
     "/bcFF9900/STUNT PILOT:/bcFFFFFF/ Complete 1 /bcC800FF/Stunt Goal/bcFFFFFF/ in each world\n"
     "\n"
     "The list of all /bcFF9900/achievements/bcFFFFFF/ can be found in that section\n"
-    "of the Galactic log.\n",
+    "of the Galactic log.\n"
+    "\n"
+    "After unlocking, explanations for each mode can be found\n"
+    "in the About section of the Galactic log.\n",
 
     // About Page 4 (ONLY SHOW IF BONUS UNLOCKED)
     "/bc00fffb/INTERSTELLAR/bcFFFFFF/\n"
@@ -260,7 +263,8 @@ constexpr char* s_achievement_names[39] = {
     "Finish an Interstellar run with /bcFBFF00/5,000+ bananas/bcFFFFFF/\n",
     "/bcFF9900/FINISH HIM!/bcFFFFFF/\n"
     "Get all 10 /bc009DFF/goals/bcFFFFFF/ in a single run\n",
-    "???",
+    "/bcFF9900/ALL K/bcFFFFFF/\n"
+    "(Practice Mode) Get all /bcFBFF00/100 bunches/bcFFFFFF/ and finish on any stage",
     "???",
     "???",
     "???",
@@ -776,15 +780,10 @@ void create_achievement_list() {
                 }
                 break;
             }
-            case 3: {// Interstellar
-                switch (curr_row) {
-                    // Show id 21-26
-                    case 0 ... 5:
-                        curr_id = curr_row + 21;
-                        break;
-                    case 6:
-                        curr_id = 100;
-                        break;// Empty rows w/out badge
+            case 3: { // Interstellar
+                switch(curr_row) {
+                    // Show id 21-27
+                    case 0 ... 6: curr_id = curr_row + 21; break;
                 }
                 break;
             }

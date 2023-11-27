@@ -22,10 +22,12 @@ TICKABLE_DEFINITION((
         .enabled = true,
         .init_main_loop = init_main_loop,
         .init_main_game = init_main_game,
+        .init_sel_ngc = init_sel_ngc,
         .tick = tick, ))
 
 static patch::Tramp<decltype(&mkb::create_how_to_sprite)> s_g_create_how_to_sprite_tramp;
 static patch::Tramp<decltype(&mkb::check_pause_menu_input)> s_check_pause_menu_input;
+static patch::Tramp<decltype(&mkb::did_any_pad_press_input)> s_did_any_pad_press_input;
 static char s_badge_stage_name_buffer[10][64];
 static char s_achievement_name_buffer[7][256];
 static char s_text_page_buffer[1024] = {0};
@@ -378,6 +380,12 @@ void create_galactic_log_menu() {
         }
 
         s_galactic_log_index.reset();
+
+        // Title screen fix
+        if (mkb::main_game_mode != mkb::MD_GAME) {
+            mkb::g_some_pausemenu_var = -1;
+            mkb::g_some_other_flags = mkb::g_some_other_flags & ~mkb::OF_GAME_PAUSED;
+        }
 
         ui::get_widget_manager().remove("galmenu");
         LOG("After closing free heap: %dkb", heap::get_free_space() / 1024);
@@ -929,7 +937,6 @@ void init_main_loop() {
         mkb::g_some_pausemenu_var = 4;
         mkb::call_SoundReqID_arg_1(10);
         LOG("Heap free before: %dkb", heap::get_free_space() / 1024);
-
         create_galactic_log_menu();
         mkb::g_some_other_flags = mkb::g_some_other_flags | mkb::OF_GAME_PAUSED;
         LOG("Heap free after: %dkb", heap::get_free_space() / 1024);
@@ -946,6 +953,17 @@ void init_main_loop() {
     });
 }
 void init_main_game() {
+}
+
+void init_sel_ngc() {
+    patch::hook_function(s_did_any_pad_press_input, mkb::did_any_pad_press_input, [](mkb::PadInputID id) {
+        if (s_pause_menu_input_lock) {
+            s_pause_menu_input_lock = false;
+            return false;
+        }
+
+        return s_did_any_pad_press_input.dest(id);
+    });
 }
 
 void tick() {

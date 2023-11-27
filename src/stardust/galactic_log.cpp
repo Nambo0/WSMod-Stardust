@@ -29,6 +29,8 @@ static char s_achievement_name_buffer[7][256];
 static char s_text_page_buffer[1024] = {0};
 static uint8_t s_log_page_number = 0;// Current index of page in log screen
 static uint8_t s_log_page_count = 0; // Number of pages in a log screen
+static etl::optional<size_t> s_galactic_log_index;
+static bool s_pause_menu_input_lock = false; // Pause menu input not handled if 'true'
 
 // All relevant pages of text here
 namespace {
@@ -301,6 +303,10 @@ void create_galactic_log_menu() {
     galactic_log_menu.set_alignment(mkb::ALIGN_UPPER_CENTER);
     galactic_log_menu.set_depth(0.002);
 
+    if (s_galactic_log_index) {
+        galactic_log_menu.set_active_index(*s_galactic_log_index);
+    }
+
     // The header text
     // Hack for making these children widgets appear above the pause menu screen overlay
     galactic_log_menu.set_depth(0.0055);
@@ -310,30 +316,38 @@ void create_galactic_log_menu() {
 
     // Handler for the 'About' button
     auto open_about_handler = [](ui::Widget&, void*) {
-        // TODO: preserve selected menu state, so we can return back to it
-        ui::get_widget_manager().remove("galmenu");
+        auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
+        s_galactic_log_index = menu.get_active_index();
+        ui::get_widget_manager().remove(menu);
         create_about_screen();
     };
 
     // Handler for the 'Credits & Special Thanks' button
     auto open_credits_handler = [](ui::Widget&, void*) {
-        // TODO: preserve selected menu state, so we can return back to it
-        ui::get_widget_manager().remove("galmenu");
+      auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
+      s_galactic_log_index = menu.get_active_index();
+      ui::get_widget_manager().remove(menu);
         create_credits_screen();
     };
 
     auto open_badge_handler = [](ui::Widget&, void*) {
-        ui::get_widget_manager().remove("galmenu");
+      auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
+      s_galactic_log_index = menu.get_active_index();
+      ui::get_widget_manager().remove(menu);
         create_badge_screen();
     };
 
     auto open_interstellar_handler = [](ui::Widget&, void*) {
-        ui::get_widget_manager().remove("galmenu");
+      auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
+      s_galactic_log_index = menu.get_active_index();
+      ui::get_widget_manager().remove(menu);
         create_interstellar_screen();
     };
 
     auto open_achievement_handler = [](ui::Widget&, void*) {
-        ui::get_widget_manager().remove("galmenu");
+      auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
+      s_galactic_log_index = menu.get_active_index();
+      ui::get_widget_manager().remove(menu);
         create_achievement_screen();
     };
 
@@ -352,6 +366,7 @@ void create_galactic_log_menu() {
           patch::write_word(reinterpret_cast<void*>(0x80274b5c), 0x4082005c); // bne ...
       }
 
+      s_galactic_log_index.reset();
       ui::get_widget_manager().remove("galmenu");
       LOG("After closing free heap: %dkb", heap::get_free_space() / 1024);
     };

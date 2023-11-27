@@ -259,6 +259,7 @@ void on_goal() {
                     }
                 }
                 if (none_pressed) claim_achievement(34);
+                break;
             }
             // 35) RULES LAWYER 2 | Clear the stunt goal on Currents without clicking the stunt goal button    (on-goal + for loop)
             case 44: {
@@ -270,6 +271,7 @@ void on_goal() {
                     }
                 }
                 if (mkb::mode_info.entered_goal_type == mkb::Red && !pressed) claim_achievement(35);
+                break;
             }
         }// Switch stage ID
         // 31) HEY GOOBZ PLAY DEBUG | Complete or skip through any of the debug sub-categories

@@ -10,6 +10,7 @@
 #include "internal/ui/widget_menu.h"
 #include "internal/ui/widget_text.h"
 #include "internal/ui/widget_window.h"
+#include "utils/ppcutil.h"
 #include "widget_input.h"
 #include "widget_sprite.h"
 
@@ -292,7 +293,8 @@ constexpr char* s_achievement_page_titles[6] = {
 
 // The menu for accessing the various pages
 void create_galactic_log_menu() {
-    patch::write_nop(reinterpret_cast<void*>(0x80274b5c)); // Prevents A button from returning to the pause menu when Galactic Log is open
+    patch::write_nop(reinterpret_cast<void*>(0x80274b5c)); // Prevent A button from returning to the pause menu when Galactic Log is open
+    patch::write_word(reinterpret_cast<void*>(0x80274ba8), PPC_INSTR_LI(PPC_R0, 0x00000000)); // Prevent Start button from returning to pause menu
 
     constexpr Vec2d center = Vec2d{640 / 2, 480 / 2};
     constexpr Vec2d box_size = Vec2d{450, 220};
@@ -356,6 +358,8 @@ void create_galactic_log_menu() {
     auto close_handler = [](ui::Widget& widget, void*) {
       // Restores B button functionality (TODO: Start button fix)
       patch::write_word(reinterpret_cast<void*>(0x80274b88), 0x40820030);
+      // Restores start button functionality
+      patch::write_word(reinterpret_cast<void*>(0x80274ba8), 0xa0030018);
       // Restores pausemenu dim
       patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x43b40000);
 

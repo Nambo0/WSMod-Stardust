@@ -369,12 +369,12 @@ void create_galactic_log_menu() {
 
       // Go back to the pause menu
       if (input_widget.get_label() == "galclos") {
-          LOG("A BUTTON FUNC RESTORED!!");
           // Restore A button close functionality
           patch::write_word(reinterpret_cast<void*>(0x80274b5c), 0x4082005c); // bne ...
       }
 
       s_galactic_log_index.reset();
+
       ui::get_widget_manager().remove("galmenu");
       LOG("After closing free heap: %dkb", heap::get_free_space() / 1024);
     };
@@ -425,6 +425,7 @@ ui::Widget& create_common_galactic_log_page_layout(
     menu_screen.set_scale(Vec2d{300, 200});
     menu_screen.set_alpha(0.6666f);
     menu_screen.set_mult_color({0x00, 0x00, 0x00}); // black
+    menu_screen.set_depth(0.05);
 
     // Header container
     auto& menu_header_container = menu_screen.add(new ui::Container(Vec2d{0, 0}, Vec2d{640, 128}));
@@ -904,6 +905,7 @@ void init_main_loop() {
         mkb::g_some_pausemenu_var = 4;
         mkb::call_SoundReqID_arg_1(10);
         LOG("Heap free before: %dkb", heap::get_free_space() / 1024);
+
         create_galactic_log_menu();
         mkb::g_some_other_flags = mkb::g_some_other_flags | mkb::OF_GAME_PAUSED;
         LOG("Heap free after: %dkb", heap::get_free_space() / 1024);

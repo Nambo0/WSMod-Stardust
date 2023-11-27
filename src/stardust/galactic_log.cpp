@@ -24,6 +24,7 @@ TICKABLE_DEFINITION((
         .tick = tick, ))
 
 static patch::Tramp<decltype(&mkb::create_how_to_sprite)> s_g_create_how_to_sprite_tramp;
+static patch::Tramp<decltype(&mkb::check_pause_menu_input)> s_check_pause_menu_input;
 static char s_badge_stage_name_buffer[10][64];
 static char s_achievement_name_buffer[7][256];
 static char s_text_page_buffer[1024] = {0};
@@ -358,10 +359,13 @@ void create_galactic_log_menu() {
       // Restores pausemenu dim
       patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x43b40000);
 
+      s_pause_menu_input_lock = true; // Avoids race condition
+
       auto& input_widget = (ui::Input&)widget;
 
       // Go back to the pause menu
       if (input_widget.get_label() == "galclos") {
+          LOG("A BUTTON FUNC RESTORED!!");
           // Restore A button close functionality
           patch::write_word(reinterpret_cast<void*>(0x80274b5c), 0x4082005c); // bne ...
       }
@@ -408,7 +412,7 @@ ui::Widget& create_common_galactic_log_page_layout(
     // No pause menu dim
     patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x00000000);
 
-    // Prevent B button from returning to pause menu
+    // Prevent B & Start button from returning to pause menu
     patch::write_nop(reinterpret_cast<void*>(0x80274b88));
 
     // Parent widget, this is the darkened screen
@@ -900,6 +904,15 @@ void init_main_loop() {
         mkb::g_some_other_flags = mkb::g_some_other_flags | mkb::OF_GAME_PAUSED;
         LOG("Heap free after: %dkb", heap::get_free_space() / 1024);
         return;
+    });
+
+    patch::hook_function(s_check_pause_menu_input, mkb::check_pause_menu_input, [](mkb::Sprite* s) {
+        if (s_pause_menu_input_lock) {
+            s_pause_menu_input_lock = false;
+            return;
+        }
+
+        s_check_pause_menu_input.dest(s);
     });
 }
 void init_main_game() {

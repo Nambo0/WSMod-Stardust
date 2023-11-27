@@ -248,8 +248,8 @@ void tick() {
     if (stage_id_is_stellar(mkb::g_current_stage_id)) {
         if (mkb::main_game_mode == mkb::PRACTICE_MODE &&
             (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN)) {
-            if (mkb::mode_info.stage_time_frames_remaining >= 540 * 60) {
-                // Loop timer to 0 at 540
+            if (mkb::mode_info.stage_time_frames_remaining >= 500 * 60) {
+                // Loop timer to 0 at 500
                 mkb::mode_info.stage_time_frames_remaining = 0;
             }
         }

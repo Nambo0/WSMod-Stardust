@@ -73,7 +73,7 @@ constexpr char* s_log_pages_about[8] = {
     // About Page 3 (ONLY SHOW IF BONUS LOCKED)
     "/bc00fffb/UNLOCKING BONUS MODES/bcFFFFFF/\n"
     "\n"
-    "Unlock all bonus modes by claiming the following achievements:     \n"
+    "Unlock all bonus modes by claiming the following achievements:\n"
     "\n"
     "/bcFF9900/BEAT THE GAME:/bcFFFFFF/ Complete Story Mode\n"
     "/bcFF9900/STUNT PILOT:/bcFFFFFF/ Complete 1 /bcC800FF/Stunt Goal/bcFFFFFF/ in each world\n"
@@ -160,7 +160,7 @@ constexpr char* s_log_pages_about[8] = {
     "The center of the stage has a spinning /bc009DFF/medallion/bcFFFFFF/,\n"
     "representing your best Interstellar rank!\n"};
 constexpr char* s_log_pages_credits[2] = {
-    "/bcFFFFFF/NOTE: Credits.pdf (included with the ISO) has more     \n"
+    "/bcFFFFFF/NOTE: Credits.pdf (included with the ISO) has more\n"
     "annotated credits, including clickable /bc008CFF/links/bcFFFFFF/\n"
     "\n"
     "/bcC800FF/DIRECT CONTRIBUTIONS:/bcFFFFFF/\n"
@@ -175,7 +175,7 @@ constexpr char* s_log_pages_credits[2] = {
     "/bc00fffb/Playtesters/bcFFFFFF/\n"
     "      (>^^)> Eddy, 42guy42, Rehtrop, Null\n"
     "      (>^^)> Walkr, Goobz, Dyrude, Eucalyptus\n",
-    "/bcFFFFFF/NOTE: Credits.pdf (included with the ISO) has more     \n"
+    "/bcFFFFFF/NOTE: Credits.pdf (included with the ISO) has more\n"
     "annotated credits, including clickable /bc008CFF/links/bcFFFFFF/\n"
     "\n"
     "/bcC800FF/SPECIAL THANKS:/bcFFFFFF/\n"

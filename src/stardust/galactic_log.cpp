@@ -479,6 +479,7 @@ ui::Widget& create_common_galactic_log_page_layout(
         patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x43b40000);
         const char* label = static_cast<const char*>(close_label);
         ui::get_widget_manager().remove(label);
+        mkb::free_bmp_by_id(0xc);
         create_galactic_log_menu();
     };
 

@@ -74,7 +74,10 @@ constexpr char* s_log_pages_about[8] = {
     "/bcFF9900/STUNT PILOT:/bcFFFFFF/ Complete 1 /bcC800FF/Stunt Goal/bcFFFFFF/ in each world\n"
     "\n"
     "The list of all /bcFF9900/achievements/bcFFFFFF/ can be found in that section\n"
-    "of the Galactic log.\n",
+    "of the Galactic log.\n"
+    "\n"
+    "After unlocking, explanations for each mode can be found\n"
+    "in the About section of the Galactic log.\n",
 
     // About Page 4 (ONLY SHOW IF BONUS UNLOCKED)
     "/bc00fffb/INTERSTELLAR/bcFFFFFF/\n"

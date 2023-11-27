@@ -780,10 +780,12 @@ void create_achievement_list() {
                 }
                 break;
             }
-            case 3: { // Interstellar
-                switch(curr_row) {
+            case 3: {// Interstellar
+                switch (curr_row) {
                     // Show id 21-27
-                    case 0 ... 6: curr_id = curr_row + 21; break;
+                    case 0 ... 6:
+                        curr_id = curr_row + 21;
+                        break;
                 }
                 break;
             }

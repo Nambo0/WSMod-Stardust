@@ -213,11 +213,11 @@ void tick() {
                     mkb::balls[mkb::curr_player_idx].pos.z < 500) {
                     if (mkb::balls[mkb::curr_player_idx].pos.y < 0) {
                         mkb::balls[mkb::curr_player_idx].pos.y += 650;
-                        mkb::call_SoundReqID_arg_0(0x317); // Wormhole sound
+                        mkb::call_SoundReqID_arg_0(0x317);// Wormhole sound
                     }
                     if (mkb::balls[mkb::curr_player_idx].pos.y > 650) {
                         mkb::balls[mkb::curr_player_idx].pos.y -= 650;
-                        mkb::call_SoundReqID_arg_0(0x317); // Wormhole sound
+                        mkb::call_SoundReqID_arg_0(0x317);// Wormhole sound
                     }
                 }
             }
@@ -304,8 +304,8 @@ void tick() {
                         camera_rotation->x -= camera_rotation->x * 2;
                         camera_rotation->y -= camera_rotation->y * 2;
                         camera_rotation->z += 32768;// 180deg rotation
-                        
-                        mkb::call_SoundReqID_arg_0(0x317); // Wormhole sound
+
+                        mkb::call_SoundReqID_arg_0(0x317);// Wormhole sound
                     }
                 }
             }

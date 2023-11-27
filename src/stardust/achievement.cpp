@@ -291,10 +291,6 @@ void on_goal() {
         if (mkb::curr_difficulty == mkb::DIFF_ADVANCED && mkb::mode_info.cm_course_stage_num >= 90 && mkb::mode_info.cm_course_stage_num <= 110) {
             claim_achievement(36);
         }
-        // 27) ALL K | (Practice Mode) Get all 100 bunches and finish on any stage
-        if(badge::detect_sweep() && mkb::main_game_mode == mkb::PRACTICE_MODE) {
-            claim_achievement(27);
-        }
         // 37 and all other interstellar achievements are in interstellar.cpp
         // 38) AAAAA | Clear a stage after traveling over 1,000 mph
         if (went_very_fast) claim_achievement(38);
@@ -338,6 +334,11 @@ void on_goal() {
                 break;
             }
         }
+    }
+
+    // 27) ALL K | (Practice Mode) Get all 100 bunches and finish on any stage
+    if(badge::detect_sweep() && mkb::main_game_mode == mkb::PRACTICE_MODE) {
+        claim_achievement(27);
     }
 }
 

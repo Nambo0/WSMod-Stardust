@@ -34,10 +34,9 @@ static char s_text_page_buffer[1024] = {0};
 static uint8_t s_log_page_number = 0;// Current index of page in log screen
 static uint8_t s_log_page_count = 0; // Number of pages in a log screen
 static etl::optional<size_t> s_galactic_log_index;
-static bool s_following_frame_input_lock = false; // Pause menu input not handled if 'true'
-static bool s_main_menu_input_lock = false; // Main menu input not processed if 'true'
-static uint8_t s_input_frame_lock_buffer = 0;
-constexpr uint8_t INPUT_FRAME_LOCK_DELAY = 5;
+alignas(4) static bool s_main_menu_input_lock = false; // Main menu input not processed if 'true'
+static uint32_t s_input_frame_lock_buffer = 0; // Does not return control to the game for this many frames
+constexpr uint32_t INPUT_FRAME_LOCK_DELAY = 5; // Default number of frames to delay
 
 // All relevant pages of text here
 namespace {
@@ -304,11 +303,14 @@ constexpr char* s_achievement_page_titles[6] = {
 void create_galactic_log_menu() {
     if (mkb::main_mode == mkb::MD_SEL) {
         s_main_menu_input_lock = true;
-
     }
-
-    patch::write_nop(reinterpret_cast<void*>(0x80274b5c));                                   // Prevent A button from returning to the pause menu when Galactic Log is open
-    patch::write_word(reinterpret_cast<void*>(0x80274ba8), PPC_INSTR_LI(PPC_R0, 0x00000000));// Prevent Start button from returning to pause menu
+    else if (mkb::main_mode == mkb::MD_GAME) {
+        patch::write_nop(reinterpret_cast<void*>(0x80274b5c));                                   // Prevent A button from returning to the pause menu when Galactic Log is open
+        patch::write_word(reinterpret_cast<void*>(0x80274ba8), PPC_INSTR_LI(PPC_R0, 0x00000000));// Prevent Start button from returning to pause menu
+    }
+    else {
+        MOD_ASSERT_MSG(false, "Is there a mode where you can access this that I haven't handled yet? Tell BombSquad!!");
+    }
 
     constexpr Vec2d center = Vec2d{640 / 2, 480 / 2};
     constexpr Vec2d box_size = Vec2d{450, 220};
@@ -368,28 +370,30 @@ void create_galactic_log_menu() {
         create_achievement_screen();
     };
 
-    // Handle for 'Close' button
+    // Handle for 'Close' button, as well as B/Start buttons
     auto close_handler = [](ui::Widget& widget, void*) {
-        // Restores B button functionality
-        patch::write_word(reinterpret_cast<void*>(0x80274b88), 0x40820030);
-        // Restores start button functionality
-        patch::write_word(reinterpret_cast<void*>(0x80274ba8), 0xa0030018);
-        // Restores pausemenu dim
-        patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x43b40000);
+        if (mkb::main_mode == mkb::MD_GAME) {
+            // Restores initial pause menu B button functionality
+            patch::write_word(reinterpret_cast<void*>(0x80274b88), 0x40820030);
+            // Restores initial pause menu start button functionality
+            patch::write_word(reinterpret_cast<void*>(0x80274ba8), 0xa0030018);
+            // Restores pause menu dim
+            patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x43b40000);
+        }
 
-        s_following_frame_input_lock = true;// Avoids race condition
+        // Prevents issue where inputs carry over to newly opened pause menu
+        s_input_frame_lock_buffer = INPUT_FRAME_LOCK_DELAY;
 
+        // Only execute this if we are closing via the 'Close' button
         auto& input_widget = (ui::Input&) widget;
-
-        // Go back to the pause menu
         if (input_widget.get_label() == "galclos") {
-            // Restore A button close functionality
+            // Restore initial pause menu A button close functionality
             patch::write_word(reinterpret_cast<void*>(0x80274b5c), 0x4082005c);// bne ...
         }
 
         s_galactic_log_index.reset();
 
-        // Title screen fix
+        // Title screen input issues fix
         if (mkb::main_mode != mkb::MD_GAME) {
             s_main_menu_input_lock = false;
             s_input_frame_lock_buffer = INPUT_FRAME_LOCK_DELAY;
@@ -433,10 +437,12 @@ ui::Widget& create_common_galactic_log_page_layout(
     mkb::load_bmp_by_id(0xc);
 
     // No pause menu dim
-    patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x00000000);
+    if (mkb::main_mode == mkb::MD_GAME) {
+        patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x00000000);
 
-    // Prevent B & Start button from returning to pause menu
-    patch::write_nop(reinterpret_cast<void*>(0x80274b88));
+        // Prevent B & Start button from returning to pause menu
+        patch::write_nop(reinterpret_cast<void*>(0x80274b88));
+    }
 
     // Parent widget, this is the darkened screen
     auto& menu_screen = ui::get_widget_manager().add(new ui::Sprite(0x4b, Vec2d{0, 0}, Vec2d{64, 64}));
@@ -484,7 +490,9 @@ ui::Widget& create_common_galactic_log_page_layout(
     }
 
     auto close_handler = [](ui::Widget&, void* close_label) {
-        patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x43b40000);
+        if (mkb::main_mode == mkb::MD_GAME) {
+            patch::write_word(reinterpret_cast<void*>(0x803e7a28), 0x43b40000);
+        }
         const char* label = static_cast<const char*>(close_label);
         ui::get_widget_manager().remove(label);
         mkb::free_bmp_by_id(0xc);
@@ -955,8 +963,8 @@ void init_main_loop() {
     });
 
     patch::hook_function(s_check_pause_menu_input, mkb::check_pause_menu_input, [](mkb::Sprite* s) {
-        if (s_following_frame_input_lock) {
-            s_following_frame_input_lock = false;
+        if (s_input_frame_lock_buffer > 0) {
+            s_input_frame_lock_buffer--;
             return;
         }
 
@@ -968,20 +976,14 @@ void init_main_game() {
 
 void init_sel_ngc() {
     patch::hook_function(s_did_any_pad_press_input, mkb::did_any_pad_press_input, [](mkb::PadInputID id) {
-        if (s_main_menu_input_lock) {
-            return false;
-        }
-        else if (s_following_frame_input_lock) {
-            if (s_input_frame_lock_buffer-- > 0) {
-                return false;
-            }
-            else {
-                s_following_frame_input_lock = false;
-                return false;
-            }
-        }
+        if(!s_main_menu_input_lock && !s_input_frame_lock_buffer) return s_did_any_pad_press_input.dest(id);
         else {
-            return s_did_any_pad_press_input.dest(id);
+            if (s_main_menu_input_lock) {
+                return false;
+            }
+
+            s_input_frame_lock_buffer--;
+            return false;
         }
     });
 }

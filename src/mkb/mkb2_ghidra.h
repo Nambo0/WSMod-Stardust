@@ -6064,6 +6064,7 @@ extern "C" {
     extern struct TplBuffer * g_bg_tpl;
     extern undefined4 active_sprite_draw_req_count;
     extern undefined4 g_smth_with_sprite_draw_reqs_widescreen;
+    extern struct TplBuffer * bmp_com_tpl;
     extern undefined4 g_smth_with_widescreen;
     extern undefined2 g_global_widescreen_translation_x;
     extern struct SpriteDrawRequest sprite_draw_req_buffer[640];
@@ -6508,6 +6509,8 @@ extern "C" {
     extern undefined menu_option_screen_entries;
     extern struct MenuScreen menu_screen_list[87];
     extern pointer switchdataD_80580b70;
+    extern char SPRITE_BUTTON_LESSON_TEXT[7];
+    extern char SPRITE_BUTTON_TUTORIAL_TEXT[9];
     extern undefined * switchdataD_805837fc;
     extern pointer switchdataD_80584584;
     extern undefined * switchdataD_805846ac;
@@ -6580,6 +6583,7 @@ extern "C" {
     extern pointer switchdataD_80686c20;
     extern undefined2 player_count;
     extern undefined4 race_frames_remaining;
+    extern float golf_max_wind_velocity_divisor;
     extern undefined * switchdataD_806c6ec4;
     extern undefined * switchdataD_806c6ef8;
     extern undefined * switchdataD_806c6fe0;
@@ -6592,6 +6596,8 @@ extern "C" {
     extern undefined * switchdataD_806cb6b8;
     extern pointer switchdataD_806cb6fc;
     extern pointer switchdataD_806cb784;
+    extern undefined4 golf_wind_angle;
+    extern float golf_wind_velocity;
     extern pointer switchdataD_806fd0d8;
     extern pointer switchdataD_806fd190;
     extern pointer switchdataD_80706bac;
@@ -8416,7 +8422,7 @@ extern "C" {
     void g_set_lots_of_initial_state(void);
     void md_sel_func(void);
     void smd_sel_ngc_dest(void);
-    void g_return_to_sel_mode(undefined4 param_1);
+    void g_return_to_sel_ngc(undefined4 param_1);
     void g_load_stage_for_menu_bg(char param_1, int param_2);
     void g_set_some_sel_ngc_global_func_ptrs(void * func1, void * func2, void * func3, void * func4);
     void smd_sel_ngc_init(void);
@@ -8559,11 +8565,12 @@ extern "C" {
     void threshold_analog_inputs(void);
     void g_calc_frames_since_last_input_change(void);
     void merge_inputs(void);
-    void g_some_bmp_init_func(void);
+    void load_bmp_com(void);
     TplBuffer * load_bmp(char * filepath);
     void load_bmp_by_id_child(int g_idx);
     void free_bmp_by_id(int id);
     void free_nl2ngc_tpl_buf_to_heap(struct TplBuffer * param_1);
+    void set_bmp_com_tpl_pointer(int param_1);
     void g_zero_some_sprite_related_state(void);
     void g_some_sprite_reset_gx_state_func(void);
     void draw_ui(void);
@@ -9381,8 +9388,10 @@ extern "C" {
     undefined4 g_parse_avtext_other_codes(char * string, ushort * next_two_chars);
     undefined4 parse_avtext_color_codes(char * string, struct SpriteDrawRequest * sprite_draw_req);
     uint g_some_avtext_array_lookup(ushort next_two_chars, float some_float, short * float_as_short_ptr);
+    double textdraw_print_internal_func_2(double param_1, double param_2, int param_3, short param_4);
+    double textdraw_print_internal_func_3(int param_1, int param_2, short param_3, int param_4);
     int g_get_tex_id(undefined4 param_1, ushort param_2, ushort * param_3, int param_4);
-    void g_some_textdraw_print_internal_func(byte * string);
+    void textdraw_print_internal_func_1(byte * string);
     float textdraw_chara_load(char * string, BOOL32 stop_on_newline, TextdrawCharaLoadReturnParameter  return_parameter);
     double g_get_string_sprite_width_3(char * param_1);
     double textdraw_get_pixel_width_of_string_as_double_child(char * string);
@@ -10005,6 +10014,7 @@ extern "C" {
     void sel_ngc_prolog(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
     void sel_ngc_epilog(void);
     void sel_ngc_unlinked_func(void);
+    uint g_b_button_handler_for_sel_ngc(void);
     bool did_any_pad_press_input(PadInputID  input_id);
     void g_create_main_menu(void);
     void g_initialize_sel_ngc(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
@@ -10234,6 +10244,7 @@ extern "C" {
     void g_print_race_time_remaining(undefined4 param_1, int param_2);
     void golf2_unlinked_func(void);
     void g_golf_init(void);
+    void g_smth_with_golf_wind_velocity(double wind_velocity);
     void empty_function(void);
     void mini_fight2_unlinked_func(void);
     void empty_function(void);

@@ -3645,7 +3645,7 @@
 80282A90:md_sel_func
 80282B28:FUN_801ac8f0
 80282B4C:smd_sel_ngc_dest
-80282B70:g_return_to_sel_mode
+80282B70:g_return_to_sel_ngc
 80282B9C:switchD
 80282BA0:caseD_1
 80282BA0:caseD_3
@@ -3961,13 +3961,13 @@
 80298D78:threshold_analog_inputs
 80299068:g_calc_frames_since_last_input_change
 80299160:merge_inputs
-802995AC:g_some_bmp_init_func
+802995AC:load_bmp_com
 80299610:load_bmp
 802998CC:FUN_801c3694
 8029991C:load_bmp_by_id_child
 80299990:free_bmp_by_id
 80299A34:free_nl2ngc_tpl_buf_to_heap
-80299A84:FUN_801c384c
+80299A84:set_bmp_com_tpl_pointer
 80299AA8:g_zero_some_sprite_related_state
 80299ACC:g_some_sprite_reset_gx_state_func
 80299C1C:draw_ui
@@ -5922,8 +5922,8 @@
 80325218:caseD_5f
 80325218:caseD_60
 80325254:g_some_avtext_array_lookup
-803253E4:FUN_8024f1ac
-8032555C:FUN_8024f324
+803253E4:textdraw_print_internal_func_2
+8032555C:textdraw_print_internal_func_3
 803255A0:switchD
 803255A4:caseD_2
 803255A4:caseD_5
@@ -5935,7 +5935,7 @@
 803257A4:caseD_3
 803257A4:caseD_6
 803257B0:g_get_tex_id
-803258E4:g_some_textdraw_print_internal_func
+803258E4:textdraw_print_internal_func_1
 80325D74:switchD
 80325D78:caseD_2
 80325D78:caseD_5
@@ -8558,6 +8558,7 @@
 80553ADC:g_bg_tpl
 805542EC:active_sprite_draw_req_count
 805542F0:g_smth_with_sprite_draw_reqs_widescreen
+80554320:bmp_com_tpl
 80555F24:g_smth_with_widescreen
 80555F28:g_global_widescreen_translation_x
 80555F34:sprite_draw_req_buffer
@@ -9476,7 +9477,7 @@
 808F4300:caseD_4b
 808F4300:caseD_4c
 808F4318:FUN_8054a280
-808F4520:FUN_8054a488
+808F4520:g_b_button_handler_for_sel_ngc
 808F4650:did_any_pad_press_input
 808F4670:switchD
 808F4674:caseD_0
@@ -10072,6 +10073,8 @@
 80929F18:menu_option_screen_entries
 80929F84:menu_screen_list
 8092AC08:switchdataD_80580b70
+8092B45C:SPRITE_BUTTON_LESSON_TEXT
+8092B464:SPRITE_BUTTON_TUTORIAL_TEXT
 8092D894:switchdataD_805837fc
 8092E61C:switchdataD_80584584
 8092E744:switchdataD_805846ac
@@ -11207,7 +11210,7 @@
 8092459C:caseD_e
 80924618:caseD_f
 809247CC:FUN_806bd2fc
-80924C04:FUN_806bd734
+80924C04:g_smth_with_golf_wind_velocity
 809250F0:FUN_806bdc20
 80925270:FUN_806bdda0
 809253A4:FUN_806bded4
@@ -11273,6 +11276,7 @@
 8092C824:FUN_806c5354
 8092C880:FUN_806c53b0
 8092CB90:FUN_806c56c0
+8092CBE0:golf_max_wind_velocity_divisor
 8092E39C:switchdataD_806c6ec4
 8092E3D0:switchdataD_806c6ef8
 8092E4B8:switchdataD_806c6fe0
@@ -11285,6 +11289,8 @@
 80932B90:switchdataD_806cb6b8
 80932BD4:switchdataD_806cb6fc
 80932C5C:switchdataD_806cb784
+80942D44:golf_wind_angle
+80942D48:golf_wind_velocity
 808F40B0:FUN_806ce3c0
 808F4110:FUN_806ce420
 808F4150:mini_fight2_unlinked_func

@@ -175,7 +175,7 @@ constexpr char* s_log_pages_credits[2] = {
     "/bc00fffb/Art/bcFFFFFF/\n"
     "      (>^^)> Shadow (/bc008CFF/charredshadow.tumblr.com/bcFFFFFF/)\n"
     "/bc00fffb/Playtesters/bcFFFFFF/\n"
-    "      (>^^)> Eddy, 42guy42, Rehtrop, Null\n"
+    "      (>^^)> eddy, 42guy42, rehtrop, Null\n"
     "      (>^^)> Walkr, Goobz, Dyrude, Eucalyptus\n",
     "/bcFFFFFF/NOTE: Credits.pdf (included with the ISO) has more\n"
     "annotated credits, including clickable /bc008CFF/links/bcFFFFFF/\n"

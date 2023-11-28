@@ -186,6 +186,7 @@ s32 init() {
         heap::free(header);
         card_error = false;
     }
+    else if (result == mkb::CARD_RESULT_NOFILE) save();
     else {
         mkb::OSReport("[stardust] Error loading savedata. Error type %d", result);
         card_error = true;

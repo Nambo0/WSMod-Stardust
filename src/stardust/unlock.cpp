@@ -21,7 +21,7 @@ TICKABLE_DEFINITION((
 // If none of the worlds fail, there's 1 in each world, so succeed the condition
 bool unlock_condition_met() {
     if (mkb::unlock_info.monkeys == 99) return true;  // Allows Practice Mod Unlock to unlock these modes
-    if (mkb::unlock_info.g_movies_watched != 0x0fff) {// Beat the Game
+    if (mkb::unlock_info.g_movies_watched == 0x0fff) {// Beat the Game
         return achievement::detect_stunt_pilot();     // 1 stunt goal in each world
     }
     else return false;

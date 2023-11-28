@@ -103,7 +103,7 @@ void tick() {
             // DOUBLE TAKE | 1-8 Double Time  -  Clear the stunt goal at both spinning speeds on back to back attempts (ID: 1)
             case 4: {
                 // Requires back to back finishes
-                if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) {
+                if (mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 2) {
                     if (DT_back_to_back) {
                         DT_back_to_back = false;
                     }
@@ -161,7 +161,7 @@ void on_goal() {
             // DOUBLE TAKE | 1-8 Double Time  -  Clear the stunt goal at both spinning speeds on back to back attempts (ID: 1)
             case 4: {
                 if (mkb::mode_info.entered_goal_type == mkb::Red) {
-                    if (mkb::itemgroups[3].playback_state == 0) {// IG #3 is one of the animated ones, playback state 0 is 1x speed
+                    if (mkb::itemgroups[8].playback_state == 0) {// IG #3 is one of the animated ones, playback state 0 is 1x speed
                         if (DT_last_completion_speed == 2) {
                             claim_achievement(1);
                         }
@@ -170,7 +170,7 @@ void on_goal() {
                             DT_back_to_back = true;
                         }
                     }
-                    if (mkb::itemgroups[3].playback_state == 3) {// Playback state 3 is 2x speed
+                    if (mkb::itemgroups[8].playback_state == 3) {// Playback state 3 is 2x speed
                         if (DT_last_completion_speed == 1) {
                             claim_achievement(1);
                         }

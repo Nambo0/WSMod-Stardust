@@ -303,7 +303,8 @@ void on_goal() {
         }
         // 37 and all other interstellar achievements are in interstellar.cpp
         // 38) AAAAA | Clear a stage after traveling over 1,000 mph
-        if (went_very_fast) claim_achievement(37);
+        // (It's too free on POV GD Cube, so disabled there)
+        if (went_very_fast && mkb::g_current_stage_id != 240) claim_achievement(37);
     }// If valid
 
     // Badge-count achievements

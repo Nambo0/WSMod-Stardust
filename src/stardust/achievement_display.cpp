@@ -116,9 +116,6 @@ static void set_sprite_achievement_name(mkb::Sprite* sprite) {
             mkb::strcpy(sprite->text, "Acutally Playable");
             break;
         case 37:
-            mkb::strcpy(sprite->text, "Uhhh... GG!");
-            break;
-        case 38:
             mkb::strcpy(sprite->text, "AAAAAAAAA");
             break;
         // Error case

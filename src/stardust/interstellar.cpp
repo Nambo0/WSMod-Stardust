@@ -74,8 +74,8 @@ static void finished_run_calculations() {
         for (u16 rank = 1; rank <= 5; rank++) {
             if (mkb::balls[mkb::curr_player_idx].banana_count >= rank * 1000) achievement::claim_achievement(20 + rank);
         }
-        // Ach ID: 37) UHHH GG | Complete Interstellar with 0 bananas
-        if (mkb::balls[mkb::curr_player_idx].banana_count == 0) achievement::claim_achievement(37);
+        // Ach ID: 37) UHHH GG | Complete Interstellar with 0 bananas (DISCONTINUED)
+        // if (mkb::balls[mkb::curr_player_idx].banana_count == 0) achievement::claim_achievement(37);
     }
 }
 

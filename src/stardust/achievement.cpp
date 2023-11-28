@@ -292,6 +292,7 @@ void on_goal() {
         // 33) YOU-DA-BACON | Clear a stage 10x in a row
         if (last_completed_stage_id == mkb::g_current_stage_id) {
             completions_in_a_row++;
+            last_attempt_won = true;
             if (completions_in_a_row == 10) claim_achievement(33);
         }
         else completions_in_a_row = 1;
@@ -302,7 +303,7 @@ void on_goal() {
         }
         // 37 and all other interstellar achievements are in interstellar.cpp
         // 38) AAAAA | Clear a stage after traveling over 1,000 mph
-        if (went_very_fast) claim_achievement(38);
+        if (went_very_fast) claim_achievement(37);
     }// If valid
 
     // Badge-count achievements

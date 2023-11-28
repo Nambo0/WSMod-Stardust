@@ -284,17 +284,14 @@ constexpr char* s_achievement_names[39] = {
     "Clear the stunt goal on Currents without clicking the button",
     "/bcFF9900/ACUTALLY PLAYABLE/bcFFFFFF/ /bc707070/(shadow achievement)/bcFFFFFF/\n"
     "Clear a stage from The Unplayable Zone",
-    "/bcFF9900/UHHH GG/bcFFFFFF/ /bc707070/(shadow achievement)/bcFFFFFF/\n"
-    "Complete Interstellar with 0 bananas",
     "/bcFF9900/AAAAA/bcFFFFFF/ /bc707070/(shadow achievement)/bcFFFFFF/\n"
     "Clear a stage after travelling >1,000 mph"};
-constexpr char* s_achievement_page_titles[6] = {
+constexpr char* s_achievement_page_titles[5] = {
     "/bc00fffb/STAGE CHALLENGES (1/2)/bcFFFFFF/",
     "/bc00fffb/STAGE CHALLENGES (2/2)/bcFFFFFF/",
     "/bc00fffb/STORY MODE/bcFFFFFF/",
     "/bc00fffb/INTERSTELLAR/bcFFFFFF/",
-    "/bc00fffb/SECRET (?/?)/bcFFFFFF/ /bc707070/(Not intended as real achievements)/bcFFFFFF/",
-    "/bc00fffb/SECRET (?/?)/bcFFFFFF/ /bc707070/(Not intended as real achievements)/bcFFFFFF/"};
+    "/bc00fffb/SECRET/bcFFFFFF/ /bc707070/(Not intended as real achievements)/bcFFFFFF/"};
 }// namespace
 
 // The menu for accessing the various pages
@@ -815,20 +812,8 @@ void create_achievement_list() {
             case 4: {// Secret (1/2)
                 switch (curr_row) {
                     // If completed, show id 31-34
-                    case 0 ... 3:
+                    case 0 ... 6:
                         if (savedata::true_in_slot(331 + curr_row - 1)) curr_id = curr_row + 31;
-                        break;
-                    case 4 ... 6:
-                        curr_id = 100;
-                        break;// Empty rows w/out badge
-                }
-                break;
-            }
-            case 5: {// Secret (1/2)
-                switch (curr_row) {
-                    // If completed, show id 35-38
-                    case 0 ... 3:
-                        if (savedata::true_in_slot(335 + curr_row - 1)) curr_id = curr_row + 35;
                         break;
                     case 4 ... 6:
                         curr_id = 100;
@@ -873,7 +858,7 @@ static void show_achievement(u8 id, auto& container) {
 void create_achievement_screen() {
     // Initialize the correct page count/page index
     s_log_page_number = 0;
-    s_log_page_count = 6;
+    s_log_page_count = 5;
 
     auto previous_page_handler = [](ui::Widget&, void*) {
         // Initialize which pages get skipped
@@ -912,7 +897,7 @@ void create_achievement_screen() {
     auto next_page_handler = [](ui::Widget&, void*) {
         // Initialize which pages get skipped
         // (For some reason initializing this outside the lambda function causes "not captured" errors)
-        bool is_page_shown[6] = {
+        bool is_page_shown[5] = {
             // Stage Challenges (1/2), always show
             true,
             // Stage Challenges (2/2), only show if a stage w6+ has been beaten
@@ -921,10 +906,8 @@ void create_achievement_screen() {
             true,
             // Interstellar, show if unlocked
             unlock::unlock_condition_met(),
-            // Secret (1/2), show if any secrets 1-4 are complete
-            !savedata::consecutive_false_from_slot(330, 4),
-            // Secret (2/2), show if any secrets 5-8 are complete
-            !savedata::consecutive_false_from_slot(334, 4)};
+            // Secret, show if any secrets 1-7 are complete
+            !savedata::consecutive_false_from_slot(330, 7)};
 
         auto& achievement_menu_screen = ui::get_widget_manager().find("galachv");
         achievement_menu_screen.remove("galachl");

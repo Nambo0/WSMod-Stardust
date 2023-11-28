@@ -760,7 +760,8 @@ void create_achievement_list() {
         auto& sprite_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{32, 32}));
         sprite_container.set_layout(ui::ContainerLayout::HORIZONTAL);
 
-        u8 curr_id = 0;// Current achievement being displayed (0 = empty w/ badge, 100 = empty w/out badge)
+        u8 curr_id = 0;// Current achievement being displayed (0 = empty)
+        bool show_badge_slot = true;
         // Show list of achievements (based on current page # & some conditionals)
         switch (s_log_page_number) {
             case 0: {// Stage Challenges (1/2)
@@ -773,9 +774,11 @@ void create_achievement_list() {
                     case 1 ... 4:
                         if (played_world(curr_row + 1)) curr_id = curr_row + 1;
                         break;
-                    case 5 ... 6:
-                        curr_id = 100;
+                    case 5 ... 6: {
+                        curr_id = 0;
+                        show_badge_slot = false;
                         break;// Empty rows w/out badge
+                    }
                 }
                 break;
             }
@@ -785,9 +788,11 @@ void create_achievement_list() {
                     case 0 ... 4:
                         if (played_world(curr_row + 6)) curr_id = curr_row + 6;
                         break;
-                    case 5 ... 6:
-                        curr_id = 100;
+                    case 5 ... 6: {
+                        curr_id = 0;
+                        show_badge_slot = false;
                         break;// Empty rows w/out badge
+                    }
                 }
                 break;
             }
@@ -823,7 +828,7 @@ void create_achievement_list() {
         mkb::sprintf(s_achievement_name_buffer[curr_row], "%s", s_achievement_names[curr_id]);
         auto& text = text_container.add(new ui::Text(s_achievement_name_buffer[curr_row]));
 
-        if (curr_id != 100) {// 100 = no badge
+        if (show_badge_slot) {
             // 0xc3b = blue, 0xc3a = purple, 0xc39 = sweep, 0xc3c = achievement, 0xc3d = empty
             uint32_t id_1 = 0xc3d;
             if (savedata::true_in_slot(300 + curr_id - 1)) id_1 = 0xc3c;

@@ -329,7 +329,7 @@ void on_goal() {
     }
 
     // 26) FINISH HIM | Get all 10 interstellar goals in 1 run
-    if (mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::curr_difficulty == mkb::DIFF_BEGINNER) {
+    if (mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::g_current_stage_id >= 221 && mkb::g_current_stage_id <= 230) {
         u8 stage = mkb::g_current_stage_id - 220;
         switch (stage) {
             case 1: {

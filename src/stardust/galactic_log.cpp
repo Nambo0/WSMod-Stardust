@@ -815,9 +815,6 @@ void create_achievement_list() {
                     case 0 ... 6:
                         if (savedata::true_in_slot(331 + curr_row - 1)) curr_id = curr_row + 31;
                         break;
-                    case 4 ... 6:
-                        curr_id = 100;
-                        break;// Empty rows w/out badge
                 }
                 break;
             }

@@ -44,6 +44,7 @@ void claim_achievement(int id) {
 
 bool detect_beat_the_game() {
     if (mkb::unlock_info.g_movies_watched == 0x0fff) return true;
+    if (mkb::mode_info.g_selected_world_idx == 9 && mkb::g_amount_of_beaten_stages_in_world == 9) return true;
     else return false;
 }
 bool detect_stunt_trainee() {

@@ -622,6 +622,7 @@ void create_credits_screen() {
     s_log_page_number = 0;
     s_log_page_number_visible = 0;
     s_log_page_count = 2;
+    s_log_page_count_visible = 2;
 
     auto previous_page_handler = [](ui::Widget&, void*) {
         if (s_log_page_number == 0) {

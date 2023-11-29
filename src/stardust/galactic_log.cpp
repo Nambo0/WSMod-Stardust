@@ -448,7 +448,7 @@ ui::Widget& create_common_galactic_log_page_layout(
     menu_screen.set_depth(0.05);
 
     // Header container
-    auto& menu_header_container = menu_screen.add(new ui::Container(Vec2d{0, 0}, Vec2d{640, 128}));
+    auto& menu_header_container = menu_screen.add(new ui::Container(Vec2d{0, 5}, Vec2d{640, 128}));
     menu_header_container.set_margin(0);
     menu_header_container.set_layout_spacing(64);
     menu_header_container.set_layout(ui::ContainerLayout::HORIZONTAL);
@@ -557,7 +557,7 @@ void create_about_screen() {
     auto& about_menu_screen = create_common_galactic_log_page_layout("About", "galabou", previous_page_handler, next_page_handler);
 
 
-    auto& about_container = about_menu_screen.add(new ui::Container(Vec2d{0, 65}, Vec2d{640, 480 - 65 - 5}));
+    auto& about_container = about_menu_screen.add(new ui::Container(Vec2d{0, 64+5}, Vec2d{640, 480 - 65}));
     mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
     auto& about_text = about_container.add(new ui::Text(s_text_page_buffer));
     about_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
@@ -595,7 +595,7 @@ void create_credits_screen() {
     auto& credits_menu_screen = create_common_galactic_log_page_layout("Credits & Special Thanks", "galcred", previous_page_handler, next_page_handler);
 
     // Credits container
-    auto& credits_container = credits_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640, 480 - 65 - 5}));
+    auto& credits_container = credits_menu_screen.add(new ui::Container(Vec2d{0, 64+5}, Vec2d{640, 480 - 65}));
     mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
     auto& credits_text = credits_container.add(new ui::Text(s_text_page_buffer));
     credits_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
@@ -607,7 +607,7 @@ void create_credits_screen() {
 void create_badge_list() {
     auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
 
-    auto& badge_container = badge_menu_screen.add(new ui::Container(Vec2d{0, 65}, Vec2d{640, 480 - 65}));
+    auto& badge_container = badge_menu_screen.add(new ui::Container(Vec2d{0, 64+5}, Vec2d{640, 480 - 65}));
     badge_container.set_label("galbdgc");
     badge_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
     for (uint32_t stage_idx = 0; stage_idx < 10; stage_idx++) {
@@ -698,7 +698,7 @@ void create_interstellar_screen() {
     auto& interstellar_menu_screen = create_common_galactic_log_page_layout("Interstellar", "galints", empty_handler, empty_handler);
 
     // Interstellar
-    auto& interstellar_container = interstellar_menu_screen.add(new ui::Container(Vec2d{5, 65}, Vec2d{640, 480 - 65 - 5}));
+    auto& interstellar_container = interstellar_menu_screen.add(new ui::Container(Vec2d{0, 64+5}, Vec2d{640, 480 - 65}));
     if (unlock::unlock_condition_met()) {// If unlocked: Display best run
         mkb::sprintf(s_text_page_buffer,
                      s_log_pages_interstellar,
@@ -733,7 +733,7 @@ static bool played_world(u8 world) {
 void create_achievement_list() {
     auto& achievement_menu_screen = ui::get_widget_manager().find("galachv");
 
-    auto& achievement_container = achievement_menu_screen.add(new ui::Container(Vec2d{0, 65}, Vec2d{640, 480 - 65}));
+    auto& achievement_container = achievement_menu_screen.add(new ui::Container(Vec2d{0, 64+5}, Vec2d{640, 480 - 65}));
     achievement_container.set_label("galachl");
     achievement_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
 

@@ -47,6 +47,7 @@ static patch::Tramp<decltype(&mkb::g_reset_ball)> s_g_reset_ball_tramp;
 static patch::Tramp<decltype(&mkb::load_stagedef)> s_load_stagedef_tramp;
 static patch::Tramp<decltype(&mkb::smd_game_ringout_tick)> s_smd_game_ringout_tick_tramp;
 static patch::Tramp<decltype(&mkb::smd_game_timeover_tick)> s_smd_game_timeover_tick_tramp;
+static patch::Tramp<decltype(&mkb::smd_game_roll_init)> s_smd_game_roll_init_tramp;
 
 static bool stage_id_is_stellar(u32 stage_id) {
     switch (stage_id) {
@@ -494,6 +495,12 @@ void on_bonus_finish() {
     }
 }
 
+void medallions() {
+    if (mkb::scen_info.next_world <= 9 && mkb::curr_difficulty == mkb::DIFF_BEGINNER) {
+        patch::write_word(reinterpret_cast<void*>(0x8090a004), PPC_INSTR_LI(PPC_R3, 0xc5));
+}
+}
+
 void init() {
     patch::hook_function(s_create_fallout_or_bonus_finish_sprite_tramp, mkb::create_fallout_or_bonus_finish_sprite, [](s32 param_1) {
         on_fallout();
@@ -511,7 +518,7 @@ void init() {
 
 void init_main_game() {
     if (mkb::curr_difficulty == mkb::DIFF_BEGINNER) {
-        if (mkb::main_game_mode == mkb::CHALLENGE_MODE || mkb::main_game_mode == mkb::PRACTICE_MODE) {
+        if ((mkb::main_game_mode == mkb::CHALLENGE_MODE) || (mkb::main_game_mode == mkb::PRACTICE_MODE && mkb::stageselect_is_storymode == false)) {
             patch::write_nop(reinterpret_cast<void*>(0x808f54f4));
             patch::write_nop(reinterpret_cast<void*>(0x808f5b90));
         }
@@ -523,6 +530,10 @@ void init_main_game() {
     patch::hook_function(s_smd_game_timeover_tick_tramp, mkb::smd_game_timeover_tick, []() {
         s_smd_game_timeover_tick_tramp.dest();
         on_bonus_finish();
+    });
+    patch::hook_function(s_smd_game_roll_init_tramp, mkb::smd_game_roll_init, []() {
+        s_smd_game_roll_init_tramp.dest();
+        medallions();
     });
 }
 

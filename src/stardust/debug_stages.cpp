@@ -4,6 +4,7 @@
 #include "../internal/patch.h"
 #include "../mkb/mkb.h"
 #include "../stardust/validate.h"
+#include "../stardust/achievement.h"
 #include "internal/tickable.h"
 
 namespace debug_stages {
@@ -22,6 +23,13 @@ void skip_stage() {
     mkb::mode_info.stage_time_frames_remaining = 1;
     // Special case for Stellar W2 draft's frozen timer
     if (mkb::g_current_stage_id == 267) mkb::mode_info.stage_time_frames_remaining = -100;
+    // Claim achievement if end of zone
+    // 31) HEY GOOBZ PLAY DEBUG | Complete or skip through any of the debug sub-categories
+    if (mkb::g_current_stage_id == 245  // Credit Card
+    || mkb::g_current_stage_id == 73    // Candy Clog
+    || mkb::g_current_stage_id == 71) { // Precession
+        achievement::claim_achievement(31);
+    }
 }
 
 

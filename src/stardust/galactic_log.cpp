@@ -171,7 +171,7 @@ constexpr char* s_log_pages_credits[2] = {
     "      (>^^)> Walkr (/bc008CFF/linktr.ee/walkrmusic/bcFFFFFF/)\n"
     "      (>^^)> Relayer (/bc008CFF/wxokeys.bandcamp.com/bcFFFFFF/)\n"
     "/bc00fffb/Custom Code/bcFFFFFF/\n"
-    "      (>^^)> Rehtrop, The BombSquad, Eucalyptus\n"
+    "      (>^^)> rehtrop, The BombSquad, Eucalyptus\n"
     "/bc00fffb/Art/bcFFFFFF/\n"
     "      (>^^)> Shadow (/bc008CFF/charredshadow.tumblr.com/bcFFFFFF/)\n"
     "/bc00fffb/Playtesters/bcFFFFFF/\n"
@@ -624,7 +624,7 @@ void create_badge_list() {
         char stage_name_buffer[64] = {0};
         mkb::read_stage_name_from_dvd(stage_id, stage_name_buffer, 64);
         LOG("Got name %s", stage_name_buffer)
-        mkb::sprintf(s_badge_stage_name_buffer[stage_idx], "%d-%d %s", s_log_page_number + 1, stage_idx + 1, stage_name_buffer);
+        mkb::sprintf(s_badge_stage_name_buffer[stage_idx], "/bcFBFF00/%d-%d/bcFFFFFF/ %s", s_log_page_number + 1, stage_idx + 1, stage_name_buffer);
         LOG("Did sprintf to yield: %s", s_badge_stage_name_buffer[stage_idx])
         auto& text = text_container.add(new ui::Text(s_badge_stage_name_buffer[stage_idx]));
 

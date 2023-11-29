@@ -1,4 +1,5 @@
 #include "interstellar.h"
+#include "pausecooldown.h"
 #include "../internal/pad.h"
 #include "../internal/patch.h"
 #include "../internal/tickable.h"
@@ -6,7 +7,13 @@
 #include "../stardust/achievement.h"
 #include "../stardust/badge.h"
 #include "../stardust/savedata.h"
-#include "pausecooldown.h"
+#include "internal/ui/ui_manager.h"
+#include "internal/ui/widget_menu.h"
+#include "internal/ui/widget_text.h"
+#include "internal/ui/widget_window.h"
+#include "utils/ppcutil.h"
+#include "widget_input.h"
+#include "widget_sprite.h"
 
 
 namespace interstellar {
@@ -244,7 +251,83 @@ void on_stage_load(u32 stage_id) {
     }
 }
 
+int end_screen_timer;
+bool can_view = true;
+
+void end_screen() {
+    constexpr char* s_stellar_ranks[6] = {
+    "NONE",
+    "/bcB68E00/BRONZE/bcFFFFFF/",
+    "/bcCCCCCC/SILVER/bcFFFFFF/",
+    "/bcFFDD00/GOLD/bcFFFFFF/",
+    "/bc6EFFFD/PLATIMUM/bcFFFFFF/",
+    "/bcC800FF/STAR/bcFFFFFF/"};
+    constexpr char* s_text_format =
+    "/bc00fffb/THIS RUN/bcFFFFFF/\n"
+    "\n"
+    "/bcFFFFFF/Grand Total: /bcFBFF00/%d/bcFFFFFF/\n"
+    "\n"
+    "Rank: %s\n"
+    "\n"
+    "World 1: /bcFBFF00/%d/bcFFFFFF/\n"
+    "World 2: /bcFBFF00/%d/bcFFFFFF/\n"
+    "World 3: /bcFBFF00/%d/bcFFFFFF/\n"
+    "World 4: /bcFBFF00/%d/bcFFFFFF/\n"
+    "World 5: /bcFBFF00/%d/bcFFFFFF/\n"
+    "World 6: /bcFBFF00/%d/bcFFFFFF/\n"
+    "World 7: /bcFBFF00/%d/bcFFFFFF/\n"
+    "World 8: /bcFBFF00/%d/bcFFFFFF/\n"
+    "World 9: /bcFBFF00/%d/bcFFFFFF/\n"
+    "World 10: /bcFBFF00/%d/bcFFFFFF/\n"
+    "\n"
+    "Please press p/BUTTON_B/.";
+    constexpr char* endtext = "";
+    auto& end_box = ui::get_widget_manager().add(new ui::Window(Vec2d{80, 40}, Vec2d{480, 405}));
+    end_box.set_alignment(mkb::ALIGN_CENTER);
+    end_box.set_label("endbox");
+    mkb::sprintf(endtext,
+                     s_text_format,
+                     bunches_collected_total() * 10,
+                     s_stellar_ranks[savedata::best_stellar_rank()],
+                     bunches_collected_on_stage[0] * 10,
+                     bunches_collected_on_stage[1] * 10,
+                     bunches_collected_on_stage[2] * 10,
+                     bunches_collected_on_stage[3] * 10,
+                     bunches_collected_on_stage[4] * 10,
+                     bunches_collected_on_stage[5] * 10,
+                     bunches_collected_on_stage[6] * 10,
+                     bunches_collected_on_stage[7] * 10,
+                     bunches_collected_on_stage[8] * 10,
+                     bunches_collected_on_stage[9] * 10);
+    auto& end_text = end_box.add(new ui::Text(endtext));
+    end_text.set_alignment(ui::CENTER);
+    can_view = false;
+}
+
 void tick() {
+    if (mkb::sub_mode == mkb::SMD_GAME_NAMEENTRY_MAIN) {
+        if (mkb::g_nameentry_did_get_top_5) {
+            if (mkb::g_nameentry_state == 3) {
+                if(can_view) {
+                end_screen();
+                }
+            }
+        }
+        else {
+            if (can_view) {
+            end_screen();
+            }
+        }
+        if (pad::button_pressed (mkb::PAD_BUTTON_B)) {
+            ui::get_widget_manager().remove("endbox");
+        }
+    }
+    else {
+        ui::get_widget_manager().remove("endbox");
+    }
+    if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
+        can_view = true;
+    }
     if (stage_id_is_stellar(mkb::g_current_stage_id)) {
         if (mkb::main_game_mode == mkb::PRACTICE_MODE &&
             (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN)) {

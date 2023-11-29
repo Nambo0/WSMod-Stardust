@@ -25,6 +25,7 @@ TICKABLE_DEFINITION((
         .enabled = true,
         .init_main_loop = init,
         .init_main_game = init_main_game,
+        .init_sel_ngc = init_sel_ngc,
         .tick = tick,
         .on_goal = on_goal, ))
 
@@ -305,6 +306,7 @@ void end_screen() {
 }
 
 void tick() {
+    if (mkb::scen_info.next_world != 11 && mkb::curr_difficulty == mkb::DIFF_BEGINNER) {
     if (mkb::sub_mode == mkb::SMD_GAME_NAMEENTRY_MAIN) {
         if (mkb::g_nameentry_did_get_top_5) {
             if (mkb::g_nameentry_state == 3) {
@@ -327,6 +329,7 @@ void tick() {
     }
     if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
         can_view = true;
+    }
     }
     if (stage_id_is_stellar(mkb::g_current_stage_id)) {
         if (mkb::main_game_mode == mkb::PRACTICE_MODE &&
@@ -521,6 +524,10 @@ void init_main_game() {
         s_smd_game_timeover_tick_tramp.dest();
         on_bonus_finish();
     });
+}
+
+void init_sel_ngc() {
+    mkb::scen_info.next_world = 0;
 }
 
 }// namespace interstellar

@@ -271,7 +271,7 @@ void end_screen() {
     "/bc6EFFFD/PLATINUM/bcFFFFFF/",
     "/bcC800FF/STAR/bcFFFFFF/"};
     u8 new_best_state = 0; // 1 = display new best text
-    if(bunches_collected_total() > savedata::stellar_best_run_total()) new_best_state = 1;
+    if(bunches_collected_total() == savedata::stellar_best_run_total()) new_best_state = 1;
     constexpr char* s_new_best_text[2] = {
     "",
     "(New best!)"};

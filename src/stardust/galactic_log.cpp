@@ -116,7 +116,7 @@ constexpr char* s_log_pages_about[8] = {
     "/bcB68E00/BRONZE RANK:/bcFFFFFF/ 1000+ bananas\n"
     "/bcCCCCCC/SILVER RANK:/bcFFFFFF/ 2000+ bananas\n"
     "/bcFFDD00/GOLD RANK:/bcFFFFFF/ 3000+ bananas\n"
-    "/bc6EFFFD/PLATIMUM RANK:/bcFFFFFF/ 4000+ bananas\n"
+    "/bc6EFFFD/PLATINUM RANK:/bcFFFFFF/ 4000+ bananas\n"
     "/bcC800FF/STAR RANK:/bcFFFFFF/ 5000+ bananas\n"
     "\n"
     "Each rank will display a unique /bcC800FF/medallion/bcFFFFFF/ at the end of\n"
@@ -200,7 +200,7 @@ constexpr char* s_stellar_ranks[6] = {
     "/bcB68E00/BRONZE/bcFFFFFF/",
     "/bcCCCCCC/SILVER/bcFFFFFF/",
     "/bcFFDD00/GOLD/bcFFFFFF/",
-    "/bc6EFFFD/PLATIMUM/bcFFFFFF/",
+    "/bc6EFFFD/PLATINUM/bcFFFFFF/",
     "/bcC800FF/STAR/bcFFFFFF/"};
 constexpr char* s_log_pages_interstellar =
     "/bc00fffb/BEST RUN/bcFFFFFF/\n"

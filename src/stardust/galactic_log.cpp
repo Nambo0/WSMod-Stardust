@@ -31,6 +31,7 @@ static patch::Tramp<decltype(&mkb::did_any_pad_press_input)> s_did_any_pad_press
 static char s_badge_stage_name_buffer[10][64];
 static char s_achievement_name_buffer[7][256];
 static char s_text_page_buffer[1024] = {0};
+static char s_page_number_buffer[32] = {0};
 static uint8_t s_log_page_number = 0;// Current index of page in log screen
 static uint8_t s_log_page_count = 0; // Number of pages in a log screen
 static etl::optional<size_t> s_galactic_log_index;
@@ -420,6 +421,10 @@ void create_galactic_log_menu() {
     close_handler_widget.set_sound_effect_id(0x70);
 }
 
+void update_page_number_display() {
+    mkb::sprintf(s_page_number_buffer, "Page\n%d/%d", s_log_page_number+1, s_log_page_count);
+}
+
 // Common/shared elements in Galactic Log go here to avoid code duplication
 ui::Widget& create_common_galactic_log_page_layout(
     const char* title,
@@ -498,7 +503,11 @@ ui::Widget& create_common_galactic_log_page_layout(
 
     // Page number
     if (previous_page_handler && next_page_handler) {
-
+        auto& text = menu_screen.add(new ui::Text(s_page_number_buffer, Vec2d{16+48+384+64+16+16+6, 36}));
+        text.set_alignment(ui::CENTER);
+        text.set_scale(Vec2d{0.50, 0.50});
+        text.set_color({0xff, 0xff, 0xff});
+        update_page_number_display();
     }
 
     auto close_handler = [](ui::Widget&, void* close_label) {
@@ -545,6 +554,7 @@ void create_about_screen() {
             }
         }
         mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
+      update_page_number_display();
     };
 
     auto next_page_handler = [](ui::Widget&, void*) {
@@ -568,6 +578,7 @@ void create_about_screen() {
             }
         }
         mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
+      update_page_number_display();
     };
 
     // Create common layout
@@ -596,9 +607,11 @@ void create_credits_screen() {
             --s_log_page_number;
         }
         mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
+      update_page_number_display();
     };
 
     auto next_page_handler = [](ui::Widget&, void*) {
+        update_page_number_display();
         if (s_log_page_number + 1 >= s_log_page_count) {
             s_log_page_number = 0;
         }
@@ -606,6 +619,7 @@ void create_credits_screen() {
             ++s_log_page_number;
         }
         mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
+      update_page_number_display();
     };
 
     // Create common layout
@@ -679,6 +693,7 @@ void create_badge_screen() {
             --s_log_page_number;
         }
         create_badge_list();
+      update_page_number_display();
     };
 
     auto next_page_handler = [](ui::Widget&, void*) {
@@ -691,6 +706,7 @@ void create_badge_screen() {
             ++s_log_page_number;
         }
         create_badge_list();
+      update_page_number_display();
     };
 
     // Create common layout
@@ -911,6 +927,7 @@ void create_achievement_screen() {
         }
         // mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_achievement[s_log_page_number]);
         create_achievement_list();
+      update_page_number_display();
     };
 
     auto next_page_handler = [](ui::Widget&, void*) {
@@ -943,6 +960,7 @@ void create_achievement_screen() {
         }
         // mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_achievement[s_log_page_number]);
         create_achievement_list();
+      update_page_number_display();
     };
 
     create_common_galactic_log_page_layout("Achievements", "galachv", previous_page_handler, next_page_handler);

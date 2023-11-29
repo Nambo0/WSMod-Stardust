@@ -17,6 +17,7 @@ TICKABLE_DEFINITION((
         .tick = tick ))
 
 static patch::Tramp<decltype(&mkb::sprite_pausemenu_disp)> s_sprite_pausemenu_disp_tramp;
+static patch::Tramp<decltype(&mkb::pause_game)> s_pause_game_tramp;
 
 bool is_retry;
 int original_pausemenu_selection;
@@ -26,25 +27,25 @@ static void limit_pauses() {
     mkb::Ball *ball;
     if (mkb::main_game_mode == mkb::CHALLENGE_MODE) {
         if (mkb::curr_difficulty == mkb::DIFF_BEGINNER) {
-            if (mkb::sub_mode==mkb::SMD_GAME_GOAL_MAIN || mkb::sub_mode==mkb::SMD_GAME_GOAL_REPLAY_MAIN || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN) {
+            if (mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN || mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN || mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_MAIN || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN) {
                 return;
             }
             else if (mkb::mode_info.stage_time_frames_remaining <= 15 * 60) {
                 return;
             }
-            else if (mkb::sub_mode == mkb::SMD_GAME_READY_MAIN && mkb::mode_info.attempt_count > 1) {
+            else if ((mkb::sub_mode == mkb::SMD_GAME_READY_MAIN || mkb::sub_mode == mkb::SMD_GAME_READY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) && mkb::mode_info.attempt_count > 1) {
                 return;
             }
             else {
-                if (mkb::g_current_focused_pause_menu_entry == 2 && pad::button_pressed(mkb::PAD_BUTTON_A)) {
+                if (mkb::g_current_focused_pause_menu_entry == 2 && pad::button_pressed(mkb::PAD_BUTTON_A) && mkb::g_some_status_bitflag_maybe_pause_related != 00000000) {
         mkb::g_current_focused_pause_menu_entry = 1;
         original_pausemenu_selection = 2;
     }
-    else if (mkb::g_current_focused_pause_menu_entry == 3 && pad::button_pressed(mkb::PAD_BUTTON_A)) {
+    else if (mkb::g_current_focused_pause_menu_entry == 3 && pad::button_pressed(mkb::PAD_BUTTON_A) && mkb::g_some_status_bitflag_maybe_pause_related != 00000000) {
         mkb::g_current_focused_pause_menu_entry = 2;
         original_pausemenu_selection = 3;
     }
-    else if (mkb::g_current_focused_pause_menu_entry == 1 && pad::button_pressed(mkb::PAD_BUTTON_A)) {
+    else if (mkb::g_current_focused_pause_menu_entry == 1 && pad::button_pressed(mkb::PAD_BUTTON_A) && mkb::g_some_status_bitflag_maybe_pause_related != 00000000) {
         mkb::g_current_focused_pause_menu_entry = 5;
         mkb::create_fallout_or_bonus_finish_sprite(1);
         death_counter::update_death_count();
@@ -69,15 +70,15 @@ static void limit_pauses() {
                 return;
             }
             else if (mkb::sub_mode==mkb::SMD_GAME_READY_MAIN) {
-                if (mkb::g_current_focused_pause_menu_entry == 2 && pad::button_pressed(mkb::PAD_BUTTON_A)) {
+                if (mkb::g_current_focused_pause_menu_entry == 2 && pad::button_pressed(mkb::PAD_BUTTON_A) && mkb::g_some_status_bitflag_maybe_pause_related != 00000000) {
         mkb::g_current_focused_pause_menu_entry = 1;
         original_pausemenu_selection = 2;
     }
-    else if (mkb::g_current_focused_pause_menu_entry == 3 && pad::button_pressed(mkb::PAD_BUTTON_A)) {
+    else if (mkb::g_current_focused_pause_menu_entry == 3 && pad::button_pressed(mkb::PAD_BUTTON_A) && mkb::g_some_status_bitflag_maybe_pause_related != 00000000) {
         mkb::g_current_focused_pause_menu_entry = 2;
         original_pausemenu_selection = 3;
     }
-    else if (mkb::g_current_focused_pause_menu_entry == 1 && pad::button_pressed(mkb::PAD_BUTTON_A)) {
+    else if (mkb::g_current_focused_pause_menu_entry == 1 && pad::button_pressed(mkb::PAD_BUTTON_A) && mkb::g_some_status_bitflag_maybe_pause_related != 00000000) {
         mkb::g_current_focused_pause_menu_entry = 5;
         mkb::create_fallout_or_bonus_finish_sprite(1);
         is_retry = true;
@@ -96,20 +97,20 @@ static void limit_pauses() {
     }
                 }
                 else {
-                if (mkb::g_current_focused_pause_menu_entry == 2 && pad::button_pressed(mkb::PAD_BUTTON_A)) {
+                if (mkb::g_current_focused_pause_menu_entry == 2 && pad::button_pressed(mkb::PAD_BUTTON_A) && mkb::g_some_status_bitflag_maybe_pause_related != 00000000) {
         mkb::g_current_focused_pause_menu_entry = 0;
         original_pausemenu_selection = 2;
         debug_stages::skip_stage();
     }
-    else if (mkb::g_current_focused_pause_menu_entry == 3 && pad::button_pressed(mkb::PAD_BUTTON_A)) {
+    else if (mkb::g_current_focused_pause_menu_entry == 3 && pad::button_pressed(mkb::PAD_BUTTON_A) && mkb::g_some_status_bitflag_maybe_pause_related != 00000000) {
         mkb::g_current_focused_pause_menu_entry = 1;
         original_pausemenu_selection = 3;
     }
-    else if (mkb::g_current_focused_pause_menu_entry == 4 && pad::button_pressed(mkb::PAD_BUTTON_A)) {
+    else if (mkb::g_current_focused_pause_menu_entry == 4 && pad::button_pressed(mkb::PAD_BUTTON_A) && mkb::g_some_status_bitflag_maybe_pause_related != 00000000) {
         mkb::g_current_focused_pause_menu_entry = 2;
         original_pausemenu_selection = 4;
     }
-    else if (mkb::g_current_focused_pause_menu_entry == 1 && pad::button_pressed(mkb::PAD_BUTTON_A)) {
+    else if (mkb::g_current_focused_pause_menu_entry == 1 && pad::button_pressed(mkb::PAD_BUTTON_A) && mkb::g_some_status_bitflag_maybe_pause_related != 00000000) {
         mkb::g_current_focused_pause_menu_entry = 6;
         mkb::create_fallout_or_bonus_finish_sprite(1);
         is_retry = true;
@@ -135,24 +136,14 @@ static void limit_pauses() {
     }
 }
 
-void init() {
-    patch::hook_function(s_sprite_pausemenu_disp_tramp, mkb::sprite_pausemenu_disp, [](mkb::Sprite* sprite) {
-        s_sprite_pausemenu_disp_tramp.dest(sprite);
-        limit_pauses();
-    });
-}
-
-void tick() {
-    if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && mkb::g_pause_status == 0) {
-        is_retry = false;
-    }
+void pausemenu_handler() {
     if (mkb::main_game_mode == mkb::CHALLENGE_MODE) {
         if (mkb::curr_difficulty ==  mkb::DIFF_BEGINNER) {
-            if (mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN || mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_MAIN || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN || mkb::mode_info.stage_time_frames_remaining <= 15 * 60) {
+            if (mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN || mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN || mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_MAIN || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN || mkb::mode_info.stage_time_frames_remaining <= 15 * 60) {
                 mkb::pausemenu_entry_counts[1] = 3;
                 mkb::pausemenu_type = 0;
             }
-            else if (mkb::sub_mode == mkb::SMD_GAME_READY_MAIN && mkb::mode_info.attempt_count > 1) {
+            else if ((mkb::sub_mode == mkb::SMD_GAME_READY_MAIN || mkb::sub_mode == mkb::SMD_GAME_READY_INIT) && mkb::mode_info.attempt_count > 1) {
                 mkb::pausemenu_entry_counts[1] = 3;
                 mkb::pausemenu_type = 0;
             }
@@ -169,7 +160,7 @@ void tick() {
             }
         }
         if (mkb::curr_difficulty == mkb::DIFF_ADVANCED) {
-            if (mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN || mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_MAIN || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN || mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN) {
+            if (mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN || mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_MAIN || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN || mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN) {
                 if (mkb::current_stage_id == 267) {
                 mkb::pausemenu_entry_counts[1] = 3;
                 mkb::pausemenu_type = 0;
@@ -180,7 +171,7 @@ void tick() {
                 patch::write_word(reinterpret_cast<void*>(0x80273cc8), 0x2c000004);
                 }
             }
-            else if (mkb::sub_mode == mkb::SMD_GAME_READY_MAIN) {
+            else if (mkb::sub_mode == mkb::SMD_GAME_READY_MAIN || mkb::sub_mode == mkb::SMD_GAME_READY_INIT) {
                 if (mkb::g_some_pausemenu_var != 0xffffffff) {
                 mkb::g_current_focused_pause_menu_entry = original_pausemenu_selection;
             }
@@ -211,6 +202,23 @@ void tick() {
                 patch::write_word(reinterpret_cast<void*>(0x8047f4a8), 0x8047eed4);
                 patch::write_word(reinterpret_cast<void*>(0x80273cc8), 0x2c000004);
         }
+    }
+}
+
+void init() {
+    patch::hook_function(s_sprite_pausemenu_disp_tramp, mkb::sprite_pausemenu_disp, [](mkb::Sprite* sprite) {
+        s_sprite_pausemenu_disp_tramp.dest(sprite);
+        limit_pauses();
+    });
+        patch::hook_function(s_pause_game_tramp, mkb::pause_game, []() {
+        s_pause_game_tramp.dest();
+        pausemenu_handler();
+    });
+}
+
+void tick() {
+    if ((mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN || mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) && mkb::g_pause_status == 0) {
+        is_retry = false;
     }
 }
 

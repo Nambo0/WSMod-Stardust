@@ -34,6 +34,8 @@ static char s_text_page_buffer[1024] = {0};
 static char s_page_number_buffer[32] = {0};
 static uint8_t s_log_page_number = 0;// Current index of page in log screen
 static uint8_t s_log_page_count = 0; // Number of pages in a log screen
+static uint8_t s_log_page_count_visible = 0; // Number of pages a player can actually see
+static uint8_t s_log_page_number_visible = 0; // Index of page relative to number that are actually visible
 static etl::optional<size_t> s_galactic_log_index;
 alignas(4) static bool s_main_menu_input_lock = false; // Main menu input not processed if 'true'
 static uint32_t s_input_frame_lock_buffer = 0; // Does not return control to the game for this many frames
@@ -422,7 +424,7 @@ void create_galactic_log_menu() {
 }
 
 void update_page_number_display() {
-    mkb::sprintf(s_page_number_buffer, "Page\n%d/%d", s_log_page_number+1, s_log_page_count);
+    mkb::sprintf(s_page_number_buffer, "Page\n%d/%d", s_log_page_number_visible+1, s_log_page_count_visible);
 }
 
 // Common/shared elements in Galactic Log go here to avoid code duplication
@@ -531,7 +533,15 @@ ui::Widget& create_common_galactic_log_page_layout(
 void create_about_screen() {
     // Initialize the correct page count/page index
     s_log_page_number = 0;
+    s_log_page_number_visible = 0;
     s_log_page_count = 8;
+
+    if (unlock::unlock_condition_met()) {
+        s_log_page_count_visible = 7;
+    }
+    else {
+        s_log_page_count_visible = 3;
+    }
 
     auto previous_page_handler = [](ui::Widget&, void*) {
         // UNLOCKED: Skip page 3
@@ -553,6 +563,12 @@ void create_about_screen() {
                 --s_log_page_number;
             }
         }
+      if (s_log_page_number_visible == 0) {
+          s_log_page_number_visible = s_log_page_count_visible - 1;;
+      }
+      else {
+          --s_log_page_number_visible;
+      }
         mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
       update_page_number_display();
     };
@@ -577,6 +593,12 @@ void create_about_screen() {
                 ++s_log_page_number;
             }
         }
+      if (s_log_page_number_visible + 1 >= s_log_page_count_visible) {
+          s_log_page_number_visible = 0;
+      }
+      else {
+          ++s_log_page_number_visible;
+      }
         mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
       update_page_number_display();
     };
@@ -597,6 +619,7 @@ void create_about_screen() {
 void create_credits_screen() {
     // Initialize the correct page count/page index
     s_log_page_number = 0;
+    s_log_page_number_visible = 0;
     s_log_page_count = 2;
 
     auto previous_page_handler = [](ui::Widget&, void*) {
@@ -606,6 +629,12 @@ void create_credits_screen() {
         else {
             --s_log_page_number;
         }
+      if (s_log_page_number_visible == 0) {
+          s_log_page_number_visible = s_log_page_count_visible - 1;;
+      }
+      else {
+          --s_log_page_number_visible;
+      }
         mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
       update_page_number_display();
     };
@@ -618,6 +647,12 @@ void create_credits_screen() {
         else {
             ++s_log_page_number;
         }
+      if (s_log_page_number_visible + 1 >= s_log_page_count_visible) {
+          s_log_page_number_visible = 0;
+      }
+      else {
+          ++s_log_page_number_visible;
+      }
         mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
       update_page_number_display();
     };
@@ -681,7 +716,7 @@ void create_badge_list() {
 void create_badge_screen() {
     // Initialize the correct page count/page index
     s_log_page_number = 0;
-    s_log_page_count = 10;
+    s_log_page_number_visible = 0;
 
     auto previous_page_handler = [](ui::Widget&, void*) {
         auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
@@ -692,6 +727,12 @@ void create_badge_screen() {
         else {
             --s_log_page_number;
         }
+      if (s_log_page_number_visible == 0) {
+          s_log_page_number_visible = s_log_page_count_visible - 1;;
+      }
+      else {
+          --s_log_page_number_visible;
+      }
         create_badge_list();
       update_page_number_display();
     };
@@ -705,6 +746,12 @@ void create_badge_screen() {
         else {
             ++s_log_page_number;
         }
+      if (s_log_page_number_visible + 1 >= s_log_page_count) {
+          s_log_page_number_visible = 0;
+      }
+      else {
+          ++s_log_page_number_visible;
+      }
         create_badge_list();
       update_page_number_display();
     };
@@ -722,6 +769,8 @@ void create_badge_screen() {
             s_log_page_count = world + 1;
         }
     }
+    s_log_page_count_visible = s_log_page_count;
+    update_page_number_display();
 }
 
 void create_interstellar_screen() {
@@ -893,7 +942,25 @@ static void show_achievement(u8 id, auto& container) {
 void create_achievement_screen() {
     // Initialize the correct page count/page index
     s_log_page_number = 0;
+    s_log_page_number_visible = 0 ;
     s_log_page_count = 5;
+    s_log_page_count_visible = 0;
+
+    bool is_page_shown[6] = {
+        // Stage Challenges (1/2), always show
+        true,
+        // Stage Challenges (2/2), only show if a stage w6+ has been beaten
+        (!savedata::consecutive_false_from_slot(50, 50) || !savedata::consecutive_false_from_slot(150, 50)),
+        // Story Mode, always show
+        true,
+        // Interstellar, show if unlocked
+        unlock::unlock_condition_met(),
+        // Secret, show if any secrets 1-7 are complete
+        !savedata::consecutive_false_from_slot(330, 7)};
+
+    for (auto page : is_page_shown) {
+        if (page) s_log_page_count_visible++;
+    }
 
     auto previous_page_handler = [](ui::Widget&, void*) {
         // Initialize which pages get skipped
@@ -907,10 +974,8 @@ void create_achievement_screen() {
             true,
             // Interstellar, show if unlocked
             unlock::unlock_condition_met(),
-            // Secret (1/2), show if any secrets 1-4 are complete
-            !savedata::consecutive_false_from_slot(330, 4),
-            // Secret (2/2), show if any secrets 5-8 are complete
-            !savedata::consecutive_false_from_slot(334, 4)};
+            // Secret, show if any secrets 1-7 are complete
+            !savedata::consecutive_false_from_slot(330, 7)};
 
         auto& achievement_menu_screen = ui::get_widget_manager().find("galachv");
         achievement_menu_screen.remove("galachl");
@@ -927,6 +992,13 @@ void create_achievement_screen() {
         }
         // mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_achievement[s_log_page_number]);
         create_achievement_list();
+
+        if (s_log_page_number_visible == 0) {
+            s_log_page_number_visible = s_log_page_count_visible - 1;
+        }
+        else {
+            --s_log_page_number_visible;
+        }
       update_page_number_display();
     };
 
@@ -958,6 +1030,12 @@ void create_achievement_screen() {
             // Stop the loop if we've reached a shown page
             if (is_page_shown[s_log_page_number]) break;
         }
+      if (s_log_page_number_visible + 1 >= s_log_page_count_visible) {
+          s_log_page_number_visible = 0;
+      }
+      else {
+          ++s_log_page_number_visible;
+      }
         // mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_achievement[s_log_page_number]);
         create_achievement_list();
       update_page_number_display();

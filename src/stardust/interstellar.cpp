@@ -1,5 +1,4 @@
 #include "interstellar.h"
-#include "pausecooldown.h"
 #include "../internal/pad.h"
 #include "../internal/patch.h"
 #include "../internal/tickable.h"
@@ -7,6 +6,7 @@
 #include "../stardust/achievement.h"
 #include "../stardust/badge.h"
 #include "../stardust/savedata.h"
+#include "pausecooldown.h"
 
 
 namespace interstellar {

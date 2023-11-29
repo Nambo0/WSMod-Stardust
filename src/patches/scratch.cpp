@@ -12,7 +12,7 @@ namespace scratch {
 TICKABLE_DEFINITION((
         .name = "scratch",
         .description = "Scratch",
-        .enabled = true,
+        .enabled = false,
         .init_main_loop = init,
         .tick = tick))
 
@@ -99,6 +99,7 @@ void init() {
 }
 
 void tick() {
+    /*
     if (pad::button_down(mkb::PAD_TRIGGER_Z) && !sent) {
         mkb::call_SoundReqID_arg_2(10);
         mkb::OSReport("free: %d\n", heap::get_free_space());
@@ -112,6 +113,7 @@ void tick() {
     if (pad::button_down(mkb::PAD_BUTTON_Y) && !sent2) {
         sent = false;
     }
+     */
 
     /*
     if (base_ptr) {

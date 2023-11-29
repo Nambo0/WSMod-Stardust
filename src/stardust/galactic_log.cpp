@@ -32,14 +32,14 @@ static char s_badge_stage_name_buffer[10][64];
 static char s_achievement_name_buffer[7][256];
 static char s_text_page_buffer[1024] = {0};
 static char s_page_number_buffer[32] = {0};
-static uint8_t s_log_page_number = 0;// Current index of page in log screen
-static uint8_t s_log_page_count = 0; // Number of pages in a log screen
+static uint8_t s_log_page_number = 0;        // Current index of page in log screen
+static uint8_t s_log_page_count = 0;         // Number of pages in a log screen
 static uint8_t s_log_page_count_visible = 0; // Number of pages a player can actually see
-static uint8_t s_log_page_number_visible = 0; // Index of page relative to number that are actually visible
+static uint8_t s_log_page_number_visible = 0;// Index of page relative to number that are actually visible
 static etl::optional<size_t> s_galactic_log_index;
-alignas(4) static bool s_main_menu_input_lock = false; // Main menu input not processed if 'true'
-static uint32_t s_input_frame_lock_buffer = 0; // Does not return control to the game for this many frames
-constexpr uint32_t INPUT_FRAME_LOCK_DELAY = 5; // Default number of frames to delay
+alignas(4) static bool s_main_menu_input_lock = false;// Main menu input not processed if 'true'
+static uint32_t s_input_frame_lock_buffer = 0;        // Does not return control to the game for this many frames
+constexpr uint32_t INPUT_FRAME_LOCK_DELAY = 5;        // Default number of frames to delay
 
 // All relevant pages of text here
 namespace {
@@ -424,7 +424,7 @@ void create_galactic_log_menu() {
 }
 
 void update_page_number_display() {
-    mkb::sprintf(s_page_number_buffer, "Page\n%d/%d", s_log_page_number_visible+1, s_log_page_count_visible);
+    mkb::sprintf(s_page_number_buffer, "Page\n%d/%d", s_log_page_number_visible + 1, s_log_page_count_visible);
 }
 
 // Common/shared elements in Galactic Log go here to avoid code duplication
@@ -493,7 +493,7 @@ ui::Widget& create_common_galactic_log_page_layout(
         next_arrow.set_mirror(true);
 
         // Text
-        auto& text = menu_screen.add(new ui::Text("Next", Vec2d{16+48+384+64+16+64, 58}));
+        auto& text = menu_screen.add(new ui::Text("Next", Vec2d{16 + 48 + 384 + 64 + 16 + 64, 58}));
         text.set_alignment(ui::LEFT);
         text.set_scale(Vec2d{0.50, 0.50});
         text.set_color({0xff, 0xff, 0xff});
@@ -505,7 +505,7 @@ ui::Widget& create_common_galactic_log_page_layout(
 
     // Page number
     if (previous_page_handler && next_page_handler) {
-        auto& text = menu_screen.add(new ui::Text(s_page_number_buffer, Vec2d{16+48+384+64+16+16+6, 36}));
+        auto& text = menu_screen.add(new ui::Text(s_page_number_buffer, Vec2d{16 + 48 + 384 + 64 + 16 + 16 + 6, 36}));
         text.set_alignment(ui::CENTER);
         text.set_scale(Vec2d{0.50, 0.50});
         text.set_color({0xff, 0xff, 0xff});
@@ -563,14 +563,15 @@ void create_about_screen() {
                 --s_log_page_number;
             }
         }
-      if (s_log_page_number_visible == 0) {
-          s_log_page_number_visible = s_log_page_count_visible - 1;;
-      }
-      else {
-          --s_log_page_number_visible;
-      }
+        if (s_log_page_number_visible == 0) {
+            s_log_page_number_visible = s_log_page_count_visible - 1;
+            ;
+        }
+        else {
+            --s_log_page_number_visible;
+        }
         mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
-      update_page_number_display();
+        update_page_number_display();
     };
 
     auto next_page_handler = [](ui::Widget&, void*) {
@@ -593,21 +594,21 @@ void create_about_screen() {
                 ++s_log_page_number;
             }
         }
-      if (s_log_page_number_visible + 1 >= s_log_page_count_visible) {
-          s_log_page_number_visible = 0;
-      }
-      else {
-          ++s_log_page_number_visible;
-      }
+        if (s_log_page_number_visible + 1 >= s_log_page_count_visible) {
+            s_log_page_number_visible = 0;
+        }
+        else {
+            ++s_log_page_number_visible;
+        }
         mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
-      update_page_number_display();
+        update_page_number_display();
     };
 
     // Create common layout
     auto& about_menu_screen = create_common_galactic_log_page_layout("About", "galabou", previous_page_handler, next_page_handler);
 
 
-    auto& about_container = about_menu_screen.add(new ui::Container(Vec2d{0, 64+5}, Vec2d{640, 480 - 65}));
+    auto& about_container = about_menu_screen.add(new ui::Container(Vec2d{0, 64 + 5}, Vec2d{640, 480 - 65}));
     mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
     auto& about_text = about_container.add(new ui::Text(s_text_page_buffer));
     about_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
@@ -629,14 +630,15 @@ void create_credits_screen() {
         else {
             --s_log_page_number;
         }
-      if (s_log_page_number_visible == 0) {
-          s_log_page_number_visible = s_log_page_count_visible - 1;;
-      }
-      else {
-          --s_log_page_number_visible;
-      }
+        if (s_log_page_number_visible == 0) {
+            s_log_page_number_visible = s_log_page_count_visible - 1;
+            ;
+        }
+        else {
+            --s_log_page_number_visible;
+        }
         mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
-      update_page_number_display();
+        update_page_number_display();
     };
 
     auto next_page_handler = [](ui::Widget&, void*) {
@@ -647,21 +649,21 @@ void create_credits_screen() {
         else {
             ++s_log_page_number;
         }
-      if (s_log_page_number_visible + 1 >= s_log_page_count_visible) {
-          s_log_page_number_visible = 0;
-      }
-      else {
-          ++s_log_page_number_visible;
-      }
+        if (s_log_page_number_visible + 1 >= s_log_page_count_visible) {
+            s_log_page_number_visible = 0;
+        }
+        else {
+            ++s_log_page_number_visible;
+        }
         mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
-      update_page_number_display();
+        update_page_number_display();
     };
 
     // Create common layout
     auto& credits_menu_screen = create_common_galactic_log_page_layout("Credits & Special Thanks", "galcred", previous_page_handler, next_page_handler);
 
     // Credits container
-    auto& credits_container = credits_menu_screen.add(new ui::Container(Vec2d{0, 64+5}, Vec2d{640, 480 - 65}));
+    auto& credits_container = credits_menu_screen.add(new ui::Container(Vec2d{0, 64 + 5}, Vec2d{640, 480 - 65}));
     mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
     auto& credits_text = credits_container.add(new ui::Text(s_text_page_buffer));
     credits_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
@@ -673,7 +675,7 @@ void create_credits_screen() {
 void create_badge_list() {
     auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
 
-    auto& badge_container = badge_menu_screen.add(new ui::Container(Vec2d{0, 64+5}, Vec2d{640, 480 - 65}));
+    auto& badge_container = badge_menu_screen.add(new ui::Container(Vec2d{0, 64 + 5}, Vec2d{640, 480 - 65}));
     badge_container.set_label("galbdgc");
     badge_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
     for (uint32_t stage_idx = 0; stage_idx < 10; stage_idx++) {
@@ -686,12 +688,12 @@ void create_badge_list() {
         sprite_container.set_layout(ui::ContainerLayout::HORIZONTAL);
 
         uint32_t stage_id = mkb::get_story_mode_stage_id(s_log_page_number, stage_idx);
-        LOG("Got id %d", stage_id);
+        //LOG("Got id %d", stage_id);
         char stage_name_buffer[64] = {0};
         mkb::read_stage_name_from_dvd(stage_id, stage_name_buffer, 64);
-        LOG("Got name %s", stage_name_buffer)
+        //LOG("Got name %s", stage_name_buffer)
         mkb::sprintf(s_badge_stage_name_buffer[stage_idx], "/bcFBFF00/%d-%d/bcFFFFFF/ %s", s_log_page_number + 1, stage_idx + 1, stage_name_buffer);
-        LOG("Did sprintf to yield: %s", s_badge_stage_name_buffer[stage_idx])
+        //LOG("Did sprintf to yield: %s", s_badge_stage_name_buffer[stage_idx])
         auto& text = text_container.add(new ui::Text(s_badge_stage_name_buffer[stage_idx]));
 
         // 0xc3b = blue, 0xc3a = purple, 0xc39 = sweep, 0xc3c = achievement, 0xc3d = empty
@@ -727,14 +729,15 @@ void create_badge_screen() {
         else {
             --s_log_page_number;
         }
-      if (s_log_page_number_visible == 0) {
-          s_log_page_number_visible = s_log_page_count_visible - 1;;
-      }
-      else {
-          --s_log_page_number_visible;
-      }
+        if (s_log_page_number_visible == 0) {
+            s_log_page_number_visible = s_log_page_count_visible - 1;
+            ;
+        }
+        else {
+            --s_log_page_number_visible;
+        }
         create_badge_list();
-      update_page_number_display();
+        update_page_number_display();
     };
 
     auto next_page_handler = [](ui::Widget&, void*) {
@@ -746,14 +749,14 @@ void create_badge_screen() {
         else {
             ++s_log_page_number;
         }
-      if (s_log_page_number_visible + 1 >= s_log_page_count) {
-          s_log_page_number_visible = 0;
-      }
-      else {
-          ++s_log_page_number_visible;
-      }
+        if (s_log_page_number_visible + 1 >= s_log_page_count) {
+            s_log_page_number_visible = 0;
+        }
+        else {
+            ++s_log_page_number_visible;
+        }
         create_badge_list();
-      update_page_number_display();
+        update_page_number_display();
     };
 
     // Create common layout
@@ -780,7 +783,7 @@ void create_interstellar_screen() {
     auto& interstellar_menu_screen = create_common_galactic_log_page_layout("Interstellar", "galints", empty_handler, empty_handler);
 
     // Interstellar
-    auto& interstellar_container = interstellar_menu_screen.add(new ui::Container(Vec2d{0, 64+5}, Vec2d{640, 480 - 65}));
+    auto& interstellar_container = interstellar_menu_screen.add(new ui::Container(Vec2d{0, 64 + 5}, Vec2d{640, 480 - 65}));
     if (unlock::unlock_condition_met()) {// If unlocked: Display best run
         mkb::sprintf(s_text_page_buffer,
                      s_log_pages_interstellar,
@@ -815,7 +818,7 @@ static bool played_world(u8 world) {
 void create_achievement_list() {
     auto& achievement_menu_screen = ui::get_widget_manager().find("galachv");
 
-    auto& achievement_container = achievement_menu_screen.add(new ui::Container(Vec2d{0, 64+5}, Vec2d{640, 480 - 65}));
+    auto& achievement_container = achievement_menu_screen.add(new ui::Container(Vec2d{0, 64 + 5}, Vec2d{640, 480 - 65}));
     achievement_container.set_label("galachl");
     achievement_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
 
@@ -942,7 +945,7 @@ static void show_achievement(u8 id, auto& container) {
 void create_achievement_screen() {
     // Initialize the correct page count/page index
     s_log_page_number = 0;
-    s_log_page_number_visible = 0 ;
+    s_log_page_number_visible = 0;
     s_log_page_count = 5;
     s_log_page_count_visible = 0;
 
@@ -958,7 +961,7 @@ void create_achievement_screen() {
         // Secret, show if any secrets 1-7 are complete
         !savedata::consecutive_false_from_slot(330, 7)};
 
-    for (auto page : is_page_shown) {
+    for (auto page: is_page_shown) {
         if (page) s_log_page_count_visible++;
     }
 
@@ -999,7 +1002,7 @@ void create_achievement_screen() {
         else {
             --s_log_page_number_visible;
         }
-      update_page_number_display();
+        update_page_number_display();
     };
 
     auto next_page_handler = [](ui::Widget&, void*) {
@@ -1030,15 +1033,15 @@ void create_achievement_screen() {
             // Stop the loop if we've reached a shown page
             if (is_page_shown[s_log_page_number]) break;
         }
-      if (s_log_page_number_visible + 1 >= s_log_page_count_visible) {
-          s_log_page_number_visible = 0;
-      }
-      else {
-          ++s_log_page_number_visible;
-      }
+        if (s_log_page_number_visible + 1 >= s_log_page_count_visible) {
+            s_log_page_number_visible = 0;
+        }
+        else {
+            ++s_log_page_number_visible;
+        }
         // mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_achievement[s_log_page_number]);
         create_achievement_list();
-      update_page_number_display();
+        update_page_number_display();
     };
 
     create_common_galactic_log_page_layout("Achievements", "galachv", previous_page_handler, next_page_handler);
@@ -1072,7 +1075,7 @@ void init_main_game() {
 
 void init_sel_ngc() {
     patch::hook_function(s_did_any_pad_press_input, mkb::did_any_pad_press_input, [](mkb::PadInputID id) {
-        if(!s_main_menu_input_lock && !s_input_frame_lock_buffer) return s_did_any_pad_press_input.dest(id);
+        if (!s_main_menu_input_lock && !s_input_frame_lock_buffer) return s_did_any_pad_press_input.dest(id);
         else {
             if (s_main_menu_input_lock) {
                 return false;

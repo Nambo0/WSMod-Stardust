@@ -143,8 +143,8 @@ void tick() {
         if (mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 2) went_very_fast = false;
 
         // 33) YOU-DA-BACON | Clear a stage 10x in a row
-        if(mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 2) {
-            if(last_attempt_won) last_attempt_won = false;
+        if (mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 2) {
+            if (last_attempt_won) last_attempt_won = false;
             else completions_in_a_row = 0;
         }
     }// if currently valid

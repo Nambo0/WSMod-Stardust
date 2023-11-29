@@ -34,7 +34,9 @@ bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
 static u16 frames_left = 300 * 60;
 static u32 bunches_gone[] = {0, 0, 0, 0};// Bitfield array for keeping track of which bunches on a stage were collected between attempts
 static u32 anim_states = 0;              // Bitfield array for keeping track of which play-once anims were activated between attempts
+static u8 this_rank = 0;                 // Rank of the current finished run
 // NOTE: Only tracks anim IDs 1-32, so I gotta remember to have all fallout-sustained switches be anim ID 1-32
+char endtext_buffer[1024];
 
 // Makes ball.whatever easier to use
 mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];
@@ -71,17 +73,21 @@ static u16 bunches_collected_total() {
 }
 
 static void save_finished_run_total() {
-    bunches_collected_on_stage[9] = (mkb::balls[mkb::curr_player_idx].banana_count / 10) - bunches_collected_total();
     savedata::update_stellar_bunch_counts(bunches_collected_on_stage);
     savedata::save();
 }
 
 static void finished_run_calculations() {
+    bunches_collected_on_stage[9] = (mkb::balls[mkb::curr_player_idx].banana_count / 10) - bunches_collected_total();
+    this_rank = mkb::balls[mkb::curr_player_idx].banana_count / 1000;
+    if(this_rank > 5) this_rank = 5;
     if (bunches_collected_total() > savedata::stellar_best_run_total()) {
         save_finished_run_total();
         // Collect rank achievement(s) (ID: 21-25)
         for (u16 rank = 1; rank <= 5; rank++) {
-            if (mkb::balls[mkb::curr_player_idx].banana_count >= rank * 1000) achievement::claim_achievement(20 + rank);
+            if (mkb::balls[mkb::curr_player_idx].banana_count >= rank * 1000){
+                achievement::claim_achievement(20 + rank);
+            }
         }
         // Ach ID: 37) UHHH GG | Complete Interstellar with 0 bananas (DISCONTINUED)
         // if (mkb::balls[mkb::curr_player_idx].banana_count == 0) achievement::claim_achievement(37);
@@ -262,12 +268,17 @@ void end_screen() {
     "/bcB68E00/BRONZE/bcFFFFFF/",
     "/bcCCCCCC/SILVER/bcFFFFFF/",
     "/bcFFDD00/GOLD/bcFFFFFF/",
-    "/bc6EFFFD/PLATIMUM/bcFFFFFF/",
+    "/bc6EFFFD/PLATINUM/bcFFFFFF/",
     "/bcC800FF/STAR/bcFFFFFF/"};
+    u8 new_best_state = 0; // 1 = display new best text
+    if(bunches_collected_total() > savedata::stellar_best_run_total()) new_best_state = 1;
+    constexpr char* s_new_best_text[2] = {
+    "",
+    "(New best!)"};
     constexpr char* s_text_format =
     "/bc00fffb/THIS RUN/bcFFFFFF/\n"
     "\n"
-    "/bcFFFFFF/Grand Total: /bcFBFF00/%d/bcFFFFFF/\n"
+    "/bcFFFFFF/Grand Total: /bcFBFF00/%d/bcFFFFFF/ %s\n"
     "\n"
     "Rank: %s\n"
     "\n"
@@ -282,15 +293,15 @@ void end_screen() {
     "World 9: /bcFBFF00/%d/bcFFFFFF/\n"
     "World 10: /bcFBFF00/%d/bcFFFFFF/\n"
     "\n"
-    "Please press p/BUTTON_B/.";
-    constexpr char* endtext = "";
+    "Press p/BUTTON_B/ to continue.";
     auto& end_box = ui::get_widget_manager().add(new ui::Window(Vec2d{80, 40}, Vec2d{480, 405}));
     end_box.set_alignment(mkb::ALIGN_CENTER);
     end_box.set_label("endbox");
-    mkb::sprintf(endtext,
+    mkb::sprintf(endtext_buffer,
                      s_text_format,
                      bunches_collected_total() * 10,
-                     s_stellar_ranks[savedata::best_stellar_rank()],
+                     s_new_best_text[new_best_state],
+                     s_stellar_ranks[this_rank],
                      bunches_collected_on_stage[0] * 10,
                      bunches_collected_on_stage[1] * 10,
                      bunches_collected_on_stage[2] * 10,
@@ -301,12 +312,13 @@ void end_screen() {
                      bunches_collected_on_stage[7] * 10,
                      bunches_collected_on_stage[8] * 10,
                      bunches_collected_on_stage[9] * 10);
-    auto& end_text = end_box.add(new ui::Text(endtext));
+    auto& end_text = end_box.add(new ui::Text(endtext_buffer));
     end_text.set_alignment(ui::CENTER);
     can_view = false;
 }
 
 void tick() {
+    // End screen display
     if (mkb::scen_info.next_world != 11 && mkb::curr_difficulty == mkb::DIFF_BEGINNER) {
     if (mkb::sub_mode == mkb::SMD_GAME_NAMEENTRY_MAIN) {
         if (mkb::g_nameentry_did_get_top_5) {
@@ -332,6 +344,8 @@ void tick() {
         can_view = true;
     }
     }
+
+    // Regular per-frame stuff
     if (stage_id_is_stellar(mkb::g_current_stage_id)) {
         if (mkb::main_game_mode == mkb::PRACTICE_MODE &&
             (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN)) {
@@ -356,13 +370,13 @@ void tick() {
     }
 
     // BINDS FOR TESTING INTERSTELLAR SCORE CALCULATIONS
-    /*if(pad::button_pressed(mkb::PAD_BUTTON_DOWN)){
+    if(pad::button_pressed(mkb::PAD_BUTTON_DOWN)){
         mkb::balls[mkb::curr_player_idx].banana_count += 100;
     }
     if(pad::button_pressed(mkb::PAD_BUTTON_B)){
         finished_run_calculations();
     }
-    if(mkb::g_current_stage_id == 205) mkb::balls[mkb::curr_player_idx].banana_count = savedata::stellar_best_run_total();*/
+    if(mkb::g_current_stage_id == 205) mkb::balls[mkb::curr_player_idx].banana_count = savedata::stellar_best_run_total();
 
     // Only run at the start of each stage
     bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
@@ -497,8 +511,8 @@ void on_bonus_finish() {
 
 void medallions() {
     if (mkb::scen_info.next_world <= 9 && mkb::curr_difficulty == mkb::DIFF_BEGINNER) {
-        patch::write_word(reinterpret_cast<void*>(0x8090a004), PPC_INSTR_LI(PPC_R3, 0xc5));
-}
+        patch::write_word(reinterpret_cast<void*>(0x8090a004), PPC_INSTR_LI(PPC_R3, 170 + this_rank));
+    }
 }
 
 void init() {
@@ -532,8 +546,8 @@ void init_main_game() {
         on_bonus_finish();
     });
     patch::hook_function(s_smd_game_roll_init_tramp, mkb::smd_game_roll_init, []() {
-        s_smd_game_roll_init_tramp.dest();
         medallions();
+        s_smd_game_roll_init_tramp.dest();
     });
 }
 

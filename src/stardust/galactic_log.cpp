@@ -457,6 +457,12 @@ ui::Widget& create_common_galactic_log_page_layout(
         // Back arrow
         menu_header_container.add(new ui::Sprite(0xc27, Vec2d{0, 0}, Vec2d{64, 64}));
 
+        // Text
+        auto& text = menu_screen.add(new ui::Text("Back", Vec2d{16, 58}));
+        text.set_alignment(ui::LEFT);
+        text.set_scale(Vec2d{0.50, 0.50});
+        text.set_color({0xff, 0xff, 0xff});
+
         // Input handler
         auto& previous_page_input_widget = menu_screen.add(new ui::Input(pad::DIR_LEFT, previous_page_handler));
         previous_page_input_widget.set_sound_effect_id(0x6f);
@@ -479,9 +485,20 @@ ui::Widget& create_common_galactic_log_page_layout(
         auto& next_arrow = menu_header_container.add(new ui::Sprite(0xc27, Vec2d{0, 0}, Vec2d{64, 64}));
         next_arrow.set_mirror(true);
 
+        // Text
+        auto& text = menu_screen.add(new ui::Text("Next", Vec2d{16+48+384+64+16+64, 58}));
+        text.set_alignment(ui::LEFT);
+        text.set_scale(Vec2d{0.50, 0.50});
+        text.set_color({0xff, 0xff, 0xff});
+
         // Input handler
         auto& next_page_input_widget = menu_screen.add(new ui::Input(pad::DIR_RIGHT, next_page_handler));
         next_page_input_widget.set_sound_effect_id(0x6f);
+    }
+
+    // Page number
+    if (previous_page_handler && next_page_handler) {
+
     }
 
     auto close_handler = [](ui::Widget&, void* close_label) {

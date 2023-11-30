@@ -66,14 +66,14 @@ constexpr char* s_log_pages_about[8] = {
     "/bcFBFF00/Sweep Badge:/bcFFFFFF/ Complete that stage with every bunch collected in one run\n"
     "\n"
     "Whenever you collect a new badge, its icon will briefly appear\n"
-    "in the bottom left corner above the stage name\n",
+    "in the bottom left corner above the stage name.\n",
 
     // About Page 2
     "/bc00fffb/COSMIC BUNCHES/bcFFFFFF/\n"
     "\n"
     "Various types of /bcFBFF00/banana bunches/bcFFFFFF/ can be found in Story Mode.\n"
     "Cosmic bunches are larger, with small colored comets that\n"
-    "orbit around them\n"
+    "orbit around them.\n"
     "\n"
     "/bcFBFF00/Normal Bunches/bcFFFFFF/ award /bcFBFF00/10/bcFFFFFF/ bananas\n"
     "/bc00FF2F/Green Cosmic Bunches/bcFFFFFF/ award /bc00FF2F/20/bcFFFFFF/ bananas\n"
@@ -84,7 +84,7 @@ constexpr char* s_log_pages_about[8] = {
     "that stage's /bcFBFF00/Sweep Badge/bcFFFFFF/.\n"
     "\n"
     "Collecting a bunch will reveal a /bcFBFF00/counter/bcFFFFFF/ under the stage\n"
-    "name to help keep track of how many are left on the stage\n",
+    "name to help keep track of how many are left on the stage.\n",
 
     // About Page 3 (ONLY SHOW IF BONUS LOCKED)
     "/bc00fffb/UNLOCKING BONUS MODES/bcFFFFFF/\n"
@@ -999,7 +999,7 @@ void create_achievement_list() {
                 break;
             }
         }
-        
+
         if(show_badge_slot && curr_id == 0) curr_id = 20; // (HIDDEN)
         mkb::sprintf(s_achievement_name_buffer[curr_row], "%s", s_achievement_names[curr_id]);
         auto& text = text_container.add(new ui::Text(s_achievement_name_buffer[curr_row]));

@@ -348,7 +348,8 @@ void on_goal() {
     }
 
     // 27) EXTREME POTASSIUM OVERLOAD | (Practice Mode) Get all 100 bunches and finish on any stage
-    if (badge::detect_sweep() && mkb::main_game_mode == mkb::PRACTICE_MODE && mkb::curr_difficulty == mkb::DIFF_BEGINNER) {
+    if (badge::detect_sweep() && mkb::main_game_mode == mkb::PRACTICE_MODE
+    && mkb::g_current_stage_id >= 221 && mkb::g_current_stage_id <= 230) {
         claim_achievement(27);
     }
 }

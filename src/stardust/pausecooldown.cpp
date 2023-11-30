@@ -131,7 +131,7 @@ static void limit_pauses() {
             }
         }
     }
-    if (mkb::unlock_info.g_movies_watched != 0x0fff) {// Story mode NOT completed (Unlocks with Pracc Mod Unlock)
+    if (mkb::unlock_info.g_movies_watched != 0x0fff && mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {// Story mode NOT completed (Unlocks with Pracc Mod Unlock)
         mkb::g_repause_cooldown_counter = 60;
     }
 }

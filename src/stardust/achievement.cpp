@@ -20,11 +20,11 @@ TICKABLE_DEFINITION((
         .tick = tick,
         .on_goal = on_goal, ))
 
-// Makes ball.whatever easier to use
+// Makes ball.whatever easier to used
 mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];
 
-static u16 DT_last_completion_speed = 0;// For 1-8 Double Time
-static bool DT_back_to_back = false;    // For 1-8 Double Time
+// static u16 DT_last_completion_speed = 0;// For 1-8 Double Time
+// static bool DT_back_to_back = false;    // For 1-8 Double Time
 static bool flipped_yet = false;        // For 9-3 Flip Switches
 static u8 last_stellar_goal = 0;        // For Finish Him
 static u16 last_completed_stage_id = 0; // For You-Da-Bacon
@@ -101,7 +101,8 @@ void tick() {
     // Detect stage challenges
     if (validate::is_currently_valid()) {
         switch (mkb::g_current_stage_id) {
-            // DOUBLE TAKE | 1-8 Double Time  -  Clear the stunt goal at both spinning speeds on back to back attempts (ID: 1)
+            
+            /* // DOUBLE TAKE | 1-8 Double Time  -  Clear the stunt goal at both spinning speeds on back to back attempts (ID: 1)
             case 4: {
                 // Requires back to back finishes
                 if (mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 2) {
@@ -113,7 +114,7 @@ void tick() {
                     }
                 }
                 break;
-            }
+            } */
             // UP, UP, AND AWAY | 2-6 Liftoff  -  Soar higher than the highest cloud onstage (ID: 2)
             case 12: {
                 if ((mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT ||
@@ -159,7 +160,7 @@ void on_goal() {
     // Stage challenge achievements
     if (validate::is_currently_valid()) {
         switch (mkb::g_current_stage_id) {
-            // DOUBLE TAKE | 1-8 Double Time  -  Clear the stunt goal at both spinning speeds on back to back attempts (ID: 1)
+            /* // DOUBLE TAKE | 1-8 Double Time  -  Clear the stunt goal at both spinning speeds on back to back attempts (ID: 1)
             case 4: {
                 if (mkb::mode_info.entered_goal_type == mkb::Red) {
                     if (mkb::itemgroups[8].playback_state == 0) {// IG #3 is one of the animated ones, playback state 0 is 1x speed
@@ -181,6 +182,18 @@ void on_goal() {
                         }
                     }
                 }
+                break;
+            } */
+            // BOTTLE FLIP | 1-9 Klein Bottle  -  Clear the stage while the bottle is upside down
+            case 5: {
+                bool bottle_upside_down = false;
+                for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
+                    if (mkb::stagedef->coli_header_list[i].anim_group_id == 1 &&
+                    (mkb::itemgroups[i].anim_frame >= 1110 || mkb::itemgroups[i].anim_frame <= 210)) { // Beginning & end of anim
+                        bottle_upside_down = true;
+                    }
+                }
+                if (bottle_upside_down) claim_achievement(1);
                 break;
             }
             // UP, UP, AND AWAY | 2-6 Liftoff  -  Soar higher than the highest cloud onstage (ID: 2)

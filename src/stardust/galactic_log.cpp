@@ -230,6 +230,13 @@ constexpr char* s_log_pages_interstellar =
     "World 8: /bcFBFF00/%d/bcFFFFFF/\n"
     "World 9: /bcFBFF00/%d/bcFFFFFF/\n"
     "World 10: /bcFBFF00/%d/bcFFFFFF/\n";
+constexpr char* s_log_pages_interstellar_pre_unlock =
+    "/bcFFFFFF/Come back to this menu after unlocking Interstellar!\n"
+    "\n"
+    "Unlock all bonus modes by claiming the following achievements:\n"
+    "\n"
+    "/bcFF9900/BEAT THE GAME:/bcFFFFFF/ Complete Story Mode\n"
+    "/bcFF9900/STUNT PILOT:/bcFFFFFF/ Complete 1 /bcC800FF/Stunt Goal/bcFFFFFF/ in each world\n";
 constexpr char* s_achievement_names[39] = {
     "",
     "/bcFF9900/BOTTLE FLIP/bcFFFFFF/ | 1-9 Klein Bottle\n"
@@ -884,7 +891,7 @@ void create_interstellar_screen() {
                      savedata::get_stellar_level(10) * 10);
     }
     else {// If locked: Display a copy of about page 3 (Unlock condition)
-        mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[2]);
+        mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_interstellar_pre_unlock);
     }
     auto& interstellar_text = interstellar_container.add(new ui::Text(s_text_page_buffer));
     interstellar_container.set_alignment(mkb::ALIGN_UPPER_LEFT);

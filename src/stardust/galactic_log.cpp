@@ -746,10 +746,11 @@ void create_badge_list() {
 
         float spacer_size = 8;
         if (stage_idx == 9) {
-            spacer_size = 5;
+            spacer_size = 4;
             number_text.set_scale(Vec2d{0.75, 1.0});// fit 10 inside bubbles
         }
         else if (stage_idx == 0) {
+            spacer_size = 12;
             number_text.set_offset(Vec2d{3, 0});
         }
         else {

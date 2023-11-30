@@ -59,8 +59,10 @@ void tick() {
     }
 
     if (mkb::main_game_mode == mkb::STORY_MODE) {
+        bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
         // Bufferable A press on story select screen
-        if (pad::button_down(mkb::PAD_BUTTON_A) && mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_IDLE) {
+        if (pad::button_down(mkb::PAD_BUTTON_A) && mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_IDLE
+        && !paused_now) {
             mkb::g_storymode_stageselect_state = 5;// 5 is unlabeled "STAGE_SELECTED_INIT"
             mkb::call_SoundReqID_arg_2(0x6e);      // Plays the menu sound
         }

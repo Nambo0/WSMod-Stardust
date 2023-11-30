@@ -233,7 +233,7 @@ constexpr char* s_log_pages_interstellar =
 constexpr char* s_achievement_names[39] = {
     "",
     "/bcFF9900/BOTTLE FLIP/bcFFFFFF/ | 1-9 Klein Bottle\n"
-    "Clear the stage while the bottle is upside down",
+    "Clear the stage while the goals are upside down",
     "/bcFF9900/UP, UP, AND AWAY/bcFFFFFF/ | 2-6 Liftoff\n"
     "Soar higher than the highest cloud onstage",
     "/bcFF9900/DEFUSED/bcFFFFFF/ | 3-10 Detonation\n"

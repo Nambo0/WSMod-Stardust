@@ -261,7 +261,7 @@ void on_stage_load(u32 stage_id) {
     }
 }
 
-int end_screen_timer;
+bool lock_name_entry;
 bool can_view = true;
 
 void end_screen() {
@@ -317,7 +317,7 @@ void end_screen() {
     auto& end_text = end_box.add(new ui::Text(endtext_buffer));
     end_text.set_alignment(ui::CENTER);
     can_view = false;
-    end_screen_timer = 1;
+    lock_name_entry = true;
 }
 
 void tick() {
@@ -338,7 +338,7 @@ void tick() {
             }
             if (pad::button_pressed(mkb::PAD_BUTTON_B)) {
                 ui::get_widget_manager().remove("endbox");
-                end_screen_timer = 0;
+                lock_name_entry = false;
             }
         }
         else {
@@ -552,7 +552,7 @@ void init_main_game() {
         s_smd_game_roll_init_tramp.dest();
     });
     patch::hook_function(s_smd_game_nameentry_tick_tramp, mkb::smd_game_nameentry_tick, []() {
-        if(end_screen_timer == 0) s_smd_game_nameentry_tick_tramp.dest();
+        if(!lock_name_entry) s_smd_game_nameentry_tick_tramp.dest();
     });
 }
 

@@ -29,6 +29,7 @@ static patch::Tramp<decltype(&mkb::create_how_to_sprite)> s_g_create_how_to_spri
 static patch::Tramp<decltype(&mkb::check_pause_menu_input)> s_check_pause_menu_input;
 static patch::Tramp<decltype(&mkb::did_any_pad_press_input)> s_did_any_pad_press_input;
 static char s_badge_stage_name_buffer[10][64];
+static char s_badge_stage_number_buffer[10][4];
 static char s_achievement_name_buffer[7][256];
 static char s_text_page_buffer[1024] = {0};
 static char s_page_number_buffer[32] = {0};
@@ -680,22 +681,80 @@ void create_badge_list() {
     badge_container.set_label("galbdgc");
     badge_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
     for (uint32_t stage_idx = 0; stage_idx < 10; stage_idx++) {
-        auto& layout_row = badge_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{630, 32}));
+        auto& layout_row = badge_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{630, 36}));
         layout_row.set_margin(0);
         layout_row.set_layout_spacing(0);
         layout_row.set_layout(ui::ContainerLayout::HORIZONTAL);
-        auto& text_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{470, 32}));
-        auto& sprite_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{160, 32}));
+
+        // Bar sprite - not happy with how I had to implement it this way but a lesson for the future I guess
+        constexpr float margin = 5.f;
+        auto& bar_sprite_start = layout_row.add(new ui::Sprite(0xc01, Vec2d{0, 0}, Vec2d{0, 36}));
+        bar_sprite_start.set_scale(Vec2d{0.50*0.25, 0.50});
+        bar_sprite_start.set_uv_2(Vec2d{0.25, 1});
+        bar_sprite_start.set_sort(false);
+        bar_sprite_start.set_offset(Vec2d{margin, 0});
+        bar_sprite_start.set_add_color({0x00, 0x5A, 0xFF});
+        auto& bar_sprite_mid = layout_row.add(new ui::Sprite(0xc01, Vec2d{0, 0}, Vec2d{0, 36}));
+        bar_sprite_mid.set_scale(Vec2d{6.35, 0.50});
+        bar_sprite_mid.set_uv_1(Vec2d{0.25, 0});
+        bar_sprite_mid.set_uv_2(Vec2d{0.75, 1});
+        bar_sprite_mid.set_sort(false);
+        bar_sprite_mid.set_offset(Vec2d{315, 0});
+        bar_sprite_mid.set_add_color({0x00, 0x5A, 0xFF});
+        auto& bar_sprite_end = layout_row.add(new ui::Sprite(0xc01, Vec2d{0, 0}, Vec2d{0, 36}));
+        bar_sprite_end.set_scale(Vec2d{0.50*0.25, 0.50});
+        bar_sprite_end.set_uv_1(Vec2d{0.75, 0});
+        bar_sprite_end.set_uv_2(Vec2d{1, 1});
+        bar_sprite_end.set_sort(false);
+        bar_sprite_end.set_offset(Vec2d{640-10-5, 0});
+        bar_sprite_end.set_add_color({0x00, 0x5A, 0xFF});
+        auto& bar_circle = layout_row.add(new ui::Sprite(0xc02, Vec2d{0, 0}, Vec2d{0, 36}));
+        bar_circle.set_scale(Vec2d{0.50, 0.50});
+        bar_circle.set_depth(bar_sprite_start.get_depth()-0.002);
+        bar_circle.set_offset(Vec2d{16, 0});
+        bar_circle.set_sort(false);
+
+        //bar_sprite.set_offset(Vec2d{0, -16});
+        auto& text_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{540, 36}));
+        text_container.set_layout(ui::ContainerLayout::HORIZONTAL);
+        auto& sprite_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{84, 36}));
         sprite_container.set_layout(ui::ContainerLayout::HORIZONTAL);
+        sprite_container.set_layout_spacing(0);
+        sprite_container.set_margin(0);
 
         uint32_t stage_id = mkb::get_story_mode_stage_id(s_log_page_number, stage_idx);
         // LOG("Got id %d", stage_id);
         char stage_name_buffer[64] = {0};
         mkb::read_stage_name_from_dvd(stage_id, stage_name_buffer, 64);
         // LOG("Got name %s", stage_name_buffer)
-        mkb::sprintf(s_badge_stage_name_buffer[stage_idx], "/bcFBFF00/%d-%d/bcFFFFFF/ %s", s_log_page_number + 1, stage_idx + 1, stage_name_buffer);
+
+        mkb::sprintf(s_badge_stage_number_buffer[stage_idx], "%d", stage_idx+1);
+        mkb::sprintf(s_badge_stage_name_buffer[stage_idx], "%s", stage_name_buffer);
         // LOG("Did sprintf to yield: %s", s_badge_stage_name_buffer[stage_idx])
-        auto& text = text_container.add(new ui::Text(s_badge_stage_name_buffer[stage_idx]));
+        auto& number_text = text_container.add(new ui::Text(s_badge_stage_number_buffer[stage_idx]));
+        number_text.set_depth(bar_circle.get_depth()-0.002);
+        number_text.set_drop_shadow(false);
+        number_text.set_alignment(ui::LEFT);
+        number_text.set_color({0x00, 0x00, 0x00});
+
+        float spacer_size = 8;
+        if (stage_idx == 9) {
+            spacer_size = 5;
+            number_text.set_scale(Vec2d{0.75, 1.0});// fit 10 inside bubbles
+        }
+        else if (stage_idx == 0) {
+            number_text.set_offset(Vec2d{3, 0});
+        }
+        else {
+            number_text.set_offset(Vec2d{2, 0});
+        }
+
+        auto& spacer = text_container.add(new ui::Container(Vec2d{0,0}, Vec2d{spacer_size, 0}));
+        auto& name_text = text_container.add(new ui::Text(s_badge_stage_name_buffer[stage_idx]));
+        name_text.set_depth(bar_circle.get_depth()-0.002);
+        name_text.set_drop_shadow(false);
+        name_text.set_alignment(ui::LEFT);
+        name_text.set_color({0x00, 0x00, 0x00});
 
         // 0xc3b = blue, 0xc3a = purple, 0xc39 = sweep, 0xc3c = achievement, 0xc3d = empty
         uint32_t id_1 = 0xc3d;
@@ -704,16 +763,17 @@ void create_badge_list() {
         if (savedata::true_in_slot(savedata::CLEAR_BADGE_START + s_log_page_number * 10 + stage_idx)) id_1 = 0xc3b;
         if (savedata::true_in_slot(savedata::STUNT_BADGE_START + s_log_page_number * 10 + stage_idx)) id_2 = 0xc3a;
         if (savedata::true_in_slot(savedata::SWEEP_BADGE_START + s_log_page_number * 10 + stage_idx)) id_3 = 0xc39;
-        auto& blue = sprite_container.add(new ui::Sprite(id_1, Vec2d{32, 32}));
-        auto& purple = sprite_container.add(new ui::Sprite(id_2, Vec2d{32, 32}));
-        auto& sweep = sprite_container.add(new ui::Sprite(id_3, Vec2d{32, 32}));
+        auto& blue = sprite_container.add(new ui::Sprite(id_1, Vec2d{28, 28}));
+        blue.set_offset(Vec2d{0, 1});
+        auto& purple = sprite_container.add(new ui::Sprite(id_2, Vec2d{28, 28}));
+        purple.set_offset(Vec2d{0, 1});
+        auto& sweep = sprite_container.add(new ui::Sprite(id_3, Vec2d{28, 28}));
+        sweep.set_offset(Vec2d{0, 1});
 
-        blue.set_scale(Vec2d{0.5, 0.5});
-        purple.set_scale(Vec2d{0.5, 0.5});
-        sweep.set_scale(Vec2d{0.5, 0.5});
+        blue.set_scale(Vec2d{0.4375, 0.4375});
+        purple.set_scale(Vec2d{0.4375, 0.4375});
+        sweep.set_scale(Vec2d{0.4375, 0.4375});
 
-        text.set_alignment(ui::LEFT);
-        text.set_drop_shadow(false);// temporary
     }
 }
 void create_badge_screen() {

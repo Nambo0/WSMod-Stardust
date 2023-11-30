@@ -19,7 +19,6 @@ namespace savedata {
 Specific Values:
 380 = Widescreen (for widescreen_title_fix)
 */
-static bool card_error = false;
 
 static u8 savedata[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -83,7 +82,8 @@ void update_special_bools() {
 }
 
 void save() {
-    if (card_error) return;
+    // mkb::OSReport("[stardust] Saving to slot [%d].\n", cardio::get_slot());
+    if (cardio::get_slot() == cardio::Slot::None) return;
     update_special_bools();
     to_buffer();
     cardio::write_file(FILENAME, card_buffer, sizeof(card_buffer),
@@ -177,22 +177,48 @@ void write_bool_to_slot(u16 slot, bool value) {
 }
 // =============================================================================================
 
-s32 init() {
+void init() {
+    // first try reading a savefile from Slot A
     FileHeader* header = nullptr;
-    s32 result = cardio::read_file(FILENAME, reinterpret_cast<void**>(&header));
-    if (result == mkb::CARD_RESULT_READY) {
-        mkb::OSReport("[stardust] Savedata loaded!");
+    s32 result_A = cardio::read_file(cardio::Slot::A, FILENAME, reinterpret_cast<void**>(&header));
+    if (result_A == mkb::CARD_RESULT_READY) {
         to_array(header);
         heap::free(header);
-        card_error = false;
-    }
-    else if (result == mkb::CARD_RESULT_NOFILE) save();
-    else {
-        mkb::OSReport("[stardust] Error loading savedata. Error type %d", result);
-        card_error = true;
+        // mkb::OSReport("[stardust] Savedata loaded from Slot A!\n");
+        cardio::set_slot(cardio::Slot::A);
+        return;
     }
 
-    return result;
+    // pre-existing save wasn't found, try reading a savefile from Slot B
+    header = nullptr;
+    s32 result_B = cardio::read_file(cardio::Slot::B, FILENAME, reinterpret_cast<void**>(&header));
+    if (result_B == mkb::CARD_RESULT_READY) {
+        to_array(header);
+        heap::free(header);
+        // mkb::OSReport("[stardust] Savedata loaded from Slot B!\n");
+        cardio::set_slot(cardio::Slot::B);
+        return;
+    }
+
+    // pre-existing save files weren't found on either memcards
+    // try creating a new savefile on Slot A
+    if (result_A == mkb::CARD_RESULT_NOFILE) {
+        // mkb::OSReport("[stardust] Creating new save in Slot A.\n");
+        cardio::set_slot(cardio::Slot::A);
+        save();
+        return;
+    }
+
+    // card A had some other error, try creating the new savefile on Slot B
+    if (result_B == mkb::CARD_RESULT_NOFILE) {
+        // mkb::OSReport("[stardust] Creating new save in Slot B.\n");
+        cardio::set_slot(cardio::Slot::B);
+        save();
+        return;
+    }
+
+    // something wrong happened with both memcards :(
+    // mkb::OSReport("[stardust] Error loading savedata. Slot A Error [%d]. Slot B Error [%d].\n", result_A, result_B);
 }
 
 }// namespace savedata

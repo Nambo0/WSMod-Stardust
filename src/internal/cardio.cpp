@@ -15,12 +15,15 @@ enum class WriteState {
     Write,
 };
 
+
 struct WriteParams {
     const char* file_name;
     const void* buf;
     u32 buf_size;
     void (*callback)(mkb::CARDResult);
 };
+
+static Slot s_current_slot = Slot::None;
 
 // We need a 40KB(!) buffer just for the privilege of accessing memory cards,
 // this sucks! Reminder we only have ~550KB to work with for the entire mod,
@@ -35,36 +38,44 @@ static std::optional<WriteParams>
 static u32
     s_write_size;// Sector size of memory card A which we read when probing it
 
-static mkb::CARDResult read_file_internal(const char* file_name,
+void set_slot(Slot slot) {
+    s_current_slot = slot;
+}
+
+Slot get_slot() {
+    return s_current_slot;
+}
+
+static mkb::CARDResult read_file_internal(const Slot slot, const char* file_name,
                                           void** out_buf) {
     mkb::CARDResult res = mkb::CARD_RESULT_BUSY;
 
     // Probe and mount card
     do {
-        res = mkb::CARDProbeEx(0, nullptr, nullptr);
+        res = mkb::CARDProbeEx(static_cast<s32>(slot), nullptr, nullptr);
         if (res != mkb::CARD_RESULT_READY && res != mkb::CARD_RESULT_BUSY) return res;
     } while (res == mkb::CARD_RESULT_BUSY);
 
-    mkb::CARDMountAsync(0, s_card_work_area, nullptr, nullptr);
+    mkb::CARDMountAsync(static_cast<s32>(slot), s_card_work_area, nullptr, nullptr);
     do {
-        res = mkb::CARDGetResultCode(0);
+        res = mkb::CARDGetResultCode(static_cast<s32>(slot));
     } while (res == mkb::CARD_RESULT_BUSY);
     if (res != mkb::CARD_RESULT_READY) {
         return res;
     }
 
     // Open file
-    res = mkb::CARDOpen(0, const_cast<char*>(file_name), &s_card_file_info);
+    res = mkb::CARDOpen(static_cast<s32>(slot), const_cast<char*>(file_name), &s_card_file_info);
     if (res != mkb::CARD_RESULT_READY) {
-        mkb::CARDUnmount(0);
+        mkb::CARDUnmount(static_cast<s32>(slot));
         return res;
     }
 
     // Get file size
     mkb::CARDStat stat;
-    res = mkb::CARDGetStatus(0, s_card_file_info.fileNo, &stat);
+    res = mkb::CARDGetStatus(static_cast<s32>(slot), s_card_file_info.fileNo, &stat);
     if (res != mkb::CARD_RESULT_READY) {
-        mkb::CARDUnmount(0);
+        mkb::CARDUnmount(static_cast<s32>(slot));
         return res;
     }
 
@@ -73,17 +84,17 @@ static mkb::CARDResult read_file_internal(const char* file_name,
     void* buf = heap::alloc(buf_size);
     if (buf == nullptr) {
         // Not quite the right error (we're out of memory, not out of card space)
-        mkb::CARDUnmount(0);
+        mkb::CARDUnmount(static_cast<s32>(slot));
         return mkb::CARD_RESULT_INSSPACE;
     }
 
     mkb::CARDReadAsync(&s_card_file_info, buf, buf_size, 0, nullptr);
     do {
-        res = mkb::CARDGetResultCode(0);
+        res = mkb::CARDGetResultCode(static_cast<s32>(slot));
     } while (res == mkb::CARD_RESULT_BUSY);
     if (res != mkb::CARD_RESULT_READY) {
         heap::free(buf);
-        mkb::CARDUnmount(0);
+        mkb::CARDUnmount(static_cast<s32>(slot));
         return res;
     }
 
@@ -91,8 +102,8 @@ static mkb::CARDResult read_file_internal(const char* file_name,
     return mkb::CARD_RESULT_READY;
 }
 
-mkb::CARDResult read_file(const char* file_name, void** out_buf) {
-    mkb::CARDResult res = read_file_internal(file_name, out_buf);
+mkb::CARDResult read_file(const Slot slot, const char* file_name, void** out_buf) {
+    mkb::CARDResult res = read_file_internal(slot, file_name, out_buf);
     return res;
 }
 
@@ -103,7 +114,7 @@ void write_file(const char* file_name, const void* buf, u32 buf_size,
 
 static void finish_write(mkb::CARDResult res) {
     mkb::CARDUnmount(
-        0);// I'm assuming that trying to unmount when mounting failed is OK
+        static_cast<u32>(s_current_slot));// I'm assuming that trying to unmount when mounting failed is OK
     s_write_params.callback(res);
     s_state = WriteState::Idle;
 }
@@ -111,12 +122,11 @@ static void finish_write(mkb::CARDResult res) {
 void init() {
     // Artificial delay so that the memcard has time to initialize
     // Probably not an issue on console, but if read speed emulation is disabled in Dolphin, this can cause issues
-    /*
-    auto current_tick = mkb::OSGetTick();
-    auto end_tick = current_tick + mkb::BUS_CLOCK_SPEED/32; // 0.125s delay
-    while (current_tick < end_tick) {
-        current_tick = mkb::OSGetTick();
-    }*/
+    // auto current_tick = mkb::OSGetTick();
+    // auto end_tick = current_tick + mkb::BUS_CLOCK_SPEED/32; // 0.125s delay
+    // while (current_tick < end_tick) {
+    //     current_tick = mkb::OSGetTick();
+    // }
 
     s_card_work_area = heap::alloc(mkb::CARD_WORKAREA_SIZE);
     modlink::set_card_work_area(s_card_work_area);
@@ -135,35 +145,35 @@ void tick() {
                 // Probe and begin mounting card A
                 s32 sector_size;
                 do {
-                    res = mkb::CARDProbeEx(0, nullptr, &sector_size);
+                    res = mkb::CARDProbeEx(static_cast<u32>(s_current_slot), nullptr, &sector_size);
                     if (res != mkb::CARD_RESULT_READY && res != mkb::CARD_RESULT_BUSY) finish_write(res);
                 } while (res == mkb::CARD_RESULT_BUSY);
 
                 s_write_size =
                     (s_write_params.buf_size + sector_size - 1) & ~(sector_size - 1);
-                mkb::CARDMountAsync(0, s_card_work_area, nullptr, nullptr);
+                mkb::CARDMountAsync(static_cast<u32>(s_current_slot), s_card_work_area, nullptr, nullptr);
                 s_state = WriteState::Mount;
             }
             break;
         }
 
         case WriteState::Mount: {
-            res = mkb::CARDGetResultCode(0);
+            res = mkb::CARDGetResultCode(static_cast<u32>(s_current_slot));
             if (res != mkb::CARD_RESULT_BUSY) {
                 if (res == mkb::CARD_RESULT_READY) {
                     // Try to open the file
-                    res = mkb::CARDOpen(0, const_cast<char*>(s_write_params.file_name),
+                    res = mkb::CARDOpen(static_cast<u32>(s_current_slot), const_cast<char*>(s_write_params.file_name),
                                         &s_card_file_info);
                     if (res == mkb::CARD_RESULT_READY) {
                         // Check if file is too small
                         mkb::CARDStat stat;
-                        res = mkb::CARDGetStatus(0, s_card_file_info.fileNo, &stat);
+                        res = mkb::CARDGetStatus(static_cast<u32>(s_current_slot), s_card_file_info.fileNo, &stat);
                         if (res != mkb::CARD_RESULT_READY) {
                             finish_write(res);
                         }
                         else if (stat.length < s_write_size) {
                             // Recreate file
-                            mkb::CARDFastDeleteAsync(0, s_card_file_info.fileNo, nullptr);
+                            mkb::CARDFastDeleteAsync(static_cast<u32>(s_current_slot), s_card_file_info.fileNo, nullptr);
                             s_state = WriteState::Delete;
                         }
                         else {
@@ -176,7 +186,7 @@ void tick() {
                     }
                     else if (res == mkb::CARD_RESULT_NOFILE) {
                         // Create new file
-                        mkb::CARDCreateAsync(0, const_cast<char*>(s_write_params.file_name),
+                        mkb::CARDCreateAsync(static_cast<u32>(s_current_slot), const_cast<char*>(s_write_params.file_name),
                                              s_write_size, &s_card_file_info, nullptr);
                         s_state = WriteState::Create;
                     }
@@ -194,7 +204,7 @@ void tick() {
         }
 
         case WriteState::Create: {
-            res = mkb::CARDGetResultCode(0);
+            res = mkb::CARDGetResultCode(static_cast<u32>(s_current_slot));
             if (res != mkb::CARD_RESULT_BUSY) {
                 if (res == mkb::CARD_RESULT_READY) {
                     mkb::CARDWriteAsync(&s_card_file_info,
@@ -210,10 +220,10 @@ void tick() {
         }
 
         case WriteState::Delete: {
-            res = mkb::CARDGetResultCode(0);
+            res = mkb::CARDGetResultCode(static_cast<u32>(s_current_slot));
             if (res != mkb::CARD_RESULT_BUSY) {
                 if (res == mkb::CARD_RESULT_READY) {
-                    mkb::CARDCreateAsync(0, const_cast<char*>(s_write_params.file_name),
+                    mkb::CARDCreateAsync(static_cast<u32>(s_current_slot), const_cast<char*>(s_write_params.file_name),
                                          s_write_size, &s_card_file_info, nullptr);
                     s_state = WriteState::Create;
                 }
@@ -225,7 +235,7 @@ void tick() {
         }
 
         case WriteState::Write: {
-            res = mkb::CARDGetResultCode(0);
+            res = mkb::CARDGetResultCode(static_cast<u32>(s_current_slot));
             if (res != mkb::CARD_RESULT_BUSY) {
                 // Either succeeded or failed, either way we're done
                 finish_write(res);

@@ -5,7 +5,7 @@
 
 namespace savedata {
 
-s32 init();
+void init();
 
 void save();
 

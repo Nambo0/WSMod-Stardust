@@ -369,18 +369,14 @@ void tick() {
         }
     }
 
-    // BINDS FOR TESTING INTERSTELLAR SCORE CALCULATIONS
+    /* // BINDS FOR TESTING INTERSTELLAR SCORE CALCULATIONS
     if (pad::button_pressed(mkb::PAD_BUTTON_DOWN)) {
         mkb::balls[mkb::curr_player_idx].banana_count += 100;
-    }
-    if (pad::button_pressed(mkb::PAD_BUTTON_B)) {
-        finished_run_calculations();
-    }
-    if (mkb::g_current_stage_id == 205) mkb::balls[mkb::curr_player_idx].banana_count = savedata::stellar_best_run_total();
+    } */
 
     // Only run at the start of each stage
     bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
-    if (stage_id_is_stellar(mkb::g_current_stage_id) && mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT && mkb::mode_info.stage_time_frames_remaining == 300 * 60 - 1 && !paused_now) {
+    if (stage_id_is_stellar(mkb::g_current_stage_id) && mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::mode_info.stage_time_frames_remaining == 300 * 60 - 1 && !paused_now) {
         // (i1 only) Reset logged stage bunch counts
         if (mkb::g_current_stage_id == 221) {
             for (int i = 0; i < 10; i++) {
@@ -399,6 +395,7 @@ void on_goal() {
     if (stage_id_is_stellar(mkb::g_current_stage_id)) {
         // Goal Bonus
         ball.banana_count += 50;
+        // ball.score += 5*1000;
         goal_bonus_effect = 1;
         create_goal_bonus_sprite();
         if (mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::g_current_stage_id == 230) finished_run_calculations();// Run ends via goal

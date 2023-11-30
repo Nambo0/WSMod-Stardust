@@ -775,15 +775,15 @@ void create_badge_list() {
         if (savedata::true_in_slot(savedata::STUNT_BADGE_START + s_log_page_number * 10 + stage_idx)) id_2 = 0xc3a;
         if (savedata::true_in_slot(savedata::SWEEP_BADGE_START + s_log_page_number * 10 + stage_idx)) id_3 = 0xc39;
         auto& blue = sprite_container.add(new ui::Sprite(id_1, Vec2d{28, 28}));
-        blue.set_offset(Vec2d{0, 1});
+        blue.set_offset(Vec2d{0, 2});
         auto& purple = sprite_container.add(new ui::Sprite(id_2, Vec2d{28, 28}));
-        purple.set_offset(Vec2d{0, 1});
+        purple.set_offset(Vec2d{0, 2});
         auto& sweep = sprite_container.add(new ui::Sprite(id_3, Vec2d{28, 28}));
-        sweep.set_offset(Vec2d{0, 1});
+        sweep.set_offset(Vec2d{0, 2});
 
-        blue.set_scale(Vec2d{0.4375, 0.4375});
-        purple.set_scale(Vec2d{0.4375, 0.4375});
-        sweep.set_scale(Vec2d{0.4375, 0.4375});
+        blue.set_scale(Vec2d{0.40, 0.40});
+        purple.set_scale(Vec2d{0.40, 0.40});
+        sweep.set_scale(Vec2d{0.40, 0.40});
 
     }
 }

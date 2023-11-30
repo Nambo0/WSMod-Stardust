@@ -232,8 +232,8 @@ constexpr char* s_log_pages_interstellar =
     "World 10: /bcFBFF00/%d/bcFFFFFF/\n";
 constexpr char* s_achievement_names[39] = {
     "",
-    "/bcFF9900/DOUBLE TAKE/bcFFFFFF/ | 1-8 Double Time\n"
-    "Clear the stunt goal at both speeds back to back",
+    "/bcFF9900/BOTTLE FLIP/bcFFFFFF/ | 1-9 Klein Bottle\n"
+    "Clear the stage while the bottle is upside down",
     "/bcFF9900/UP, UP, AND AWAY/bcFFFFFF/ | 2-6 Liftoff\n"
     "Soar higher than the highest cloud onstage",
     "/bcFF9900/DEFUSED/bcFFFFFF/ | 3-10 Detonation\n"

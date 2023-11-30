@@ -23,7 +23,7 @@ static void set_sprite_achievement_name(mkb::Sprite* sprite) {
     switch (display_queue[0]) {
         // Stage Challenges
         case 1:
-            mkb::strcpy(sprite->text, "Double Take");
+            mkb::strcpy(sprite->text, "Bottle Flip");
             break;
         case 2:
             mkb::strcpy(sprite->text, "Up, Up, and Away");

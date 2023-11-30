@@ -689,12 +689,12 @@ void create_badge_list() {
         sprite_container.set_layout(ui::ContainerLayout::HORIZONTAL);
 
         uint32_t stage_id = mkb::get_story_mode_stage_id(s_log_page_number, stage_idx);
-        //LOG("Got id %d", stage_id);
+        // LOG("Got id %d", stage_id);
         char stage_name_buffer[64] = {0};
         mkb::read_stage_name_from_dvd(stage_id, stage_name_buffer, 64);
-        //LOG("Got name %s", stage_name_buffer)
+        // LOG("Got name %s", stage_name_buffer)
         mkb::sprintf(s_badge_stage_name_buffer[stage_idx], "/bcFBFF00/%d-%d/bcFFFFFF/ %s", s_log_page_number + 1, stage_idx + 1, stage_name_buffer);
-        //LOG("Did sprintf to yield: %s", s_badge_stage_name_buffer[stage_idx])
+        // LOG("Did sprintf to yield: %s", s_badge_stage_name_buffer[stage_idx])
         auto& text = text_container.add(new ui::Text(s_badge_stage_name_buffer[stage_idx]));
 
         // 0xc3b = blue, 0xc3a = purple, 0xc39 = sweep, 0xc3c = achievement, 0xc3d = empty

@@ -920,6 +920,7 @@ void create_achievement_list() {
             if (savedata::true_in_slot(300 + curr_id - 1)) id_1 = 0xc3c;
             auto& ach_icon = sprite_container.add(new ui::Sprite(id_1, Vec2d{32, 32}));
 
+            ach_icon.set_offset(Vec2d{12, 12});
             ach_icon.set_scale(Vec2d{1.0, 1.0});
         }
 

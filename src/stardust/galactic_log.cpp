@@ -41,6 +41,16 @@ static etl::optional<size_t> s_galactic_log_index;
 alignas(4) static bool s_main_menu_input_lock = false;// Main menu input not processed if 'true'
 static uint32_t s_input_frame_lock_buffer = 0;        // Does not return control to the game for this many frames
 constexpr uint32_t INPUT_FRAME_LOCK_DELAY = 5;        // Default number of frames to delay
+mkb::Rgb24 bar_colors[10] = {{0xFF, 0x00, 0x00},
+                      {0x00, 0x4C, 0xFF},
+                      {0xFF, 0xE5, 0x00},
+                      {0x00, 0xCC, 0x00},
+                      {0x00, 0xCC, 0xCC},
+                      {0xFF, 0x00, 0xCC},
+                      {0x19, 0x33, 0x33},
+                      {0xFF, 0xFF, 0xE5},
+                      {0xB2, 0x00, 0xFF},
+                      {0xB2, 0xFF, 0x00}};
 
 // All relevant pages of text here
 namespace {
@@ -695,29 +705,30 @@ void create_badge_list() {
 
         // Bar sprite - not happy with how I had to implement it this way but a lesson for the future I guess
         constexpr float margin = 5.f;
+        mkb::Rgb24 bar_add_color = {0x99, 0x99, 0x99};
         auto& bar_sprite_start = layout_row.add(new ui::Sprite(0xc01, Vec2d{0, 0}, Vec2d{0, 36}));
         bar_sprite_start.set_scale(Vec2d{0.50*0.25, 0.50});
         bar_sprite_start.set_uv_2(Vec2d{0.25, 1});
         bar_sprite_start.set_sort(false);
         bar_sprite_start.set_offset(Vec2d{margin, 0});
-        bar_sprite_start.set_add_color({0x00, 0x6A, 0xFF});
-        bar_sprite_start.set_mult_color({0xDF, 0xDF, 0xDF});
+        bar_sprite_start.set_add_color(bar_add_color);
+        bar_sprite_start.set_mult_color(bar_colors[stage_idx]);
         auto& bar_sprite_mid = layout_row.add(new ui::Sprite(0xc01, Vec2d{0, 0}, Vec2d{0, 36}));
         bar_sprite_mid.set_scale(Vec2d{6.35, 0.50});
         bar_sprite_mid.set_uv_1(Vec2d{0.25, 0});
         bar_sprite_mid.set_uv_2(Vec2d{0.75, 1});
         bar_sprite_mid.set_sort(false);
         bar_sprite_mid.set_offset(Vec2d{315, 0});
-        bar_sprite_mid.set_add_color({0x00, 0x6A, 0xFF});
-        bar_sprite_mid.set_mult_color({0xDF, 0xDF, 0xDF});
+        bar_sprite_mid.set_add_color(bar_add_color);
+        bar_sprite_mid.set_mult_color(bar_colors[stage_idx]);
         auto& bar_sprite_end = layout_row.add(new ui::Sprite(0xc01, Vec2d{0, 0}, Vec2d{0, 36}));
         bar_sprite_end.set_scale(Vec2d{0.50*0.25, 0.50});
         bar_sprite_end.set_uv_1(Vec2d{0.75, 0});
         bar_sprite_end.set_uv_2(Vec2d{1, 1});
         bar_sprite_end.set_sort(false);
         bar_sprite_end.set_offset(Vec2d{640-10-5, 0});
-        bar_sprite_end.set_add_color({0x00, 0x6A, 0xFF});
-        bar_sprite_end.set_mult_color({0xDF, 0xDF, 0xDF});
+        bar_sprite_end.set_add_color(bar_add_color);
+        bar_sprite_end.set_mult_color(bar_colors[stage_idx]);
         auto& bar_circle = layout_row.add(new ui::Sprite(0xc02, Vec2d{0, 0}, Vec2d{0, 36}));
         bar_circle.set_scale(Vec2d{0.50, 0.50});
         bar_circle.set_depth(bar_sprite_start.get_depth()-0.002);

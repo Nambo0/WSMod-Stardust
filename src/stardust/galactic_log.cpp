@@ -424,8 +424,15 @@ void create_galactic_log_menu() {
     close_handler_widget.set_sound_effect_id(0x70);
 }
 
-void update_page_number_display() {
-    mkb::sprintf(s_page_number_buffer, "Page\n%d/%d", s_log_page_number_visible + 1, s_log_page_count_visible);
+void update_page_number_display(bool should_display_world = false) {
+    char* page_fmt;
+    if (should_display_world) {
+        page_fmt = "World\n%d/%d";
+    }
+    else {
+        page_fmt = "Page\n%d/%d";
+    }
+    mkb::sprintf(s_page_number_buffer, page_fmt, s_log_page_number_visible + 1, s_log_page_count_visible);
 }
 
 // Common/shared elements in Galactic Log go here to avoid code duplication
@@ -798,7 +805,7 @@ void create_badge_screen() {
             --s_log_page_number_visible;
         }
         create_badge_list();
-        update_page_number_display();
+        update_page_number_display(true);
     };
 
     auto next_page_handler = [](ui::Widget&, void*) {
@@ -817,7 +824,7 @@ void create_badge_screen() {
             ++s_log_page_number_visible;
         }
         create_badge_list();
-        update_page_number_display();
+        update_page_number_display(true);
     };
 
     // Create common layout
@@ -834,7 +841,7 @@ void create_badge_screen() {
         }
     }
     s_log_page_count_visible = s_log_page_count;
-    update_page_number_display();
+    update_page_number_display(true);
 }
 
 void create_interstellar_screen() {

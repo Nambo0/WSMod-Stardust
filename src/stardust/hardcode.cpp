@@ -401,6 +401,12 @@ void tick() {
             }
             break;
         }
+        case 205: {
+            if(pad::button_down(mkb::PAD_TRIGGER_R) && pad::button_down(mkb::PAD_BUTTON_DOWN) && pad::button_pressed(mkb::PAD_BUTTON_B)) {
+                savedata::debug_display_mode();
+            }
+            break;
+        }
     }
 
     // Special hardcode for Interstellar 6 size-3 wormholes

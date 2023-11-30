@@ -275,7 +275,7 @@ constexpr char* s_achievement_names[39] = {
     "Reach /bcFBFF00/9,999 bananas/bcFFFFFF/ in Story Mode\n",
     "???",
     "???",
-    "???",
+    "/bc707070/(HIDDEN)/bcFFFFFF/",
     "/bcFF9900/BRONZE RANK/bcFFFFFF/\n"
     "Finish an Interstellar run with /bcFBFF00/1,000+ bananas/bcFFFFFF/\n",
     "/bcFF9900/SILVER RANK/bcFFFFFF/\n"
@@ -999,7 +999,8 @@ void create_achievement_list() {
                 break;
             }
         }
-
+        
+        if(show_badge_slot && curr_id == 0) curr_id = 20; // (HIDDEN)
         mkb::sprintf(s_achievement_name_buffer[curr_row], "%s", s_achievement_names[curr_id]);
         auto& text = text_container.add(new ui::Text(s_achievement_name_buffer[curr_row]));
 

@@ -50,6 +50,8 @@ static patch::Tramp<decltype(&mkb::load_stagedef)> s_load_stagedef_tramp;
 static patch::Tramp<decltype(&mkb::smd_game_ringout_tick)> s_smd_game_ringout_tick_tramp;
 static patch::Tramp<decltype(&mkb::smd_game_timeover_tick)> s_smd_game_timeover_tick_tramp;
 static patch::Tramp<decltype(&mkb::smd_game_roll_init)> s_smd_game_roll_init_tramp;
+// void smd_game_nameentry_tick(void);
+static patch::Tramp<decltype(&mkb::smd_game_nameentry_tick)> s_smd_game_nameentry_tick_tramp;
 
 static bool stage_id_is_stellar(u32 stage_id) {
     switch (stage_id) {
@@ -315,6 +317,7 @@ void end_screen() {
     auto& end_text = end_box.add(new ui::Text(endtext_buffer));
     end_text.set_alignment(ui::CENTER);
     can_view = false;
+    end_screen_timer = 1;
 }
 
 void tick() {
@@ -335,6 +338,7 @@ void tick() {
             }
             if (pad::button_pressed(mkb::PAD_BUTTON_B)) {
                 ui::get_widget_manager().remove("endbox");
+                end_screen_timer = 0;
             }
         }
         else {
@@ -395,7 +399,7 @@ void on_goal() {
     if (stage_id_is_stellar(mkb::g_current_stage_id)) {
         // Goal Bonus
         ball.banana_count += 50;
-        // ball.score += 5*1000;
+        ball.score += 5*1000;
         goal_bonus_effect = 1;
         create_goal_bonus_sprite();
         if (mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::g_current_stage_id == 230) finished_run_calculations();// Run ends via goal
@@ -525,6 +529,7 @@ void init() {
         s_load_stagedef_tramp.dest(stage_id);
         on_stage_load(stage_id);
     });
+
 }
 
 void init_main_game() {
@@ -545,6 +550,9 @@ void init_main_game() {
     patch::hook_function(s_smd_game_roll_init_tramp, mkb::smd_game_roll_init, []() {
         medallions();
         s_smd_game_roll_init_tramp.dest();
+    });
+    patch::hook_function(s_smd_game_nameentry_tick_tramp, mkb::smd_game_nameentry_tick, []() {
+        if(end_screen_timer == 0) s_smd_game_nameentry_tick_tramp.dest();
     });
 }
 

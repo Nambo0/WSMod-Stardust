@@ -106,7 +106,6 @@ void new_render_func(void) {
                 mkb::g_some_draw_func5((int*) piVar5[5]);
             }
         }
-        mkb::g_handle_hardcoded_special_case_stages();
         mkb::g_draw_collision_triangles();
     return;
 }

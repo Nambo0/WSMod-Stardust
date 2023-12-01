@@ -473,6 +473,12 @@ void tick() {
         patch::write_word(reinterpret_cast<void*>(0x8044b200), 0xc2480000);
         patch::write_word(reinterpret_cast<void*>(0x8044b204), 0x42c80000);
     }
+    if ((mkb::sub_mode == mkb::SMD_SEL_NGC_MAIN) && (mkb::g_currently_visible_menu_screen == 0)) {
+        mkb::locked_menu_items = 0x2;
+        mkb::strcpy(mkb::CANNOT_SELECT_PARTY_GAME_STRING, "Play the Main Game!");
+        mkb::strcpy(mkb::CAN_PURCHASE_PARTY_GAME_STRING, "Play the Main Game!");
+        mkb::strcpy(mkb::CAN_PLAY_NUM_PARTY_GAMES_STRING, "Play the Main Game!");
+    }
     if ((mkb::sub_mode == mkb::SMD_SEL_NGC_MAIN) && (mkb::g_currently_visible_menu_screen == 4)) {
         mkb::locked_menu_items = 0xe;
     }

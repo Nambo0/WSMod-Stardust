@@ -10,6 +10,7 @@ namespace remove_playpoints {
 TICKABLE_DEFINITION((
         .name = "remove-playpoints",
         .description = "Playpoint removal patch",
+        .enabled = true,
         .init_main_game = init_main_game,
         .tick = tick, ))
 

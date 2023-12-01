@@ -319,6 +319,12 @@ void on_goal() {
         // 38) AAAAA | Clear a stage after traveling over 1,000 mph
         // (It's too free on POV GD Cube, so disabled there)
         if (went_very_fast && mkb::g_current_stage_id != 240) claim_achievement(37);
+
+        // 27) EXTREME POTASSIUM OVERLOAD | (Practice Mode) Get all 100 bunches and finish on any stage
+        if (badge::detect_sweep() && mkb::main_game_mode == mkb::PRACTICE_MODE
+        && mkb::g_current_stage_id >= 221 && mkb::g_current_stage_id <= 230) {
+            claim_achievement(27);
+        }
     }// If valid
 
     // Badge-count achievements
@@ -359,12 +365,6 @@ void on_goal() {
                 break;
             }
         }
-    }
-
-    // 27) EXTREME POTASSIUM OVERLOAD | (Practice Mode) Get all 100 bunches and finish on any stage
-    if (badge::detect_sweep() && mkb::main_game_mode == mkb::PRACTICE_MODE
-    && mkb::g_current_stage_id >= 221 && mkb::g_current_stage_id <= 230) {
-        claim_achievement(27);
     }
 }
 

@@ -141,7 +141,7 @@ void pausemenu_handler() {
             else {
                 if (mkb::g_current_focused_pause_menu_entry == 2 && pad::button_pressed(mkb::PAD_BUTTON_A) && mkb::g_some_status_bitflag_maybe_pause_related != 00000000) {
                     mkb::g_current_focused_pause_menu_entry = 0;
-                    original_pausemenu_selection = 2;
+                    original_pausemenu_selection = 0;
                     debug_stages::skip_stage();
                 }
                 else if (mkb::g_current_focused_pause_menu_entry == 3 && pad::button_pressed(mkb::PAD_BUTTON_A) && mkb::g_some_status_bitflag_maybe_pause_related != 00000000) {

@@ -327,6 +327,7 @@ void create_galactic_log_menu() {
     }
     else if (mkb::main_mode == mkb::MD_GAME) {
         patch::write_nop(reinterpret_cast<void*>(0x80274b5c));                                   // Prevent A button from returning to the pause menu when Galactic Log is open
+        patch::write_nop(reinterpret_cast<void*>(0x80274b88)); // Prevent B button from returning to the pause screen... at least until everything's ready
         patch::write_word(reinterpret_cast<void*>(0x80274ba8), PPC_INSTR_LI(PPC_R0, 0x00000000));// Prevent Start button from returning to pause menu
     }
     else {

@@ -86,6 +86,8 @@ void TickableManager::init() const {
                 // On-goal-entry functions
                 patch::hook_function(s_smd_game_goal_init_tramp, mkb::smd_game_goal_init, []() {
                     s_smd_game_goal_init_tramp.dest();
+                    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+                    if (paused_now) { return; }
 
                     for (const auto& tickable: get_tickable_manager().get_tickables()) {
                         if (tickable->enabled && tickable->on_goal) {

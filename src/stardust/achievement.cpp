@@ -25,12 +25,12 @@ mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];
 
 // static u16 DT_last_completion_speed = 0;// For 1-8 Double Time
 // static bool DT_back_to_back = false;    // For 1-8 Double Time
-static bool flipped_yet = false;        // For 9-3 Flip Switches
-static u8 last_stellar_goal = 0;        // For Finish Him
-static u16 last_completed_stage_id = 0; // For You-Da-Bacon
-static u8 completions_in_a_row = 0;     // For You-Da-Bacon
-static bool last_attempt_won = false;   // For You-Da-Bacon
-static bool went_very_fast = false;     // For AAAAA
+static bool flipped_yet = false;       // For 9-3 Flip Switches
+static u8 last_stellar_goal = 0;       // For Finish Him
+static u16 last_completed_stage_id = 0;// For You-Da-Bacon
+static u8 completions_in_a_row = 0;    // For You-Da-Bacon
+static bool last_attempt_won = false;  // For You-Da-Bacon
+static bool went_very_fast = false;    // For AAAAA
 
 void claim_achievement(int id) {
     // ID 1 = Slot 300, and so on
@@ -102,7 +102,7 @@ void tick() {
     // Detect stage challenges
     if (validate::is_currently_valid()) {
         switch (mkb::g_current_stage_id) {
-            
+
             /* // DOUBLE TAKE | 1-8 Double Time  -  Clear the stunt goal at both spinning speeds on back to back attempts (ID: 1)
             case 4: {
                 // Requires back to back finishes
@@ -190,7 +190,7 @@ void on_goal() {
                 bool bottle_upside_down = false;
                 for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
                     if (mkb::stagedef->coli_header_list[i].anim_group_id == 1 &&
-                    (mkb::itemgroups[i].anim_frame >= 1110 || mkb::itemgroups[i].anim_frame <= 210)) { // Beginning & end of anim
+                        (mkb::itemgroups[i].anim_frame >= 1110 || mkb::itemgroups[i].anim_frame <= 210)) {// Beginning & end of anim
                         bottle_upside_down = true;
                     }
                 }
@@ -312,8 +312,7 @@ void on_goal() {
         else completions_in_a_row = 1;
         last_completed_stage_id = mkb::g_current_stage_id;
         // 36) ACUTALLY PLAYABLE | Clear a stage from ‘The Unplayable Zone’ in debug
-        if (mkb::curr_difficulty == mkb::DIFF_ADVANCED && mkb::mode_info.cm_course_stage_num >= 90 && mkb::mode_info.cm_course_stage_num <= 110
-        && mkb::g_current_stage_id != 205) { // Fix false positive on Hey Goobz
+        if (mkb::curr_difficulty == mkb::DIFF_ADVANCED && mkb::mode_info.cm_course_stage_num >= 90 && mkb::mode_info.cm_course_stage_num <= 110 && mkb::g_current_stage_id != 205) {// Fix false positive on Hey Goobz
             claim_achievement(36);
         }
         // 37 and all other interstellar achievements are in interstellar.cpp
@@ -322,8 +321,7 @@ void on_goal() {
         if (went_very_fast && mkb::g_current_stage_id != 240) claim_achievement(37);
 
         // 27) EXTREME POTASSIUM OVERLOAD | (Practice Mode) Get all 100 bunches and finish on any stage
-        if (badge::detect_sweep() && mkb::main_game_mode == mkb::PRACTICE_MODE
-        && mkb::g_current_stage_id >= 221 && mkb::g_current_stage_id <= 230) {
+        if (badge::detect_sweep() && mkb::main_game_mode == mkb::PRACTICE_MODE && mkb::g_current_stage_id >= 221 && mkb::g_current_stage_id <= 230) {
             claim_achievement(27);
         }
     }// If valid

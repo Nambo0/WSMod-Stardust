@@ -252,7 +252,7 @@ void tick() {
         else {                                                     // Queue active
             for (u8 queue_slot = 0; queue_slot < 7; queue_slot++) {// Move queue forward
                 display_queue[queue_slot] = display_queue[queue_slot + 1];
-                mkb::call_SoundReqID_arg_0(0x11d);       // SMB1 best score sound
+                mkb::call_SoundReqID_arg_0(0x11d);// SMB1 best score sound
             }
             display_queue[7] = 0;
             if (display_queue[0] != 0) display_timer = 180;

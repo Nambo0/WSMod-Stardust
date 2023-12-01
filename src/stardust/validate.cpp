@@ -22,15 +22,12 @@ bool is_currently_valid() {
 
 static void track_validity() {
     // Invalidate non-continuous timers (catches practice mod savestates & frozen timers)
-    if ((mkb::mode_info.stage_time_frames_remaining > last_frame + 1 || mkb::mode_info.stage_time_frames_remaining < last_frame - 1)
-    && mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN
-    && last_frame <= 499*60) { // Handle interstellar wraparound
+    if ((mkb::mode_info.stage_time_frames_remaining > last_frame + 1 || mkb::mode_info.stage_time_frames_remaining < last_frame - 1) && mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && last_frame <= 499 * 60) {// Handle interstellar wraparound
         currently_valid = false;
     }
 
     // Renew attempt at 59.98 (or extended timer equivalent)
-    if (mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 1
-    || mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit + 1) {
+    if (mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 1 || mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit + 1) {
         currently_valid = true;
     }
 

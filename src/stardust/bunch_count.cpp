@@ -58,7 +58,9 @@ static void display_counter() {
             }
         }
     }
-    if (mkb::main_game_mode == mkb::STORY_MODE || (mkb::main_game_mode == mkb::PRACTICE_MODE && mkb::stageselect_is_storymode == true)) {
+    // Display in story & interstellar
+    if (mkb::main_game_mode == mkb::STORY_MODE || (mkb::main_game_mode == mkb::PRACTICE_MODE && mkb::stageselect_is_storymode == true)
+    || (mkb::g_current_stage_id >= 221 && mkb::g_current_stage_id <= 230)) {
         mkb::Sprite* sprite = mkb::create_sprite();
         if (sprite != nullptr) {
             sprite->pos.x = 54;

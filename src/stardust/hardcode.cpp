@@ -404,7 +404,7 @@ void tick() {
         case 205: {
             if(pad::button_down(mkb::PAD_TRIGGER_R) && pad::button_down(mkb::PAD_BUTTON_DOWN) && pad::button_pressed(mkb::PAD_BUTTON_B)) {
                 savedata::debug_display_mode();
-                mkb::call_SoundReqID_arg_0(0x11d);       // SMB1 best score sound
+                mkb::call_SoundReqID_arg_0(52);       // Weird noise
             }
             break;
         }

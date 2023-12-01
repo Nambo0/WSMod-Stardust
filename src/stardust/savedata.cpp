@@ -176,12 +176,17 @@ void write_bool_to_slot(u16 slot, bool value) {
     write_bool_to_array(savedata, slot, value);
 }
 
+bool beat_the_game_override = false;
 
 void debug_display_mode() {
     cardio::set_slot(cardio::Slot::None);
     erase_all_data();
     // Remove Beat the Game achievement
-    mkb::unlock_info.g_movies_watched = 0x0000;
+    beat_the_game_override = true;
+}
+
+bool is_debug_display_mode() {
+    return beat_the_game_override;
 }
 // =============================================================================================
 

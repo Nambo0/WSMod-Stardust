@@ -4,6 +4,7 @@
 #include "internal/pad.h"
 #include "internal/patch.h"
 #include "internal/tickable.h"
+#include "log.h"
 #include "mkb/mkb.h"
 
 namespace story_char_select {
@@ -111,7 +112,7 @@ void init_sel_ngc() {
                 // If we press B, then we are cancelling the process of entering story mode
                 // We need to clean up since the stack pointer is changed after calling the tick function
                 // So, we restore the pointer to the original '2'
-                if (pad::button_pressed(mkb::PAD_BUTTON_B)) {
+                if (pad::button_pressed(mkb::PAD_BUTTON_B) && mkb::g_menu_transition_frametimer > 50) {
                     if (is_entering_story) {
                         mkb::sel_menu_info.menu_stack[1] = mkb::MENUSCREEN_MAIN_GAME_SELECT;
                         mkb::sel_menu_info.menu_stack_ptr = ORIGINAL_STACK_INDEX;
@@ -124,7 +125,6 @@ void init_sel_ngc() {
                     }
                 }
             }
-
 
             s_character_select_tick.dest();
 

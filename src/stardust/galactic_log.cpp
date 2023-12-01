@@ -84,7 +84,7 @@ constexpr char* s_log_pages_about[8] = {
     "that stage's /bcFBFF00/Sweep Badge/bcFFFFFF/.\n"
     "\n"
     "Collecting a bunch will reveal a /bcFBFF00/counter/bcFFFFFF/ under the stage\n"
-    "name to help keep track of how many are left on the stage.\n",
+    "name to help track how many bunches remain on the stage.\n",
 
     // About Page 3 (ONLY SHOW IF BONUS LOCKED)
     "/bc00fffb/UNLOCKING BONUS MODES/bcFFFFFF/\n"
@@ -105,9 +105,8 @@ constexpr char* s_log_pages_about[8] = {
     "\n"
     "Interstellar is a bonus mode with 10 massive bonus stages\n"
     "played back-to-back. You have 300 seconds to collect as\n"
-    "many /bcFBFF00/bananas/bcFFFFFF/ as possible on each stage.\n"
-    "High score runs can be viewed in the Interstellar section\n"
-    "of the Galactic log.\n"
+    "many /bcFBFF00/bananas/bcFFFFFF/ as possible on each stage. Your best run \n"
+    "is saved in the Interstellar section of the Galactic log.\n"
     "\n"
     "/bcC800FF/Penalties & Bonuses:/bcFFFFFF/\n"
     "\n"
@@ -138,10 +137,10 @@ constexpr char* s_log_pages_about[8] = {
     "/bc00fffb/DEBUG/bcFFFFFF/\n"
     "\n"
     "Debug is a bonus mode made up of drafts, prototypes,\n"
-    "and joke stages. It's split up into 4 sub-sections:\n"
+    "and joke stages. It's split up into 3 zones:\n"
     "\n"
     "/bc00FF2F/Joke Stages:/bcFFFFFF/ Joke/troll stages that I made for fun\n"
-    "/bc009DFF/Stage Drafts:/bcFFFFFF/ Old revisions of stages that got re-made,\n"
+    "/bc009DFF/Stage Drafts:/bcFFFFFF/ Old revisions of stages that got remade,\n"
     "                  and concepts that didn't become stages\n"
     "/bcC800FF/The Unplayable Zone:/bcFFFFFF/ Obnoxious/impossible joke stages\n"
     "\n"
@@ -149,12 +148,12 @@ constexpr char* s_log_pages_about[8] = {
     "the inner workings of this pack's development. I'm fully\n"
     "aware these stages are bad. /bc00FF2F/That's why they are here.\n"
     "\n"
-    "/bcA1A1A1/* Stages can be skipped by holding B for 3 seconds./bcFFFFFF/\n",
+    "/bcA1A1A1/* Stages can be skipped through the pause menu/bcFFFFFF/\n",
 
     // About Page 7 (ONLY SHOW IF BONUS UNLOCKED)
     "/bc00fffb/MONUMENTS/bcFFFFFF/\n"
     "\n"
-    "Monuments is a /bcC800FF/trophy room/bcFFFFFF/ for this pack's bonus goals!\n"
+    "Monuments is a /bcC800FF/trophy room/bcFFFFFF/ for bonus objectives!\n"
     "\n"
     "The surrounding statues each represent one world, and\n"
     "above you can see which /bcC800FF/badges/bcFFFFFF/ you have completed.\n"

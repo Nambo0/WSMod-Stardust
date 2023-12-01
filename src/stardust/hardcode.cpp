@@ -111,6 +111,7 @@ void init() {
             s_draw_minimap_tramp.dest();
         }
     });
+    patch::write_nop(reinterpret_cast<void*>(0x802c96d8));
 }
 
 void tick() {

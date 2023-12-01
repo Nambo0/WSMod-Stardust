@@ -25,17 +25,6 @@ void new_render_func(void) {
     mkb::StagedefColiHeader* pSVar10;
     mkb::Itemgroup* pIVar11;
     double dVar12;
-
-    bVar4 = mkb::is_stage_id_348_revolution();
-    if (bVar4) {
-        mkb::g_special_handler_for_st348_revolution();
-        mkb::mtxa_from_mtxb();
-        mkb::mtxa_translate(&mkb::stagedef->start->position);
-        mkb::mtxa_rotate_y((s16) ((int) mkb::view_stage_timer << 9));
-        mkb::load_gx_pos_nrm_mtx(mkb::mtxa, 0);
-        mkb::avdisp_draw_model_culled_sort_auto(mkb::init_common_gma->model_entries[0x4d].model);
-    }
-    else {
         mkb::g_set_some_draw_values(1.0, 1.0, 1.0);
         mkb::mtxa_from_mtxb();
         mkb::mtxa_translate(&mkb::stagedef->start->position);
@@ -119,7 +108,6 @@ void new_render_func(void) {
         }
         mkb::g_handle_hardcoded_special_case_stages();
         mkb::g_draw_collision_triangles();
-    }
     return;
 }
 

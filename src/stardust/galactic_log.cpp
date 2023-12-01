@@ -1,6 +1,7 @@
 #include "galactic_log.h"
 
 #include "../stardust/savedata.h"
+#include "../internal/cardio.h"
 #include "../stardust/unlock.h"
 #include "internal/heap.h"
 #include "internal/log.h"
@@ -33,6 +34,7 @@ static char s_badge_stage_number_buffer[10][4];
 static char s_achievement_name_buffer[7][256];
 static char s_text_page_buffer[1024] = {0};
 static char s_page_number_buffer[32] = {0};
+static char s_memory_card_indicator_buffer[32] = {0};
 static uint8_t s_log_page_number = 0;        // Current index of page in log screen
 static uint8_t s_log_page_count = 0;         // Number of pages in a log screen
 static uint8_t s_log_page_count_visible = 0; // Number of pages a player can actually see
@@ -312,6 +314,10 @@ constexpr char* s_achievement_page_titles[5] = {
     "/bc00fffb/STORY MODE/bcFFFFFF/",
     "/bc00fffb/INTERSTELLAR/bcFFFFFF/",
     "/bc00fffb/SECRET/bcFFFFFF/ /bc707070/(Not intended as real achievements)/bcFFFFFF/"};
+constexpr char* s_memory_card_indicator_names[3] = {
+    "No Slot\nLoaded",
+    "Slot A\nLoaded",
+    "Slot B\nLoaded"};
 }// namespace
 
 // The menu for accessing the various pages
@@ -451,6 +457,10 @@ void update_page_number_display(bool should_display_world = false) {
     mkb::sprintf(s_page_number_buffer, page_fmt, s_log_page_number_visible + 1, s_log_page_count_visible);
 }
 
+u8 memory_card_indicator_index() {
+    return static_cast<s32>(cardio::get_slot()) + 1;
+}
+
 // Common/shared elements in Galactic Log go here to avoid code duplication
 ui::Widget& create_common_galactic_log_page_layout(
     const char* title,
@@ -530,6 +540,16 @@ ui::Widget& create_common_galactic_log_page_layout(
     // Page number
     if (previous_page_handler && next_page_handler) {
         auto& text = menu_screen.add(new ui::Text(s_page_number_buffer, Vec2d{16 + 48 + 384 + 64 + 16 + 16 + 6, 36}));
+        text.set_alignment(ui::CENTER);
+        text.set_scale(Vec2d{0.50, 0.50});
+        text.set_color({0xff, 0xff, 0xff});
+        update_page_number_display();
+    }
+
+    // Memory Card Indicator
+    if (previous_page_handler && next_page_handler) {
+        mkb::sprintf(s_memory_card_indicator_buffer, s_memory_card_indicator_names[memory_card_indicator_index()]);
+        auto& text = menu_screen.add(new ui::Text(s_memory_card_indicator_buffer, Vec2d{90, 36}));
         text.set_alignment(ui::CENTER);
         text.set_scale(Vec2d{0.50, 0.50});
         text.set_color({0xff, 0xff, 0xff});

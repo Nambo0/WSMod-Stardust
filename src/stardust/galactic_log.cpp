@@ -799,7 +799,7 @@ void create_badge_list() {
             number_text.set_offset(Vec2d{2, 0});
         }
 
-        auto& spacer = text_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{spacer_size, 0}));
+        text_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{spacer_size, 0}));
         auto& name_text = text_container.add(new ui::Text(s_badge_stage_name_buffer[stage_idx]));
         name_text.set_depth(bar_circle.get_depth() - 0.002);
         name_text.set_drop_shadow(false);

@@ -155,24 +155,29 @@ constexpr char* s_log_pages_about[8] = {
     // About Page 7 (ONLY SHOW IF BONUS UNLOCKED)
     "/bc00fffb/MONUMENTS/bcFFFFFF/\n"
     "\n"
-    "Monuments is a /bcC800FF/trophy room/bcFFFFFF/ for bonus objectives!\n"
+    "Monuments is a /bcC800FF/trophy room/bcFFFFFF/ for all of the bonus\n"
+    "objectives found in the Galactic Log!\n"
     "\n"
-    "The surrounding statues each represent one world, and\n"
-    "above you can see which /bcC800FF/badges/bcFFFFFF/ you have completed.\n"
-    "The world's Stage Challenge Achievement is marked as\n"
-    "an /bcFF9900/Achievement Icon/bcFFFFFF/ above those 3 rows.\n"
+    "The stage contains ten statues that each represent one\n"
+    "of Stardust's worlds. Above each statue, you can see\n"
+    "see which /bc009DFF/clear/bcFFFFFF/, /bcC800FF/stunt/bcFFFFFF/, or /bcFBFF00/sweep/bcFFFFFF/ badges are completed\n"
+    "\n"
+    "Each world's /bcFF9900/Stage Challenge/bcFFFFFF/ achievement is marked by\n"
+    "an icon above the three rows of badges.\n"
+    "\n"
+    "/bcC800FF/Continued on next page.../bcFFFFFF/\n",
+
+    // About Page 8 (ONLY SHOW IF BONUS UNLOCKED)
+    "/bc00fffb/MONUMENTS/bcFFFFFF/\n"
+    "\n"
+    "/bcC800FF/Continued:/bcFFFFFF/\n"
     "\n"
     "If you get all 10 /bcC800FF/stunt/bcFFFFFF/ or /bcFBFF00/sweep/bcFFFFFF/ badges in any world,\n"
     "its statue will be decorated with a /bc009DFF/special effect/bcFFFFFF/!\n"
     "\n"
     "If you get all 100 /bcC800FF/stunt/bcFFFFFF/ or /bcFBFF00/sweep/bcFFFFFF/ badges, something\n"
     "special will appear on the /bc009DFF/giant empty pedestals/bcFFFFFF/\n"
-    "outside the circle!\n",
-
-    // About Page 8 (ONLY SHOW IF BONUS UNLOCKED)
-    "/bc00fffb/MONUMENTS/bcFFFFFF/\n"
-    "\n"
-    "/bcC800FF/Continued:/bcFFFFFF/\n"
+    "outside the circle!\n"
     "\n"
     "The center of the stage has a spinning /bc009DFF/medallion/bcFFFFFF/,\n"
     "representing your best Interstellar rank!\n"};

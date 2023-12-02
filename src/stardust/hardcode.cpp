@@ -112,6 +112,7 @@ void init() {
         }
     });
     patch::write_nop(reinterpret_cast<void*>(0x802c96d8));
+    patch::write_word(reinterpret_cast<u32*>(0x803dd490), 0x38000003);
 }
 
 void tick() {

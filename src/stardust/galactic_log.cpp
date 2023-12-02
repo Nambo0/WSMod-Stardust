@@ -5,6 +5,7 @@
 #include "../stardust/unlock.h"
 #include "internal/heap.h"
 #include "internal/log.h"
+// #include "internal/pad.h"
 #include "internal/patch.h"
 #include "internal/tickable.h"
 #include "internal/ui/ui_manager.h"
@@ -368,6 +369,9 @@ void create_galactic_log_menu() {
             ui::get_widget_manager().remove(menu);
             create_about_screen();
         }
+        else {
+            mkb::call_SoundReqID_arg_1(35);// Announcer saying "ZERO!"
+        }
     };
 
     // Handler for the 'Credits & Special Thanks' button
@@ -378,6 +382,9 @@ void create_galactic_log_menu() {
             ui::get_widget_manager().remove(menu);
             create_credits_screen();
         }
+        else {
+            mkb::call_SoundReqID_arg_1(35);// Announcer saying "ZERO!"
+        }
     };
 
     auto open_badge_handler = [](ui::Widget&, void*) {
@@ -386,6 +393,9 @@ void create_galactic_log_menu() {
             s_galactic_log_index = menu.get_active_index();
             ui::get_widget_manager().remove(menu);
             create_badge_screen();
+        }
+        else {
+            mkb::call_SoundReqID_arg_1(35);// Announcer saying "ZERO!"
         }
     };
 
@@ -396,6 +406,9 @@ void create_galactic_log_menu() {
             ui::get_widget_manager().remove(menu);
             create_interstellar_screen();
         }
+        else {
+            mkb::call_SoundReqID_arg_1(35);// Announcer saying "ZERO!"
+        }
     };
 
     auto open_achievement_handler = [](ui::Widget&, void*) {
@@ -404,6 +417,9 @@ void create_galactic_log_menu() {
             s_galactic_log_index = menu.get_active_index();
             ui::get_widget_manager().remove(menu);
             create_achievement_screen();
+        }
+        else {
+            mkb::call_SoundReqID_arg_1(35);// Announcer saying "ZERO!"
         }
     };
 
@@ -1178,6 +1194,9 @@ void init_main_loop() {
             create_galactic_log_menu();
             LOG("Heap free after: %dkb", heap::get_free_space() / 1024);
         }
+        else {
+            mkb::call_SoundReqID_arg_1(35);// Announcer saying "ZERO!"
+        }
         return;
     });
 
@@ -1206,8 +1225,15 @@ void init_sel_ngc() {
         }
     });
 }
-
+// static u32 s_sound = 0;
 void tick() {
+    // if (pad::button_pressed(mkb::PAD_BUTTON_UP)) {
+    //     mkb::call_SoundReqID_arg_1(s_sound);
+    //     s_sound++;
+    // }
+    // if (pad::button_pressed(mkb::PAD_BUTTON_LEFT)) {
+    //     s_sound = 0;
+    // }
 }
 
 }// namespace galactic_log

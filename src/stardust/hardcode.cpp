@@ -406,7 +406,7 @@ void tick() {
         case 205: {
             if (pad::button_down(mkb::PAD_TRIGGER_R) && pad::button_down(mkb::PAD_BUTTON_DOWN) && pad::button_pressed(mkb::PAD_BUTTON_B)) {
                 savedata::debug_display_mode();
-                mkb::call_SoundReqID_arg_0(52);// Weird noise
+                mkb::call_SoundReqID_arg_0(14);// 1-up sound
             }
             break;
         }
@@ -433,28 +433,28 @@ void tick() {
     // Hurry up removal for frozen/count-up timers
     if (mkb::main_mode == mkb::MD_GAME) {
         if ((mkb::main_game_mode == mkb::PRACTICE_MODE && (mkb::curr_difficulty == mkb::DIFF_BEGINNER)) || (mkb::current_stage_id == 77)) {
-        patch::write_nop(reinterpret_cast<void*>(0x80339da0));
-        patch::write_nop(reinterpret_cast<void*>(0x80339f14));
-        patch::write_word(reinterpret_cast<void*>(0x808f5108), 0x2c00ff01);
-        patch::write_word(reinterpret_cast<void*>(0x808f50b4), 0x2c00ff01);
-        patch::write_word(reinterpret_cast<void*>(0x808f4ff8), 0x2c00ff01);
-        patch::write_nop(reinterpret_cast<void*>(0x808f5044));
-        patch::write_nop(reinterpret_cast<void*>(0x808f508c));
-        patch::write_nop(reinterpret_cast<void*>(0x808f50f8));
-        patch::write_nop(reinterpret_cast<void*>(0x808f514c));
-        patch::write_nop(reinterpret_cast<void*>(0x808f5004));
-        patch::write_word(reinterpret_cast<void*>(0x80339d54), 0x2c00ff01);
-        patch::write_word(reinterpret_cast<void*>(0x80339dcc), 0x2c00ff01);
-        patch::write_word(reinterpret_cast<void*>(0x80339e24), 0x2c00ff01);
+            patch::write_nop(reinterpret_cast<void*>(0x80339da0));
+            patch::write_nop(reinterpret_cast<void*>(0x80339f14));
+            patch::write_word(reinterpret_cast<void*>(0x808f5108), 0x2c00ff01);
+            patch::write_word(reinterpret_cast<void*>(0x808f50b4), 0x2c00ff01);
+            patch::write_word(reinterpret_cast<void*>(0x808f4ff8), 0x2c00ff01);
+            patch::write_nop(reinterpret_cast<void*>(0x808f5044));
+            patch::write_nop(reinterpret_cast<void*>(0x808f508c));
+            patch::write_nop(reinterpret_cast<void*>(0x808f50f8));
+            patch::write_nop(reinterpret_cast<void*>(0x808f514c));
+            patch::write_nop(reinterpret_cast<void*>(0x808f5004));
+            patch::write_word(reinterpret_cast<void*>(0x80339d54), 0x2c00ff01);
+            patch::write_word(reinterpret_cast<void*>(0x80339dcc), 0x2c00ff01);
+            patch::write_word(reinterpret_cast<void*>(0x80339e24), 0x2c00ff01);
+        }
+        else {
+            patch::write_word(reinterpret_cast<void*>(0x80339da0), 0x901d004c);
+            patch::write_word(reinterpret_cast<void*>(0x80339f14), 0x2c000258);
+            patch::write_word(reinterpret_cast<void*>(0x80339d54), 0x2c000000);
+            patch::write_word(reinterpret_cast<void*>(0x80339dcc), 0x2c000000);
+            patch::write_word(reinterpret_cast<void*>(0x80339e24), 0x2c000000);
+        }
     }
-    else {
-        patch::write_word(reinterpret_cast<void*>(0x80339da0), 0x901d004c);
-        patch::write_word(reinterpret_cast<void*>(0x80339f14), 0x2c000258);
-        patch::write_word(reinterpret_cast<void*>(0x80339d54), 0x2c000000);
-        patch::write_word(reinterpret_cast<void*>(0x80339dcc), 0x2c000000);
-        patch::write_word(reinterpret_cast<void*>(0x80339e24), 0x2c000000);
-    }
-}
     // Fast retry and fixed camera for Monuments
     if (mkb::current_stage_id == 77) {
         patch::write_word(reinterpret_cast<void*>(0x802ba280), 0x38000000);

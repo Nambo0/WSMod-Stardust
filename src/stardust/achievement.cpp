@@ -240,7 +240,7 @@ void on_goal() {
                         all_broken = false;
                     }
                 }
-                if (all_broken && mkb::mode_info.stage_time_frames_remaining >= 150 * 60) {
+                if (all_broken && mkb::mode_info.stage_time_frames_remaining > 150 * 60) {
                     claim_achievement(7);
                 }
                 break;

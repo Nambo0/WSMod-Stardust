@@ -362,39 +362,49 @@ void create_galactic_log_menu() {
 
     // Handler for the 'About' button
     auto open_about_handler = [](ui::Widget&, void*) {
+        if(heap::get_free_space() / 1024 > 40){ // TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
         auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
         s_galactic_log_index = menu.get_active_index();
         ui::get_widget_manager().remove(menu);
         create_about_screen();
+        }
     };
 
     // Handler for the 'Credits & Special Thanks' button
     auto open_credits_handler = [](ui::Widget&, void*) {
+        if(heap::get_free_space() / 1024 > 35){ // TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
         auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
         s_galactic_log_index = menu.get_active_index();
         ui::get_widget_manager().remove(menu);
         create_credits_screen();
+        }
     };
 
     auto open_badge_handler = [](ui::Widget&, void*) {
+        if(heap::get_free_space() / 1024 > 80){ // TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
         auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
         s_galactic_log_index = menu.get_active_index();
         ui::get_widget_manager().remove(menu);
         create_badge_screen();
+        }
     };
 
     auto open_interstellar_handler = [](ui::Widget&, void*) {
+        if(heap::get_free_space() / 1024 > 35){ // TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
         auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
         s_galactic_log_index = menu.get_active_index();
         ui::get_widget_manager().remove(menu);
         create_interstellar_screen();
+        }
     };
 
     auto open_achievement_handler = [](ui::Widget&, void*) {
+        if(heap::get_free_space() / 1024 > 60){ // TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
         auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
         s_galactic_log_index = menu.get_active_index();
         ui::get_widget_manager().remove(menu);
         create_achievement_screen();
+        }
     };
 
     // Handle for 'Close' button, as well as B/Start buttons

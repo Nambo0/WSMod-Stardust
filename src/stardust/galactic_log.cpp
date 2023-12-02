@@ -362,48 +362,48 @@ void create_galactic_log_menu() {
 
     // Handler for the 'About' button
     auto open_about_handler = [](ui::Widget&, void*) {
-        if(heap::get_free_space() / 1024 > 40){ // TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
-        auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
-        s_galactic_log_index = menu.get_active_index();
-        ui::get_widget_manager().remove(menu);
-        create_about_screen();
+        if (heap::get_free_space() > 40 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
+            auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
+            s_galactic_log_index = menu.get_active_index();
+            ui::get_widget_manager().remove(menu);
+            create_about_screen();
         }
     };
 
     // Handler for the 'Credits & Special Thanks' button
     auto open_credits_handler = [](ui::Widget&, void*) {
-        if(heap::get_free_space() / 1024 > 35){ // TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
-        auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
-        s_galactic_log_index = menu.get_active_index();
-        ui::get_widget_manager().remove(menu);
-        create_credits_screen();
+        if (heap::get_free_space() > 40 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
+            auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
+            s_galactic_log_index = menu.get_active_index();
+            ui::get_widget_manager().remove(menu);
+            create_credits_screen();
         }
     };
 
     auto open_badge_handler = [](ui::Widget&, void*) {
-        if(heap::get_free_space() / 1024 > 80){ // TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
-        auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
-        s_galactic_log_index = menu.get_active_index();
-        ui::get_widget_manager().remove(menu);
-        create_badge_screen();
+        if (heap::get_free_space() > 80 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
+            auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
+            s_galactic_log_index = menu.get_active_index();
+            ui::get_widget_manager().remove(menu);
+            create_badge_screen();
         }
     };
 
     auto open_interstellar_handler = [](ui::Widget&, void*) {
-        if(heap::get_free_space() / 1024 > 35){ // TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
-        auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
-        s_galactic_log_index = menu.get_active_index();
-        ui::get_widget_manager().remove(menu);
-        create_interstellar_screen();
+        if (heap::get_free_space() > 40 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
+            auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
+            s_galactic_log_index = menu.get_active_index();
+            ui::get_widget_manager().remove(menu);
+            create_interstellar_screen();
         }
     };
 
     auto open_achievement_handler = [](ui::Widget&, void*) {
-        if(heap::get_free_space() / 1024 > 60){ // TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
-        auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
-        s_galactic_log_index = menu.get_active_index();
-        ui::get_widget_manager().remove(menu);
-        create_achievement_screen();
+        if (heap::get_free_space() > 60 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
+            auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
+            s_galactic_log_index = menu.get_active_index();
+            ui::get_widget_manager().remove(menu);
+            create_achievement_screen();
         }
     };
 
@@ -1168,14 +1168,16 @@ void create_achievement_screen() {
 
 void init_main_loop() {
     patch::hook_function(s_g_create_how_to_sprite_tramp, mkb::create_how_to_sprite, [](void) {
-        if (mkb::main_mode == mkb::MD_GAME) {
-            mkb::g_some_pausemenu_var = 4;
-            mkb::g_some_other_flags = mkb::g_some_other_flags | mkb::OF_GAME_PAUSED;
+        if (heap::get_free_space() > 20 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
+            if (mkb::main_mode == mkb::MD_GAME) {
+                mkb::g_some_pausemenu_var = 4;
+                mkb::g_some_other_flags = mkb::g_some_other_flags | mkb::OF_GAME_PAUSED;
+            }
+            mkb::call_SoundReqID_arg_1(10);
+            LOG("Heap free before: %dkb", heap::get_free_space() / 1024);
+            create_galactic_log_menu();
+            LOG("Heap free after: %dkb", heap::get_free_space() / 1024);
         }
-        mkb::call_SoundReqID_arg_1(10);
-        LOG("Heap free before: %dkb", heap::get_free_space() / 1024);
-        create_galactic_log_menu();
-        LOG("Heap free after: %dkb", heap::get_free_space() / 1024);
         return;
     });
 

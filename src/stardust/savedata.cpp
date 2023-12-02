@@ -118,6 +118,35 @@ bool true_in_slot(u16 slot) {
     return read_bool_from_array(savedata, slot);
 }
 
+// world indexes are 1-10 (not 0-9)
+static bool world_cleared(u8 world) {
+    // check cutscene first
+    if (mkb::unlock_info_ptr->g_movies_watched & (1 << (world))) { return true; }
+    // otherwise check
+    for (u8 k = 0; k < 10; k++) {
+        u32 clear_achieved = read_bool_from_array(savedata, CLEAR_BADGE_START + ((world - 1) * 10) + k);
+        u32 stunt_achieved = read_bool_from_array(savedata, STUNT_BADGE_START + ((world - 1) * 10) + k);
+        if (!(clear_achieved || stunt_achieved)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+u32 latest_played_world() {
+    for (u8 world = 10; world > 1; world--) {
+        bool prev_world_complete = world_cleared(world - 1);
+        bool clear_badge_in_curr_world = !consecutive_false_from_slot(savedata::CLEAR_BADGE_START + ((world - 1) * 10), 10);
+        bool stunt_badge_in_curr_world = !consecutive_false_from_slot(savedata::STUNT_BADGE_START + ((world - 1) * 10), 10);
+
+        if (prev_world_complete || clear_badge_in_curr_world || stunt_badge_in_curr_world) {
+            return world;
+        }
+    }
+
+    return 1;
+}
+
 bool consecutive_true_from_slot(u16 slot, u16 count) {
     for (int i = slot; i < slot + count; i++) {
         if (!read_bool_from_array(savedata, i)) return false;

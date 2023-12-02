@@ -876,13 +876,9 @@ void create_badge_screen() {
     create_badge_list();
 
     // Only display up to the highest unlocked world (using story cutscene unlock info)
-    s_log_page_count = 1;
-    for (u8 world = 1; world < 10; world++) {
-        if (!savedata::consecutive_false_from_slot(savedata::CLEAR_BADGE_START + 10 * world, 10) || !savedata::consecutive_false_from_slot(savedata::STUNT_BADGE_START + 10 * world, 10)) {
-            s_log_page_count = world + 1;
-        }
-    }
-    s_log_page_count_visible = s_log_page_count;
+    s_log_page_count = savedata::latest_played_world();
+    s_log_page_count_visible = savedata::latest_played_world();
+
     update_page_number_display(true);
 }
 
@@ -918,11 +914,6 @@ void create_interstellar_screen() {
     interstellar_text.set_alignment(mkb::ALIGN_LOWER_RIGHT);
     interstellar_text.set_drop_shadow(false);
     interstellar_text.set_color({0x00, 0x00, 0x00});
-}
-
-static bool played_world(u8 world) {
-    if ((!savedata::consecutive_false_from_slot(10 * (world - 1), 10) || !savedata::consecutive_false_from_slot(100 + 10 * (world - 1), 10))) return true;
-    else return false;
 }
 
 void create_achievement_list() {
@@ -967,7 +958,7 @@ void create_achievement_list() {
                         break;
                     // If played world, show id 2-5
                     case 1 ... 4:
-                        if (played_world(curr_row + 1)) curr_id = curr_row + 1;
+                        if (savedata::latest_played_world() > curr_row) curr_id = curr_row + 1;
                         break;
                     case 5 ... 6: {
                         curr_id = 0;
@@ -981,7 +972,7 @@ void create_achievement_list() {
                 switch (curr_row) {
                     // If played world, show id 6-10
                     case 0 ... 4:
-                        if (played_world(curr_row + 6)) curr_id = curr_row + 6;
+                        if (savedata::latest_played_world() > curr_row) curr_id = curr_row + 6;
                         break;
                     case 5 ... 6: {
                         curr_id = 0;
@@ -1065,7 +1056,7 @@ void create_achievement_screen() {
         // Stage Challenges (1/2), always show
         true,
         // Stage Challenges (2/2), only show if a stage w6+ has been beaten
-        (!savedata::consecutive_false_from_slot(50, 50) || !savedata::consecutive_false_from_slot(150, 50)),
+        (savedata::latest_played_world() > 5),
         // Story Mode, always show
         true,
         // Interstellar, show if unlocked
@@ -1084,7 +1075,7 @@ void create_achievement_screen() {
             // Stage Challenges (1/2), always show
             true,
             // Stage Challenges (2/2), only show if a stage w6+ has been beaten
-            (!savedata::consecutive_false_from_slot(50, 50) || !savedata::consecutive_false_from_slot(150, 50)),
+            (savedata::latest_played_world() > 5),
             // Story Mode, always show
             true,
             // Interstellar, show if unlocked
@@ -1124,7 +1115,7 @@ void create_achievement_screen() {
             // Stage Challenges (1/2), always show
             true,
             // Stage Challenges (2/2), only show if a stage w6+ has been beaten
-            (!savedata::consecutive_false_from_slot(50, 50) || !savedata::consecutive_false_from_slot(150, 50)),
+            (savedata::latest_played_world() > 5),
             // Story Mode, always show
             true,
             // Interstellar, show if unlocked

@@ -1,5 +1,5 @@
 #include "cardio.h"
-#include "heap.h"
+#include "mem.h"
 #include "mkb.h"
 #include "modlink.h"
 #include <optional>
@@ -28,7 +28,7 @@ static Slot s_current_slot = Slot::None;
 // We need a 40KB(!) buffer just for the privilege of accessing memory cards,
 // this sucks! Reminder we only have ~550KB to work with for the entire mod,
 // including savestates
-static void* s_card_work_area;
+static u8 s_card_work_area[mkb::CARD_WORKAREA_SIZE] __attribute__((__aligned__(32)));
 static mkb::CARDFileInfo s_card_file_info;
 
 static WriteState s_state = WriteState::Idle;
@@ -81,7 +81,7 @@ static mkb::CARDResult read_file_internal(const Slot slot, const char* file_name
 
     u32 buf_size =
         (stat.length + mkb::CARD_READ_SIZE - 1) & ~(mkb::CARD_READ_SIZE - 1);
-    void* buf = heap::alloc(buf_size);
+    void* buf = mem::wsmod_heap.alloc(buf_size);
     if (buf == nullptr) {
         // Not quite the right error (we're out of memory, not out of card space)
         mkb::CARDUnmount(static_cast<s32>(slot));
@@ -93,7 +93,7 @@ static mkb::CARDResult read_file_internal(const Slot slot, const char* file_name
         res = mkb::CARDGetResultCode(static_cast<s32>(slot));
     } while (res == mkb::CARD_RESULT_BUSY);
     if (res != mkb::CARD_RESULT_READY) {
-        heap::free(buf);
+        mem::wsmod_heap.free(buf);
         mkb::CARDUnmount(static_cast<s32>(slot));
         return res;
     }
@@ -120,15 +120,6 @@ static void finish_write(mkb::CARDResult res) {
 }
 
 void init() {
-    // Artificial delay so that the memcard has time to initialize
-    // Probably not an issue on console, but if read speed emulation is disabled in Dolphin, this can cause issues
-    // auto current_tick = mkb::OSGetTick();
-    // auto end_tick = current_tick + mkb::BUS_CLOCK_SPEED/32; // 0.125s delay
-    // while (current_tick < end_tick) {
-    //     current_tick = mkb::OSGetTick();
-    // }
-
-    s_card_work_area = heap::alloc(mkb::CARD_WORKAREA_SIZE);
     modlink::set_card_work_area(s_card_work_area);
 }
 

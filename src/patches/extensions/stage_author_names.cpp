@@ -1,7 +1,7 @@
 #include "stage_author_names.h"
 
-#include "internal/heap.h"
 #include "internal/log.h"
+#include "internal/mem.h"
 #include "internal/patch.h"
 #include "internal/tickable.h"
 #include "mkb/mkb.h"
@@ -88,7 +88,7 @@ void init_main_loop() {
 
         // Round the length of the author file to a multiple of 32, necessary for DVDReadAsyncPrio
         author_file_length = (author_file_info.length + 0x1f) & 0xffffffe0;
-        author_file_buf = static_cast<char*>(heap::alloc(author_file_length));
+        author_file_buf = static_cast<char*>(mem::wsmod_heap.alloc(author_file_length));
         author_file_length = mkb::read_entire_file_using_dvdread_prio_async(&author_file_info, author_file_buf,
                                                                             author_file_length, 0);
         char* eof = author_file_buf + author_file_info.length;

@@ -1,7 +1,6 @@
 #include "savedata.h"
 #include "../internal/cardio.h"
-#include "../internal/draw.h"
-#include "../internal/heap.h"
+#include "../internal/mem.h"
 #include "../mkb/mkb.h"
 
 namespace savedata {
@@ -225,7 +224,7 @@ void init() {
     s32 result_A = cardio::read_file(cardio::Slot::A, FILENAME, reinterpret_cast<void**>(&header));
     if (result_A == mkb::CARD_RESULT_READY) {
         to_array(header);
-        heap::free(header);
+        mem::wsmod_heap.free(header);
         // mkb::OSReport("[stardust] Savedata loaded from Slot A!\n");
         cardio::set_slot(cardio::Slot::A);
         return;
@@ -236,7 +235,7 @@ void init() {
     s32 result_B = cardio::read_file(cardio::Slot::B, FILENAME, reinterpret_cast<void**>(&header));
     if (result_B == mkb::CARD_RESULT_READY) {
         to_array(header);
-        heap::free(header);
+        mem::wsmod_heap.free(header);
         // mkb::OSReport("[stardust] Savedata loaded from Slot B!\n");
         cardio::set_slot(cardio::Slot::B);
         return;

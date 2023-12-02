@@ -1,6 +1,6 @@
 #include "modlink.h"
 
-#include "heap.h"
+#include "mem.h"
 #include "version.h"
 
 namespace modlink {
@@ -15,8 +15,8 @@ void write() {
     link->magic = MAGIC;
     link->modlink_version = {1, 1, 0};
     link->wsmod_version = version::WSMOD_VERSION;
-    link->malloc_func = heap::alloc;
-    link->heap_info = &heap::get_heap_info();
+    link->malloc_func = [](u32 size) { return mem::chainload_heap.alloc(size); };
+    link->heap_info = &mem::chainload_heap.get_heap_info();
     link->part2 = &s_part2;
 }
 

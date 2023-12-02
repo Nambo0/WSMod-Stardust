@@ -1,7 +1,7 @@
 #include "config.h"
 
 #include "internal/assembly.h"
-#include "internal/heap.h"
+#include "internal/mem.h"
 #include "internal/log.h"
 #include "internal/tickable.h"
 #include "patches/custom/party_game_toggle.h"
@@ -159,7 +159,7 @@ void parse_config() {
     if (open_success) {
         // heap::alloc rounds to a multiple of 32, necessary for DVDReadAsyncPrio
         config_file_length = (config_file_info.length + 0x1f) & 0xffffffe0;
-        config_file_buf = static_cast<char*>(heap::alloc(config_file_length));
+        config_file_buf = static_cast<char*>(mem::wsmod_heap.alloc(config_file_length));
         u32 read_length = mkb::read_entire_file_using_dvdread_prio_async(&config_file_info, config_file_buf, config_file_length, 0);
         char* eof = config_file_buf + config_file_info.length;
 
@@ -219,7 +219,7 @@ void parse_config() {
             } while (file <= eof);
         }
         mkb::DVDClose(&config_file_info);
-        heap::free(config_file_buf);
+        mem::wsmod_heap.free(config_file_buf);
     }
 }
 

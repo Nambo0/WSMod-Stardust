@@ -972,7 +972,7 @@ void create_achievement_list() {
                 switch (curr_row) {
                     // If played world, show id 6-10
                     case 0 ... 4:
-                        if (savedata::latest_played_world() > curr_row) curr_id = curr_row + 6;
+                        if (savedata::latest_played_world() > curr_row + 5) curr_id = curr_row + 6;
                         break;
                     case 5 ... 6: {
                         curr_id = 0;

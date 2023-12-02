@@ -367,6 +367,7 @@ void create_galactic_log_menu() {
             auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
             s_galactic_log_index = menu.get_active_index();
             ui::get_widget_manager().remove(menu);
+            menu.free_inactive();
             create_about_screen();
         }
         else {
@@ -380,6 +381,7 @@ void create_galactic_log_menu() {
             auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
             s_galactic_log_index = menu.get_active_index();
             ui::get_widget_manager().remove(menu);
+            menu.free_inactive();
             create_credits_screen();
         }
         else {
@@ -392,6 +394,7 @@ void create_galactic_log_menu() {
             auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
             s_galactic_log_index = menu.get_active_index();
             ui::get_widget_manager().remove(menu);
+            menu.free_inactive();
             create_badge_screen();
         }
         else {
@@ -404,6 +407,7 @@ void create_galactic_log_menu() {
             auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
             s_galactic_log_index = menu.get_active_index();
             ui::get_widget_manager().remove(menu);
+            menu.free_inactive();
             create_interstellar_screen();
         }
         else {
@@ -416,6 +420,7 @@ void create_galactic_log_menu() {
             auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
             s_galactic_log_index = menu.get_active_index();
             ui::get_widget_manager().remove(menu);
+            menu.free_inactive();
             create_achievement_screen();
         }
         else {
@@ -877,6 +882,7 @@ void create_badge_screen() {
         else {
             --s_log_page_number_visible;
         }
+        badge_menu_screen.free_inactive();
         create_badge_list();
         update_page_number_display(true);
     };
@@ -896,6 +902,7 @@ void create_badge_screen() {
         else {
             ++s_log_page_number_visible;
         }
+        badge_menu_screen.free_inactive();
         create_badge_list();
         update_page_number_display(true);
     };
@@ -1128,6 +1135,7 @@ void create_achievement_screen() {
             if (is_page_shown[s_log_page_number]) break;
         }
         // mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_achievement[s_log_page_number]);
+        achievement_menu_screen.free_inactive();
         create_achievement_list();
 
         if (s_log_page_number_visible == 0) {
@@ -1174,6 +1182,7 @@ void create_achievement_screen() {
             ++s_log_page_number_visible;
         }
         // mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_achievement[s_log_page_number]);
+        achievement_menu_screen.free_inactive();
         create_achievement_list();
         update_page_number_display();
     };

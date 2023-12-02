@@ -199,7 +199,7 @@ constexpr char* s_log_pages_credits[2] = {
     "\n"
     "/bc00fffb/Specific Mentions/bcFFFFFF/\n"
     "      (>^^)> Zona, Ghost Ham, Sudachi\n"
-    "      (>^^)> PetresInc, Dwaitley, scrap651\n"
+    "      (>^^)> PetresInc, ganon, Dwaitley, scrap651\n"
     "      (>^^)> Petra, Yhouse, Jesse, Ariana, Shadow\n"
     "/bc00fffb/Broad Shout-Outs/bcFFFFFF/\n"
     "      (>^^)> Everyone listed on page 1\n"

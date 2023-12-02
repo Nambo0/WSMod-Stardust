@@ -112,6 +112,7 @@ void init() {
         }
     });
     patch::write_nop(reinterpret_cast<void*>(0x802c96d8));
+    patch::write_word(reinterpret_cast<void*>(0x803dd490), 0x38000003);
 }
 
 void tick() {
@@ -526,5 +527,6 @@ void init_sel_ngc() {
     mkb::strcpy(mkb::NUM_OF_PLAYERS_DESCRIPTION_NO_PLAYPOINTS, "You can play with 1 player.");
     mkb::strcpy(mkb::NUM_OF_PLAYERS_DESCRIPTION_PLAYPOINTS, "You can play with 1 player.");
     mkb::strcpy(mkb::NUM_OF_PLAYERS_DESCRIPTION, "You can play with 1 player.");
+    patch::write_word(reinterpret_cast<void*>(0x808ffb14), 0x2c030064);
 }
 }// namespace hardcode

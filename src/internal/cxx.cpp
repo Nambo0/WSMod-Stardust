@@ -1,25 +1,25 @@
-#include "heap.h"
+#include "mem.h"
 
 void* operator new(u32 size) {
-    return heap::alloc(size);
+    return mem::wsmod_heap.alloc(size);
 }
 
 void* operator new[](u32 size) {
-    return heap::alloc(size);
+    return mem::wsmod_heap.alloc(size);
 }
 
 void operator delete(void* ptr) {
-    heap::free(ptr);
+    mem::wsmod_heap.free(ptr);
 }
 
 void operator delete[](void* ptr) {
-    heap::free(ptr);
+    mem::wsmod_heap.free(ptr);
 }
 
 void operator delete(void* ptr, u32 size) {
-    heap::free(ptr);
+    mem::wsmod_heap.free(ptr);
 }
 
 void operator delete[](void* ptr, u32 size) {
-    heap::free(ptr);
+    mem::wsmod_heap.free(ptr);
 }

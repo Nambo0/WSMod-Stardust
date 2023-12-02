@@ -8,7 +8,9 @@
 #include "internal/tickable.h"
 #include "internal/ui/ui_manager.h"
 #include "internal/version.h"
+#include "internal/mem.h"
 #include "mkb/mkb.h"
+#include "relutil.h"
 #include "stardust/savedata.h"
 
 namespace main {
@@ -30,13 +32,34 @@ since it reports every frame, and thus clutters the console */
     patch::write_nop(reinterpret_cast<void*>(0x80299f54));
 }
 
+static constexpr u32 WSMOD_HEAP_SIZE = 1024 * 80;
+
+static void init_memory_model() {
+    // Allocate wsmod arena from available mainloop REL space
+    u32 start = mkb::OSRoundUp32B(
+        *reinterpret_cast<u32*>(0x8000452C));  // Set by REL loader to region after wsmod REL/BSS
+    void* end_ptr = relutil::compute_mainloop_reldata_boundary(reinterpret_cast<void*>(start));
+    u32 end = mkb::OSRoundDown32B(reinterpret_cast<u32>(end_ptr));
+    u32 size = end - start;
+    mem::wsmod_arena.init("wsmod", reinterpret_cast<void*>(start), size);
+
+    // Allocate separate heap for wsmod
+    void* wsmod_heap_start = mem::wsmod_arena.alloc(WSMOD_HEAP_SIZE);
+    mem::wsmod_heap.init(wsmod_heap_start, WSMOD_HEAP_SIZE);
+
+    // Allocate chainload heap from remaining wsmod arena
+    u32 chainload_heap_size = mem::wsmod_arena.get_free();
+    void* chainload_heap_start = mem::wsmod_arena.alloc(chainload_heap_size);
+    mem::chainload_heap.init(chainload_heap_start, chainload_heap_size);
+}
+
 void init() {
     LOG("SMB2 Workshop Mod v%d.%d.%d loaded",
         version::WSMOD_VERSION.major,
         version::WSMOD_VERSION.minor,
         version::WSMOD_VERSION.patch);
 
-    heap::init();
+    init_memory_model();
     cardio::init();
     modlink::write();
 

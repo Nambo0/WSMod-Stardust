@@ -363,64 +363,39 @@ void create_galactic_log_menu() {
 
     // Handler for the 'About' button
     auto open_about_handler = [](ui::Widget&, void*) {
-        if (heap::get_free_space() > 40 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
-            auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
-            s_galactic_log_index = menu.get_active_index();
-            ui::get_widget_manager().remove(menu);
-            create_about_screen();
-        }
-        else {
-            mkb::call_SoundReqID_arg_1(35);// Announcer saying "ZERO!"
-        }
+        auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
+        s_galactic_log_index = menu.get_active_index();
+        ui::get_widget_manager().remove(menu);
+        create_about_screen();
     };
 
     // Handler for the 'Credits & Special Thanks' button
     auto open_credits_handler = [](ui::Widget&, void*) {
-        if (heap::get_free_space() > 40 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
-            auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
-            s_galactic_log_index = menu.get_active_index();
-            ui::get_widget_manager().remove(menu);
-            create_credits_screen();
-        }
-        else {
-            mkb::call_SoundReqID_arg_1(35);// Announcer saying "ZERO!"
-        }
+        auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
+        s_galactic_log_index = menu.get_active_index();
+        ui::get_widget_manager().remove(menu);
+        create_credits_screen();
     };
 
     auto open_badge_handler = [](ui::Widget&, void*) {
-        if (heap::get_free_space() > 80 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
-            auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
-            s_galactic_log_index = menu.get_active_index();
-            ui::get_widget_manager().remove(menu);
-            create_badge_screen();
-        }
-        else {
-            mkb::call_SoundReqID_arg_1(35);// Announcer saying "ZERO!"
-        }
+        auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
+        s_galactic_log_index = menu.get_active_index();
+        ui::get_widget_manager().remove(menu);
+        create_badge_screen();
     };
 
     auto open_interstellar_handler = [](ui::Widget&, void*) {
-        if (heap::get_free_space() > 40 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
-            auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
-            s_galactic_log_index = menu.get_active_index();
-            ui::get_widget_manager().remove(menu);
-            create_interstellar_screen();
-        }
-        else {
-            mkb::call_SoundReqID_arg_1(35);// Announcer saying "ZERO!"
-        }
+        auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
+        s_galactic_log_index = menu.get_active_index();
+        ui::get_widget_manager().remove(menu);
+        create_interstellar_screen();
     };
 
     auto open_achievement_handler = [](ui::Widget&, void*) {
-        if (heap::get_free_space() > 60 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
-            auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
-            s_galactic_log_index = menu.get_active_index();
-            ui::get_widget_manager().remove(menu);
-            create_achievement_screen();
-        }
-        else {
-            mkb::call_SoundReqID_arg_1(35);// Announcer saying "ZERO!"
-        }
+        auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
+        s_galactic_log_index = menu.get_active_index();
+        ui::get_widget_manager().remove(menu);
+        create_achievement_screen();
     };
 
     // Handle for 'Close' button, as well as B/Start buttons
@@ -453,7 +428,6 @@ void create_galactic_log_menu() {
         }
 
         ui::get_widget_manager().remove("galmenu");
-        LOG("After closing free heap: %dkb", heap::get_free_space() / 1024);
     };
 
     // Hack for making these children widgets appear above the pause menu screen overlay
@@ -1184,20 +1158,12 @@ void create_achievement_screen() {
 
 void init_main_loop() {
     patch::hook_function(s_g_create_how_to_sprite_tramp, mkb::create_how_to_sprite, [](void) {
-        if (heap::get_free_space() > 20 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
-            if (mkb::main_mode == mkb::MD_GAME) {
-                mkb::g_some_pausemenu_var = 4;
-                mkb::g_some_other_flags = mkb::g_some_other_flags | mkb::OF_GAME_PAUSED;
-            }
-            mkb::call_SoundReqID_arg_1(10);
-            LOG("Heap free before: %dkb", heap::get_free_space() / 1024);
-            create_galactic_log_menu();
-            LOG("Heap free after: %dkb", heap::get_free_space() / 1024);
+        if (mkb::main_mode == mkb::MD_GAME) {
+            mkb::g_some_pausemenu_var = 4;
+            mkb::g_some_other_flags = mkb::g_some_other_flags | mkb::OF_GAME_PAUSED;
         }
-        else {
-            mkb::call_SoundReqID_arg_1(35);// Announcer saying "ZERO!"
-        }
-        return;
+        mkb::call_SoundReqID_arg_1(10);
+        create_galactic_log_menu();
     });
 
     patch::hook_function(s_check_pause_menu_input, mkb::check_pause_menu_input, [](mkb::Sprite* s) {

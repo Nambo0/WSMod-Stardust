@@ -35,7 +35,8 @@ static bool went_very_fast = false;    // For AAAAA
 void claim_achievement(int id) {
     // ID 1 = Slot 300, and so on
     u32 claimed_slot = savedata::STAGE_CHALLENGES_START + id - 1;
-    if (!savedata::true_in_slot(claimed_slot)) {
+    if (!savedata::true_in_slot(claimed_slot) ||
+        (savedata::is_debug_display_mode() && (id <= 10 || id >= 20))) { // Show repeat achievements in debug display mode (except story mode ones)
         savedata::write_bool_to_slot(claimed_slot, true);
         savedata::save();
         achievement_display::add_achievement_to_display_queue(id);

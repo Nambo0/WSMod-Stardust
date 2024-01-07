@@ -319,7 +319,10 @@ void on_goal() {
         else completions_in_a_row = 1;
         last_completed_stage_id = mkb::g_current_stage_id;
         // 36) ACUTALLY PLAYABLE | Clear a stage from ‘The Unplayable Zone’ in debug
-        if (mkb::curr_difficulty == mkb::DIFF_ADVANCED && mkb::mode_info.cm_course_stage_num > 90 && mkb::g_current_stage_id != 205) {// Fix false positive on Hey Goobz
+        u8 unplayable_zone_start = 91;
+        if (mkb::main_game_mode == mkb::PRACTICE_MODE) unplayable_zone_start = 90;
+        if (mkb::curr_difficulty == mkb::DIFF_ADVANCED && mkb::mode_info.cm_course_stage_num >= unplayable_zone_start // Check we're in the unplayable zone
+            && mkb::g_current_stage_id != 205) {// Fix false positive on Hey Goobz
             claim_achievement(36);
         }
         // 37 and all other interstellar achievements are in interstellar.cpp

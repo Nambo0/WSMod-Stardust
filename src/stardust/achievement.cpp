@@ -336,7 +336,7 @@ void on_goal() {
 
     // Banana-count achievements
     if (mkb::main_game_mode == mkb::STORY_MODE) {
-        u16 banana_count = mkb::get_storymode_banana_count();
+        u16 banana_count = mkb::balls[mkb::curr_player_idx].banana_count;
         // EATER OF SOULS | Obtain 5,000 bananas in Story Mode (ID: 17)
         if (banana_count >= 5000) {
             claim_achievement(16);

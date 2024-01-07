@@ -273,9 +273,15 @@ void on_goal() {
             case 31: {
                 bool none_pressed = true;
                 for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
+                    // Check that no blues are pressed
                     if (mkb::stagedef->coli_header_list[i].anim_group_id >= 1001 &&
                         mkb::stagedef->coli_header_list[i].anim_group_id <= 1008 &&
                         mkb::itemgroups[i].anim_frame == 30) {// Animation finished playing
+                        none_pressed = false;
+                    }
+                    // Check that the stunt goal gate (id 69) is down (prevent X+Y cheese)
+                    if (mkb::stagedef->coli_header_list[i].anim_group_id == 69 &&
+                        mkb::itemgroups[i].anim_frame == 0) { // Animation hast started
                         none_pressed = false;
                     }
                 }

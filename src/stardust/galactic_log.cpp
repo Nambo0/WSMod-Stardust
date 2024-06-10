@@ -520,7 +520,7 @@ ui::Layout& create_common_galactic_log_page_layout(
     auto& menu_screen_root = ui::get_widget_manager().add(new ui::Layout(Vec2d{0, 0}, Vec2d{0, 0}));
     menu_screen_root.set_layout(ui::LayoutArrangement::NONE);
     menu_screen_root.set_label(label);
-    menu_screen_root.set_depth(0.05);
+    menu_screen_root.set_depth(0.04);
 
     // Header container
     auto& menu_header_container = menu_screen_root.add(new ui::Layout(Vec2d{0, 5}, Vec2d{640, 128}));
@@ -533,6 +533,7 @@ ui::Layout& create_common_galactic_log_page_layout(
     menu_screen.set_scale(Vec2d{300, 200});
     menu_screen.set_alpha(0.6666f);
     menu_screen.set_mult_color({0x00, 0x00, 0x00});// black
+    menu_screen.set_depth(0.05);
 
     if (previous_page_handler) {
         // Back arrow

@@ -363,7 +363,7 @@ void create_galactic_log_menu() {
 
     // Handler for the 'About' button
     auto open_about_handler = [](ui::Widget&, void*) {
-        if (heap::get_free_space() > 40 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
+        if (heap::get_free_space() > 5 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
             auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
             s_galactic_log_index = menu.get_active_index();
             ui::get_widget_manager().remove(menu);
@@ -377,7 +377,7 @@ void create_galactic_log_menu() {
 
     // Handler for the 'Credits & Special Thanks' button
     auto open_credits_handler = [](ui::Widget&, void*) {
-        if (heap::get_free_space() > 40 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
+        if (heap::get_free_space() > 5 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
             auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
             s_galactic_log_index = menu.get_active_index();
             ui::get_widget_manager().remove(menu);
@@ -390,7 +390,7 @@ void create_galactic_log_menu() {
     };
 
     auto open_badge_handler = [](ui::Widget&, void*) {
-        if (heap::get_free_space() > 80 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
+        if (heap::get_free_space() > 40 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
             auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
             s_galactic_log_index = menu.get_active_index();
             ui::get_widget_manager().remove(menu);
@@ -403,7 +403,7 @@ void create_galactic_log_menu() {
     };
 
     auto open_interstellar_handler = [](ui::Widget&, void*) {
-        if (heap::get_free_space() > 40 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
+        if (heap::get_free_space() > 5 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
             auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
             s_galactic_log_index = menu.get_active_index();
             ui::get_widget_manager().remove(menu);
@@ -416,7 +416,7 @@ void create_galactic_log_menu() {
     };
 
     auto open_achievement_handler = [](ui::Widget&, void*) {
-        if (heap::get_free_space() > 60 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
+        if (heap::get_free_space() > 30 * 1024) {// TEMP FIX: Make sure we're not about to crash! (Practice Mod savestates)
             auto& menu = static_cast<ui::Menu&>(ui::get_widget_manager().find("galmenu"));
             s_galactic_log_index = menu.get_active_index();
             ui::get_widget_manager().remove(menu);

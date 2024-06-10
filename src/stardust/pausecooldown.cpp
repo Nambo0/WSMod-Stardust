@@ -64,7 +64,7 @@ void pausemenu_handler() {
                     mkb::g_current_focused_pause_menu_entry = 5;
                     mkb::create_fallout_or_bonus_finish_sprite(1);
                     if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
-                    death_counter::update_death_count();
+                        death_counter::update_death_count();
                     }
                     is_retry = true;
                     mkb::mode_info.attempt_count = mkb::mode_info.attempt_count + 1;

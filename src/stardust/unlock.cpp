@@ -20,9 +20,9 @@ TICKABLE_DEFINITION((
 // If any world is missing all 10 stunt goals, fail the condition
 // If none of the worlds fail, there's 1 in each world, so succeed the condition
 bool unlock_condition_met() {
-    if (mkb::unlock_info.monkeys == 99) return true;  // Allows Practice Mod Unlock to unlock these modes
+    if (mkb::unlock_info.monkeys == 99) return true;                                                                       // Allows Practice Mod Unlock to unlock these modes
     if (mkb::unlock_info.g_movies_watched == 0x0fff || savedata::true_in_slot(savedata::STAGE_CHALLENGES_START + 11 - 1)) {// Beat the Game
-        return achievement::detect_stunt_pilot();     // 1 stunt goal in each world
+        return achievement::detect_stunt_pilot();                                                                          // 1 stunt goal in each world
     }
     else return false;
 }

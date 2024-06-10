@@ -499,7 +499,7 @@ u8 memory_card_indicator_index() {
 }
 
 // Common/shared elements in Galactic Log go here to avoid code duplication
-ui::Widget& create_common_galactic_log_page_layout(
+ui::Layout& create_common_galactic_log_page_layout(
     const char* title,
     const char* label,
     ui::WidgetCallback previous_page_handler,
@@ -517,37 +517,40 @@ ui::Widget& create_common_galactic_log_page_layout(
         patch::write_nop(reinterpret_cast<void*>(0x80274b88));
     }
 
-    // Parent widget, this is the darkened screen
-    auto& menu_screen = ui::get_widget_manager().add(new ui::Sprite(0x4b, Vec2d{0, 0}, Vec2d{64, 64}));
-    menu_screen.set_label(label);
+    auto& menu_screen_root = ui::get_widget_manager().add(new ui::Layout(Vec2d{0, 0}, Vec2d{0, 0}));
+    menu_screen_root.set_layout(ui::LayoutArrangement::NONE);
+    menu_screen_root.set_label(label);
+    menu_screen_root.set_depth(0.05);
+
+    // Header container
+    auto& menu_header_container = menu_screen_root.add(new ui::Layout(Vec2d{0, 5}, Vec2d{640, 128}));
+    menu_header_container.set_margin(0);
+    menu_header_container.set_spacing(64);
+    menu_header_container.set_layout(ui::LayoutArrangement::HORIZONTAL);
+
+    // Darkened screen sprite
+    auto& menu_screen = menu_screen_root.add(new ui::Sprite(0x4b, Vec2d{0, 0}, Vec2d{64, 64}));
     menu_screen.set_scale(Vec2d{300, 200});
     menu_screen.set_alpha(0.6666f);
     menu_screen.set_mult_color({0x00, 0x00, 0x00});// black
-    menu_screen.set_depth(0.05);
-
-    // Header container
-    auto& menu_header_container = menu_screen.add(new ui::Container(Vec2d{0, 5}, Vec2d{640, 128}));
-    menu_header_container.set_margin(0);
-    menu_header_container.set_layout_spacing(64);
-    menu_header_container.set_layout(ui::ContainerLayout::HORIZONTAL);
 
     if (previous_page_handler) {
         // Back arrow
         menu_header_container.add(new ui::Sprite(0xc27, Vec2d{0, 0}, Vec2d{64, 64}));
 
         // Text
-        auto& text = menu_screen.add(new ui::Text("Back", Vec2d{16, 58}));
+        auto& text = menu_screen_root.add(new ui::Text("Back", Vec2d{16, 58}));
         text.set_alignment(ui::LEFT);
         text.set_scale(Vec2d{0.50, 0.50});
         text.set_color({0xff, 0xff, 0xff});
 
         // Input handler
-        auto& previous_page_input_widget = menu_screen.add(new ui::Input(pad::DIR_LEFT, previous_page_handler));
+        auto& previous_page_input_widget = menu_screen_root.add(new ui::Input(pad::DIR_LEFT, previous_page_handler));
         previous_page_input_widget.set_sound_effect_id(0x6f);
     }
 
     else {
-        menu_header_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{64, 64}));// TODO: memory-efficient spacer of some kind
+        menu_header_container.add(new ui::Layout(Vec2d{0, 0}, Vec2d{64, 64}));// TODO: memory-efficient spacer of some kind
     }
 
     // Title box
@@ -564,19 +567,19 @@ ui::Widget& create_common_galactic_log_page_layout(
         next_arrow.set_mirror(true);
 
         // Text
-        auto& text = menu_screen.add(new ui::Text("Next", Vec2d{16 + 48 + 384 + 64 + 16 + 64, 58}));
+        auto& text = menu_screen_root.add(new ui::Text("Next", Vec2d{16 + 48 + 384 + 64 + 16 + 64, 58}));
         text.set_alignment(ui::LEFT);
         text.set_scale(Vec2d{0.50, 0.50});
         text.set_color({0xff, 0xff, 0xff});
 
         // Input handler
-        auto& next_page_input_widget = menu_screen.add(new ui::Input(pad::DIR_RIGHT, next_page_handler));
+        auto& next_page_input_widget = menu_screen_root.add(new ui::Input(pad::DIR_RIGHT, next_page_handler));
         next_page_input_widget.set_sound_effect_id(0x6f);
     }
 
     // Page number
     if (previous_page_handler && next_page_handler) {
-        auto& text = menu_screen.add(new ui::Text(s_page_number_buffer, Vec2d{16 + 48 + 384 + 64 + 16 + 16 + 6, 36}));
+        auto& text = menu_screen_root.add(new ui::Text(s_page_number_buffer, Vec2d{16 + 48 + 384 + 64 + 16 + 16 + 6, 36}));
         text.set_alignment(ui::CENTER);
         text.set_scale(Vec2d{0.50, 0.50});
         text.set_color({0xff, 0xff, 0xff});
@@ -586,7 +589,7 @@ ui::Widget& create_common_galactic_log_page_layout(
     // Memory Card Indicator
     if (previous_page_handler && next_page_handler) {
         mkb::sprintf(s_memory_card_indicator_buffer, s_memory_card_indicator_names[memory_card_indicator_index()]);
-        auto& text = menu_screen.add(new ui::Text(s_memory_card_indicator_buffer, Vec2d{90, 36}));
+        auto& text = menu_screen_root.add(new ui::Text(s_memory_card_indicator_buffer, Vec2d{90, 36}));
         text.set_alignment(ui::CENTER);
         text.set_scale(Vec2d{0.50, 0.50});
         text.set_color({0xff, 0xff, 0xff});
@@ -604,11 +607,11 @@ ui::Widget& create_common_galactic_log_page_layout(
     };
 
     // Close handler
-    auto& close_handler_widget = menu_screen.add(new ui::Input(mkb::PAD_BUTTON_B, close_handler));
+    auto& close_handler_widget = menu_screen_root.add(new ui::Input(mkb::PAD_BUTTON_B, close_handler));
     close_handler_widget.set_user_data((void*) label);
     close_handler_widget.set_sound_effect_id(0x70);
 
-    return menu_screen;
+    return menu_screen_root;
 }
 
 void create_about_screen() {
@@ -688,8 +691,7 @@ void create_about_screen() {
     // Create common layout
     auto& about_menu_screen = create_common_galactic_log_page_layout("About", "galabou", previous_page_handler, next_page_handler);
 
-
-    auto& about_container = about_menu_screen.add(new ui::Container(Vec2d{0, 64 + 5}, Vec2d{640, 480 - 65}));
+    auto& about_container = about_menu_screen.add(new ui::Layout(Vec2d{0, 64 + 5}, Vec2d{640, 480 - 65}));
     mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_about[s_log_page_number]);
     auto& about_text = about_container.add(new ui::Text(s_text_page_buffer));
     about_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
@@ -745,7 +747,7 @@ void create_credits_screen() {
     auto& credits_menu_screen = create_common_galactic_log_page_layout("Credits & Special Thanks", "galcred", previous_page_handler, next_page_handler);
 
     // Credits container
-    auto& credits_container = credits_menu_screen.add(new ui::Container(Vec2d{0, 64 + 5}, Vec2d{640, 480 - 65}));
+    auto& credits_container = credits_menu_screen.add(new ui::Layout(Vec2d{0, 64 + 5}, Vec2d{640, 480 - 65}));
     mkb::sprintf(s_text_page_buffer, "%s", s_log_pages_credits[s_log_page_number]);
     auto& credits_text = credits_container.add(new ui::Text(s_text_page_buffer));
     credits_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
@@ -755,16 +757,16 @@ void create_credits_screen() {
 }
 
 void create_badge_list() {
-    auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
+    auto& badge_menu_screen = static_cast<ui::Layout&>(ui::get_widget_manager().find("galbadg"));
 
-    auto& badge_container = badge_menu_screen.add(new ui::Container(Vec2d{0, 64 + 5}, Vec2d{640, 480 - 65}));
+    auto& badge_container = badge_menu_screen.add(new ui::Layout(Vec2d{0, 64 + 5}, Vec2d{640, 480 - 65}));
     badge_container.set_label("galbdgc");
     badge_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
     for (uint32_t stage_idx = 0; stage_idx < 10; stage_idx++) {
-        auto& layout_row = badge_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{630, 36}));
+        auto& layout_row = badge_container.add(new ui::Layout(Vec2d{0, 0}, Vec2d{630, 36}));
         layout_row.set_margin(0);
-        layout_row.set_layout_spacing(0);
-        layout_row.set_layout(ui::ContainerLayout::HORIZONTAL);
+        layout_row.set_spacing(0);
+        layout_row.set_layout(ui::LayoutArrangement::HORIZONTAL);
 
         // Bar sprite - not happy with how I had to implement it this way but a lesson for the future I guess
         constexpr float margin = 5.f;
@@ -799,11 +801,11 @@ void create_badge_list() {
         bar_circle.set_sort(false);
 
         // bar_sprite.set_offset(Vec2d{0, -16});
-        auto& text_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{540, 36}));
-        text_container.set_layout(ui::ContainerLayout::HORIZONTAL);
-        auto& sprite_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{84, 36}));
-        sprite_container.set_layout(ui::ContainerLayout::HORIZONTAL);
-        sprite_container.set_layout_spacing(0);
+        auto& text_container = layout_row.add(new ui::Layout(Vec2d{0, 0}, Vec2d{540, 36}));
+        text_container.set_layout(ui::LayoutArrangement::HORIZONTAL);
+        auto& sprite_container = layout_row.add(new ui::Layout(Vec2d{0, 0}, Vec2d{84, 36}));
+        sprite_container.set_layout(ui::LayoutArrangement::HORIZONTAL);
+        sprite_container.set_spacing(0);
         sprite_container.set_margin(0);
 
         uint32_t stage_id = mkb::get_story_mode_stage_id(s_log_page_number, stage_idx);
@@ -835,7 +837,7 @@ void create_badge_list() {
             number_text.set_offset(Vec2d{2, 0});
         }
 
-        text_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{spacer_size, 0}));
+        text_container.add(new ui::Layout(Vec2d{0, 0}, Vec2d{spacer_size, 0}));
         auto& name_text = text_container.add(new ui::Text(s_badge_stage_name_buffer[stage_idx]));
         name_text.set_depth(bar_circle.get_depth() - 0.002);
         name_text.set_drop_shadow(false);
@@ -867,7 +869,7 @@ void create_badge_screen() {
     s_log_page_number_visible = 0;
 
     auto previous_page_handler = [](ui::Widget&, void*) {
-        auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
+        auto& badge_menu_screen = static_cast<ui::Layout&>(ui::get_widget_manager().find("galbadg"));
         badge_menu_screen.remove("galbdgc");
         if (s_log_page_number == 0) {
             s_log_page_number = s_log_page_count - 1;
@@ -888,7 +890,7 @@ void create_badge_screen() {
     };
 
     auto next_page_handler = [](ui::Widget&, void*) {
-        auto& badge_menu_screen = ui::get_widget_manager().find("galbadg");
+        auto& badge_menu_screen = static_cast<ui::Layout&>(ui::get_widget_manager().find("galbadg"));
         badge_menu_screen.remove("galbdgc");
         if (s_log_page_number + 1 >= s_log_page_count) {
             s_log_page_number = 0;
@@ -927,7 +929,7 @@ void create_interstellar_screen() {
     auto& interstellar_menu_screen = create_common_galactic_log_page_layout("Interstellar", "galints", empty_handler, empty_handler);
 
     // Interstellar
-    auto& interstellar_container = interstellar_menu_screen.add(new ui::Container(Vec2d{0, 64 + 5}, Vec2d{640, 480 - 65}));
+    auto& interstellar_container = interstellar_menu_screen.add(new ui::Layout(Vec2d{0, 64 + 5}, Vec2d{640, 480 - 65}));
     if (unlock::unlock_condition_met()) {// If unlocked: Display best run
         mkb::sprintf(s_text_page_buffer,
                      s_log_pages_interstellar,
@@ -955,20 +957,20 @@ void create_interstellar_screen() {
 }
 
 void create_achievement_list() {
-    auto& achievement_menu_screen = ui::get_widget_manager().find("galachv");
+    auto& achievement_menu_screen = static_cast<ui::Layout&>(ui::get_widget_manager().find("galachv"));
 
-    auto& achievement_container = achievement_menu_screen.add(new ui::Container(Vec2d{0, 64 + 5}, Vec2d{640, 480 - 65}));
+    auto& achievement_container = achievement_menu_screen.add(new ui::Layout(Vec2d{0, 64 + 5}, Vec2d{640, 480 - 65}));
     achievement_container.set_label("galachl");
     achievement_container.set_alignment(mkb::ALIGN_UPPER_LEFT);
 
     // Page title
     float page_title_height = 32;// Page title WAS 2 lines on the shadow achievement pages (5 & 6)
     // if (s_log_page_number == 4 || s_log_page_number == 5) page_title_height = 64;
-    auto& layout_row_page_title = achievement_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{630, page_title_height - (page_title_height / 4)}));
+    auto& layout_row_page_title = achievement_container.add(new ui::Layout(Vec2d{0, 0}, Vec2d{630, page_title_height - (page_title_height / 4)}));
     layout_row_page_title.set_margin(0);
-    layout_row_page_title.set_layout_spacing(0);
-    layout_row_page_title.set_layout(ui::ContainerLayout::HORIZONTAL);
-    auto& text_container_page_title = layout_row_page_title.add(new ui::Container(Vec2d{0, 0}, Vec2d{640, page_title_height}));
+    layout_row_page_title.set_spacing(0);
+    layout_row_page_title.set_layout(ui::LayoutArrangement::HORIZONTAL);
+    auto& text_container_page_title = layout_row_page_title.add(new ui::Layout(Vec2d{0, 0}, Vec2d{640, page_title_height}));
     mkb::sprintf(s_text_page_buffer, "%s", s_achievement_page_titles[s_log_page_number]);
     auto& text_page_title = text_container_page_title.add(new ui::Text(s_text_page_buffer));
     text_page_title.set_alignment(ui::LEFT);
@@ -976,13 +978,13 @@ void create_achievement_list() {
 
     // Fill 7 rows with achievements
     for (uint32_t curr_row = 0; curr_row < 7; curr_row++) {
-        auto& layout_row = achievement_container.add(new ui::Container(Vec2d{0, 0}, Vec2d{630, 32 + 16}));
+        auto& layout_row = achievement_container.add(new ui::Layout(Vec2d{0, 0}, Vec2d{630, 32 + 16}));
         layout_row.set_margin(0);
-        layout_row.set_layout_spacing(0);
-        layout_row.set_layout(ui::ContainerLayout::HORIZONTAL);
-        auto& text_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{470 + 100, 32 + 32}));
-        auto& sprite_container = layout_row.add(new ui::Container(Vec2d{0, 0}, Vec2d{32, 32}));
-        sprite_container.set_layout(ui::ContainerLayout::HORIZONTAL);
+        layout_row.set_spacing(0);
+        layout_row.set_layout(ui::LayoutArrangement::HORIZONTAL);
+        auto& text_container = layout_row.add(new ui::Layout(Vec2d{0, 0}, Vec2d{470 + 100, 32 + 32}));
+        auto& sprite_container = layout_row.add(new ui::Layout(Vec2d{0, 0}, Vec2d{32, 32}));
+        sprite_container.set_layout(ui::LayoutArrangement::HORIZONTAL);
 
         u8 curr_id = 0;// Current achievement being displayed (0 = empty)
         bool show_badge_slot = true;
@@ -1121,7 +1123,7 @@ void create_achievement_screen() {
             // Secret, show if any secrets 1-7 are complete
             !savedata::consecutive_false_from_slot(330, 7)};
 
-        auto& achievement_menu_screen = ui::get_widget_manager().find("galachv");
+        auto& achievement_menu_screen = static_cast<ui::Layout&>(ui::get_widget_manager().find("galachv"));
         achievement_menu_screen.remove("galachl");
         // Loop until we reach a shown page.
         while (true) {
@@ -1162,7 +1164,7 @@ void create_achievement_screen() {
             // Secret, show if any secrets 1-7 are complete
             !savedata::consecutive_false_from_slot(330, 7)};
 
-        auto& achievement_menu_screen = ui::get_widget_manager().find("galachv");
+        auto& achievement_menu_screen = static_cast<ui::Layout&>(ui::get_widget_manager().find("galachv"));
         achievement_menu_screen.remove("galachl");
         // Loop until we reach a shown page.
         while (true) {

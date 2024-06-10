@@ -36,7 +36,7 @@ void claim_achievement(int id) {
     // ID 1 = Slot 300, and so on
     u32 claimed_slot = savedata::STAGE_CHALLENGES_START + id - 1;
     if (!savedata::true_in_slot(claimed_slot) ||
-        (savedata::is_debug_display_mode() && (id <= 10 || id >= 20))) { // Show repeat achievements in debug display mode (except story mode ones)
+        (savedata::is_debug_display_mode() && (id <= 10 || id >= 20))) {// Show repeat achievements in debug display mode (except story mode ones)
         savedata::write_bool_to_slot(claimed_slot, true);
         savedata::save();
         achievement_display::add_achievement_to_display_queue(id);
@@ -282,7 +282,7 @@ void on_goal() {
                     }
                     // Check that the stunt goal gate (id 69) is down (prevent X+Y cheese)
                     if (mkb::stagedef->coli_header_list[i].anim_group_id == 69 &&
-                        mkb::itemgroups[i].anim_frame == 0) { // Animation hast started
+                        mkb::itemgroups[i].anim_frame == 0) {// Animation hast started
                         none_pressed = false;
                     }
                 }
@@ -321,8 +321,8 @@ void on_goal() {
         // 36) ACUTALLY PLAYABLE | Clear a stage from ‘The Unplayable Zone’ in debug
         u8 unplayable_zone_start = 91;
         if (mkb::main_game_mode == mkb::PRACTICE_MODE) unplayable_zone_start = 90;
-        if (mkb::curr_difficulty == mkb::DIFF_ADVANCED && mkb::mode_info.cm_course_stage_num >= unplayable_zone_start // Check we're in the unplayable zone
-            && mkb::g_current_stage_id != 205) {// Fix false positive on Hey Goobz
+        if (mkb::curr_difficulty == mkb::DIFF_ADVANCED && mkb::mode_info.cm_course_stage_num >= unplayable_zone_start// Check we're in the unplayable zone
+            && mkb::g_current_stage_id != 205) {                                                                     // Fix false positive on Hey Goobz
             claim_achievement(36);
         }
         // 37 and all other interstellar achievements are in interstellar.cpp

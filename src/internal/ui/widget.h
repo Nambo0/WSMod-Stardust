@@ -31,8 +31,11 @@ protected:
     int32_t m_z_rotation = 0;
     const char* m_label = "";
 
+    // Not used in Stardust :(
+    /*
     static constexpr uint32_t WIDGET_MAX_MODIFIERS = 1;
     etl::vector<etl::unique_ptr<Modifier>, WIDGET_MAX_MODIFIERS> m_tick_modifier;
+     */
 
     WidgetCallback m_callback;
 

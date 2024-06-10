@@ -10,10 +10,13 @@
 namespace ui {
 
 void Widget::tick() {
+    // Not used in Stardust :(
+    /*
     // Tick all of our modifiers
     for (const auto& modifier: m_tick_modifier) {
         modifier->tick(this);
     }
+     */
 
     // Display the widget
     if (is_visible()) disp();

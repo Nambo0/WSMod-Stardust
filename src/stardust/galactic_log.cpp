@@ -444,7 +444,7 @@ void create_galactic_log_menu() {
 
         // Only execute this if we are closing via the 'Close' button
         auto& input_widget = (ui::Input&) widget;
-        if (input_widget.get_label() == "galclos") {
+        if (strcmp(input_widget.get_label(), "galclos") == 0) {
             // Restore initial pause menu A button close functionality
             patch::write_word(reinterpret_cast<void*>(0x80274b5c), 0x4082005c);// bne ...
         }
@@ -1201,9 +1201,9 @@ void init_main_loop() {
                 mkb::g_some_other_flags = mkb::g_some_other_flags | mkb::OF_GAME_PAUSED;
             }
             mkb::call_SoundReqID_arg_1(10);
-            LOG("Heap free before: %dkb", heap::get_free_space() / 1024);
+            LOG("Heap free before: %db", heap::get_free_space() );
             create_galactic_log_menu();
-            LOG("Heap free after: %dkb", heap::get_free_space() / 1024);
+            LOG("Heap free after: %db", heap::get_free_space() );
         }
         else {
             mkb::call_SoundReqID_arg_1(35);// Announcer saying "ZERO!"

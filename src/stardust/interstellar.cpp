@@ -190,7 +190,7 @@ void remove_banana(mkb::Item& item) {
     item.g_some_bitfield = item.g_some_bitfield & 0xfffffffd;
 }
 
-void create_penalty_sprite() {
+void create_penalty_sprite(s16 counter) {
 
     mkb::Sprite* sprite = mkb::create_sprite();
     if (sprite != (mkb::Sprite*) 0x0) {
@@ -202,7 +202,7 @@ void create_penalty_sprite() {
         sprite->mult_color.green = 0x80;
         sprite->mult_color.blue = 0x00;
         sprite->alpha = 0.0;
-        sprite->g_counter = 300;
+        sprite->g_counter = counter;
         sprite->g_flags1 = 0x1000000;
         sprite->widescreen_translation_x = 0x140;
         sprite->tick_func = goal_bonus_sprite_tick;
@@ -216,7 +216,7 @@ void create_penalty_sprite() {
         sprite->alignment = mkb::ALIGN_CENTER;
         sprite->bmp = 0x510;
         sprite->alpha = 0.0;
-        sprite->g_counter = 300;
+        sprite->g_counter = counter;
         sprite->g_flags1 = 0x1000000;
         sprite->width = 0.75;
         sprite->height = 0.75;
@@ -421,7 +421,7 @@ void on_fallout() {
                 mkb::mode_info.ball_mode |= 1 << 6;
                 if (mkb::g_current_stage_id == 230) finished_run_calculations();// Run ends via <15s fallout
             }
-            create_penalty_sprite();
+            create_penalty_sprite(300);
 
             // Save banana state
             for (u32 i = 0; i < mkb::item_pool_info.upper_bound; i++) {
@@ -475,7 +475,7 @@ void on_spin_in() {
                 }
             }
             if (pausecooldown::is_retry == true && mkb::mode_info.stage_time_frames_remaining < 300 * 60) {
-                create_penalty_sprite();
+                create_penalty_sprite(100);
             }
         }
         if (mkb::main_game_mode == mkb::PRACTICE_MODE) {

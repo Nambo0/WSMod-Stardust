@@ -37,6 +37,25 @@ void force_stage_select() {
     }
 }
 
+void check_tas_filename() {
+    // TAS filename enables auto menuing
+    char tas_egg_name[] = {'T', 'A', 'S'}; // TAS
+    for (u8 file = 0; file < 3; file++) {
+        bool is_tas_egg = true;
+        for (u8 letter = 0; letter < 3; letter++) {
+            if (mkb::storymode_save_files[file].file_name[letter] != tas_egg_name[letter]) {
+                is_tas_egg = false;
+            }
+        }
+        if (is_tas_egg) {
+            // Enable auto menuing
+            mkb::g_auto_reload_setting = 0;
+            mkb::unlock_info.g_movies_watched = 0x0fff;
+            return;
+        }
+    }
+}
+
 void tick() {
     if (mkb::g_auto_reload_setting == 0 && mkb::unlock_info.g_movies_watched == 0x0fff) {
         auto_mode = 1;
@@ -64,6 +83,9 @@ void tick() {
         if (pad::button_down(mkb::PAD_BUTTON_A) && mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_IDLE && !paused_now) {
             mkb::g_storymode_stageselect_state = 5;// 5 is unlabeled "STAGE_SELECTED_INIT"
             mkb::call_SoundReqID_arg_2(0x6e);      // Plays the menu sound
+            if (auto_mode == 0) { // Check for TAS filename if auto menuing is off
+                check_tas_filename();
+            }
         }
     }
 }

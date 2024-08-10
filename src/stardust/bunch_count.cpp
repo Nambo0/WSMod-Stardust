@@ -18,7 +18,8 @@ static u8 bunches_collected = 0;
 static u8 bunches_total = 0;
 
 static void count_bunches() {
-    if (mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_MAIN) { return; }
+    if (mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_MAIN
+     || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN) { return; }
     bunches_collected = 0;
     bunches_total = 0;
     for (u32 i = 0; i < mkb::item_pool_info.upper_bound; i++) {

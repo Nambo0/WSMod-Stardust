@@ -26,15 +26,30 @@ static void decide_bg() {
     // Easter egg for special filenames
     char debug_egg_name[] = {'G', 'O', 'O', 'B', 'A'};// GOOBA
     char nova_egg_name[] = {'S', 'N', 'O', 'V', 'A'}; // SNOVA
+    char silent_egg_name[] = {'T', 'O', 'P', ' ','1'};// TOP 1
+    char walkr_egg_name[] = {'W', 'A', 'L', 'K', 'R'};// WALKR
+    char old6_egg_name[] = {'O', 'L', 'D', 'W', '6'}; // OLDW6
     for (u8 file = 0; file < 3; file++) {
         bool is_debug_egg = true;
         bool is_nova_egg = true;
+        bool is_silent_egg = true;
+        bool is_walkr_egg = true;
+        bool is_old6_egg = true;
         for (u8 letter = 0; letter < 5; letter++) {
             if (mkb::storymode_save_files[file].file_name[letter] != debug_egg_name[letter]) {
                 is_debug_egg = false;
             }
             if (mkb::storymode_save_files[file].file_name[letter] != nova_egg_name[letter]) {
                 is_nova_egg = false;
+            }
+            if (mkb::storymode_save_files[file].file_name[letter] != silent_egg_name[letter]) {
+                is_silent_egg = false;
+            }
+            if (mkb::storymode_save_files[file].file_name[letter] != walkr_egg_name[letter]) {
+                is_walkr_egg = false;
+            }
+            if (mkb::storymode_save_files[file].file_name[letter] != old6_egg_name[letter]) {
+                is_old6_egg = false;
             }
         }
         if (is_debug_egg) {
@@ -43,6 +58,18 @@ static void decide_bg() {
         }
         if (is_nova_egg) {
             stage_id = 89;// Flowers
+            return;
+        }
+        if (is_silent_egg) {
+            stage_id = 391;// Silent Supernova
+            return;
+        }
+        if (is_walkr_egg) {
+            stage_id = 392;// Cityfall (Walkr Splits) 
+            return;
+        }
+        if (is_old6_egg) {
+            stage_id = 393;// Old World 6
             return;
         }
     }

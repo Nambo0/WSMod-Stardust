@@ -264,7 +264,7 @@ void on_goal() {
             // STARSTRUCK | 10-10 Impact  -  Finish in the stunt goal after it shoots into the sky (ID: 10)
             case 350: {
                 if (mkb::mode_info.entered_goal_type == mkb::Red &&
-                    mkb::mode_info.stage_time_frames_remaining <= 15180) {// Star is in the sky
+                    mkb::mode_info.stage_time_frames_remaining <= 15600) {// Star has started soaring upwards
                     claim_achievement(10);
                 }
                 break;

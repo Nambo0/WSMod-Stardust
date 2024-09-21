@@ -101,7 +101,7 @@ void on_goal() {
             case 0:
                 return;
             case 1:
-                if (!pad::button_down(mkb::PAD_BUTTON_B)) begin_stage_select_fade();
+                if (!pad::button_down(mkb::PAD_BUTTON_A)) begin_stage_select_fade();
                 return;
         }
     }

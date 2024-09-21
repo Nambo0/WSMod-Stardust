@@ -3,6 +3,7 @@
 #include "../internal/draw.h"
 #include "../internal/heap.h"
 #include "../mkb/mkb.h"
+#include "../internal/log.h"
 
 namespace savedata {
 
@@ -220,7 +221,7 @@ bool is_debug_display_mode() {
 // =============================================================================================
 
 void init() {
-    // first try reading a savefile from Slot A
+    // first try reading a pre-existing savefile from Slot A
     FileHeader* header = nullptr;
     s32 result_A = cardio::read_file(cardio::Slot::A, FILENAME, reinterpret_cast<void**>(&header));
     if (result_A == mkb::CARD_RESULT_READY) {
@@ -242,6 +243,7 @@ void init() {
         return;
     }
 
+    /* OLD SAVE CODE
     // pre-existing save files weren't found on either memcards
     // try creating a new savefile on Slot A
     if (result_A == mkb::CARD_RESULT_NOFILE) {
@@ -256,6 +258,34 @@ void init() {
         // mkb::OSReport("[stardust] Creating new save in Slot B.\n");
         cardio::set_slot(cardio::Slot::B);
         save();
+        return;
+    }
+    */
+    // pre-existing save files weren't found on either memcards
+    // try creating a new savefile on Slot A
+    if (result_A == mkb::CARD_RESULT_NOFILE) {
+        update_special_bools();
+        to_buffer();
+        // temporarily set slot to A to see if saving works
+        cardio::set_slot(cardio::Slot::A);
+        cardio::write_file(FILENAME, card_buffer, sizeof(card_buffer),
+        [](mkb::CARDResult res) -> void {
+            // slot A save finished
+            if (res != mkb::CARD_RESULT_READY) {
+                //slot A save failed, try saving to slot B
+                cardio::set_slot(cardio::Slot::B);
+                cardio::write_file(FILENAME, card_buffer, sizeof(card_buffer),
+                [](mkb::CARDResult res2) -> void {
+                    // slot B save finished
+                    if (res2 != mkb::CARD_RESULT_READY) {
+                        // slot B save failed :(
+                        cardio::set_slot(cardio::Slot::None);
+                        LOG("Unable to create savedata :(");
+                    }
+                });
+            }
+        });
+
         return;
     }
 

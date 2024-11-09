@@ -38,7 +38,7 @@ static u8 this_rank = 0;                 // Rank of the current finished run
 // NOTE: Only tracks anim IDs 1-32, so I gotta remember to have all fallout-sustained switches be anim ID 1-32
 char endtext_buffer[1024];
 
-bool can_time_bonus = false;
+bool timer_wrap_count = 0;
 
 // Makes ball.whatever easier to use
 mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];
@@ -359,7 +359,7 @@ void tick() {
             if (mkb::mode_info.stage_time_frames_remaining >= 500 * 60) {
                 // Loop timer to 0 at 500
                 mkb::mode_info.stage_time_frames_remaining = 0;
-                can_time_bonus = false;
+                timer_wrap_count += 1;
             }
         }
         if (mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::mode_info.stage_time_frames_remaining <= 15 * 60 && mkb::g_current_stage_id != 267) {
@@ -409,8 +409,8 @@ void on_goal() {
         if (mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::g_current_stage_id == 230) finished_run_calculations();// Run ends via goal
 
         // Practice mode time bonus
-        if (mkb::main_game_mode == mkb::PRACTICE_MODE && can_time_bonus && ball.banana_count == 1050) {
-            ball.score += (50000 - (mkb::mode_info.stage_time_frames_remaining * 100 / 60));
+        if (mkb::main_game_mode == mkb::PRACTICE_MODE && timer_wrap_count < 2 && ball.banana_count == 1050) {
+            ball.score += (100000 - (timer_wrap_count * 50000) - (mkb::mode_info.stage_time_frames_remaining * 100 / 60));
         }
     }
 }
@@ -489,7 +489,7 @@ void on_spin_in() {
         if (mkb::main_game_mode == mkb::PRACTICE_MODE) {
             frames_left = 0;
             mkb::mode_info.stage_time_frames_remaining = 0;
-            can_time_bonus = true;
+            timer_wrap_count = 0;
         }
     }
 }

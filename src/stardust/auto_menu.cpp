@@ -81,8 +81,12 @@ void tick() {
         bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
         // Bufferable A press on story select screen
         if (pad::button_down(mkb::PAD_BUTTON_A) && mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_IDLE && !paused_now) {
+            int selected_stage = (int)mkb::scen_info.world_stage;
+            int is_selectable = mkb::is_storymode_stage_beaten((int)mkb::scen_info.world,selected_stage);
+            if (is_selectable == 0) {
             mkb::g_storymode_stageselect_state = 5;// 5 is unlabeled "STAGE_SELECTED_INIT"
             mkb::call_SoundReqID_arg_2(0x6e);      // Plays the menu sound
+            }
             if (auto_mode == 0) { // Check for TAS filename if auto menuing is off
                 check_tas_filename();
             }

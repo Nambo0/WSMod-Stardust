@@ -19,6 +19,7 @@ TICKABLE_DEFINITION((
         .description = "Hardcoded features",
         .enabled = true,
         .init_main_loop = init,
+        .init_main_game = init_main_game,
         .init_sel_ngc = init_sel_ngc,
         .tick = tick, ))
 
@@ -113,6 +114,11 @@ void init() {
     });
     patch::write_nop(reinterpret_cast<void*>(0x802c96d8));
     patch::write_word(reinterpret_cast<void*>(0x803dd490), 0x38000003);
+}
+
+void init_main_game() {
+    patch::write_word(reinterpret_cast<void*>(0x808f6274), 0x38000002);
+    patch::write_word(reinterpret_cast<void*>(0x808f6284), 0x38000053);
 }
 
 void tick() {

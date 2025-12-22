@@ -122,6 +122,15 @@ void init_main_game() {
 }
 
 void tick() {
+
+    /* Ground pound button test code
+    if (pad::button_pressed(mkb::PAD_BUTTON_B)) {
+        mkb::balls[mkb::curr_player_idx].vel.y = -mkb::math_sqrt(VEC_LEN_SQ(mkb::balls[mkb::curr_player_idx].vel));
+        mkb::balls[mkb::curr_player_idx].vel.x = 0;
+        mkb::balls[mkb::curr_player_idx].vel.z = 0;
+    }
+    */
+
     /* DEV TIMER BINDS
     if (pad::button_pressed(mkb::PAD_BUTTON_LEFT) && mkb::mode_info.stage_time_frames_remaining > 600) mkb::mode_info.stage_time_frames_remaining -= 600;
     if (pad::button_pressed(mkb::PAD_BUTTON_RIGHT)) mkb::mode_info.stage_time_frames_remaining += 600;

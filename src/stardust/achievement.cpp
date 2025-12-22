@@ -87,6 +87,12 @@ bool detect_stunt_ace() {
     }
     return true;
 }
+bool detect_all_sweeps() {
+    for (u8 i = 0; i < 100; i++) {
+        if (!savedata::true_in_slot(savedata::SWEEP_BADGE_START + i)) return false;
+    }
+    return true;
+}
 
 /* Very useful code to display the IG # of a specific anim ID we wanna test
 for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
@@ -342,6 +348,10 @@ void on_goal() {
     if (detect_stunt_pilot()) claim_achievement(13);
     if (detect_stunt_specialist()) claim_achievement(14);
     if (detect_stunt_ace()) claim_achievement(15);
+    if (detect_all_sweeps()) {
+        claim_achievement(16); // eater of souls
+        claim_achievement(17); // eater of worlds
+    }
 
 
     // Banana-count achievements

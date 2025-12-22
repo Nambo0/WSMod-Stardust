@@ -29,12 +29,16 @@ static void decide_bg() {
     char silent_egg_name[] = {'T', 'O', 'P', ' ','1'};// TOP 1
     char walkr_egg_name[] = {'W', 'A', 'L', 'K', 'R'};// WALKR
     char old6_egg_name[] = {'O', 'L', 'D', 'W', '6'}; // OLDW6
+    char disco_egg_name[] = {'D', 'I', 'S', 'C', 'O'};// DISCO
+    char jelly_egg_name[] = {'J', 'E', 'L', 'L', 'Y'};// JELLY
     for (u8 file = 0; file < 3; file++) {
         bool is_debug_egg = true;
         bool is_nova_egg = true;
         bool is_silent_egg = true;
         bool is_walkr_egg = true;
         bool is_old6_egg = true;
+        bool is_disco_egg = true;
+        bool is_jelly_egg = true;
         for (u8 letter = 0; letter < 5; letter++) {
             if (mkb::storymode_save_files[file].file_name[letter] != debug_egg_name[letter]) {
                 is_debug_egg = false;
@@ -50,6 +54,12 @@ static void decide_bg() {
             }
             if (mkb::storymode_save_files[file].file_name[letter] != old6_egg_name[letter]) {
                 is_old6_egg = false;
+            }
+            if (mkb::storymode_save_files[file].file_name[letter] != disco_egg_name[letter]) {
+                is_disco_egg = false;
+            }
+            if (mkb::storymode_save_files[file].file_name[letter] != jelly_egg_name[letter]) {
+                is_jelly_egg = false;
             }
         }
         if (is_debug_egg) {
@@ -70,6 +80,14 @@ static void decide_bg() {
         }
         if (is_old6_egg) {
             stage_id = 393;// Old World 6
+            return;
+        }
+        if (is_disco_egg) {
+            stage_id = 394;// Disco Saturn (Trailblazing 10)
+            return;
+        }
+        if (is_jelly_egg) {
+            stage_id = 395;// Buoyant Depths (Jams 7)
             return;
         }
     }

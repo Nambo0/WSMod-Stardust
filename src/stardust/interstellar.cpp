@@ -229,6 +229,15 @@ void create_penalty_sprite(s16 counter) {
     return;
 }
 
+int stage_id_replay_frames(u32 stage_id) {
+    switch(stage_id) {
+        case 91: return 60 * 300;  // Record Scratch
+        case 92: return 60 * 60;   // Dodge Demon
+        case 93 ... 100: return 60 * 300; // The rest of Silent Supernova
+        default: return 2; // 2 instead of 0 prevents replay crashes
+    }
+}
+
 void on_stage_load(u32 stage_id) {
     if (stage_id_is_stellar(stage_id)) {
         if (mkb::main_game_mode == mkb::CHALLENGE_MODE) {
@@ -244,7 +253,8 @@ void on_stage_load(u32 stage_id) {
 
     // Handle frozen & increasing timers
     if ((mkb::main_game_mode == mkb::PRACTICE_MODE && stage_id_is_stellar(stage_id)) // Stellar practice
-        || stage_id == 267) { // Stellar W2 Draft
+        || stage_id == 267 // Stellar W2 Draft
+        || (stage_id >= 91 && stage_id <= 100)) { // Silent Supernova
         // time over at -60 frames (so timer is able to stop at 0.00)
         *reinterpret_cast<u32*>(0x80297548) = 0x2c00ffa0;
         // Add 1 to the timer each frame (increasing)
@@ -353,9 +363,10 @@ void tick() {
     }
 
     // Regular per-frame stuff
-    if (stage_id_is_stellar(mkb::g_current_stage_id) || mkb::g_current_stage_id == 267) {
-        if (mkb::main_game_mode == mkb::PRACTICE_MODE &&
-            (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN)) {
+    if ((stage_id_is_stellar(mkb::current_stage_id) && mkb::main_game_mode == mkb::PRACTICE_MODE) // Interstellar practice
+        || mkb::current_stage_id == 267 // Stellar W2 Draft
+        || (mkb::current_stage_id >= 91 && mkb::current_stage_id <= 100)) { // Silent Supernova
+        if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
             if (mkb::mode_info.stage_time_frames_remaining >= 500 * 60) {
                 // Loop timer to 0 at 500
                 mkb::mode_info.stage_time_frames_remaining = 0;
@@ -455,8 +466,8 @@ void on_fallout() {
 }
 
 void on_spin_in() {
-    if (mkb::g_current_stage_id == 267) {
-        mkb::mode_info.stage_time_limit = 2;// Prevents replay-memory crashes
+    if (mkb::g_current_stage_id == 267 || (mkb::current_stage_id >= 91 && mkb::current_stage_id <= 100)) {
+        mkb::mode_info.stage_time_limit = stage_id_replay_frames(mkb::current_stage_id); // Prevents replay-memory crashes
         mkb::mode_info.stage_time_frames_remaining = 0;
     }
 

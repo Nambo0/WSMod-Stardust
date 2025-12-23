@@ -41,7 +41,7 @@ void init_sel_ngc() {
         patch::write_word(reinterpret_cast<void*>(0x808ff80c), 0x38000002);
     }
     // Lock Supernova (Master)
-    patch::write_word(reinterpret_cast<void*>(0x808fbe7c), 0x38000008);
+    // patch::write_word(reinterpret_cast<void*>(0x808fbe7c), 0x38000008);
 }
 
 }// namespace unlock

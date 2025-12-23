@@ -57,7 +57,7 @@ mkb::Rgb24 bar_colors[10] = {{0xFF, 0x00, 0x00},
 
 // All relevant pages of text here
 namespace {
-constexpr char* s_log_pages_about[8] = {
+constexpr char* s_log_pages_about[9] = {
     // About Page 1
     "/bc00fffb/BADGES/bcFFFFFF/\n"
     "\n"
@@ -181,7 +181,20 @@ constexpr char* s_log_pages_about[8] = {
     "outside the circle!\n"
     "\n"
     "The center of the stage has a spinning /bc009DFF/medallion/bcFFFFFF/,\n"
-    "representing your best Interstellar rank!\n"};
+    "representing your best Interstellar rank!\n",
+
+    // About Page 9 (ONLY SHOW IF BONUS UNLOCKED)
+    "/bc00fffb/SUPERNOVA/bcFFFFFF/\n"
+    "\n"
+    "Supernova is a 10 stage /bcC800FF/kaizo/bcFFFFFF/ world,\n"
+    "meant to challenge even the most experienced of players.\n"
+    "\n"
+    "The 'extra' set after includes 10 even harder stages,\n"
+    "which are called /bcFF0000/Silent Supernova./bcFFFFFF/\n"
+    "\n"
+    "These stages are orders of magnitude harder than Stardust's\n"
+    "hardest bonus challenges, so there's no /bcFF9900/achievements/bcFFFFFF/ associated\n"
+    "with them. They're best experienced in practice mode\n"};
 constexpr char* s_log_pages_credits[2] = {
     "/bcFFFFFF/NOTE: Credits.pdf (included with the ISO) has more\n"
     "annotated credits, including clickable /bc008CFF/links/bcFFFFFF/\n"
@@ -621,10 +634,10 @@ void create_about_screen() {
     // Initialize the correct page count/page index
     s_log_page_number = 0;
     s_log_page_number_visible = 0;
-    s_log_page_count = 8;
+    s_log_page_count = 9;
 
     if (unlock::unlock_condition_met()) {
-        s_log_page_count_visible = 7;
+        s_log_page_count_visible = 8;
     }
     else {
         s_log_page_count_visible = 3;

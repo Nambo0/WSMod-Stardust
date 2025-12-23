@@ -540,6 +540,7 @@ void tick() {
         mkb::strcpy(mkb::LOADIN_TEXT_FINAL_STAGE, "");
     }
     mkb::strcpy(mkb::LOADIN_TEXT_MASTER, "WORLD X]%d");
+    mkb::strcpy(mkb::LOADIN_TEXT_MASTER_EX, "WORLD Y]%d");
     patch::write_nop(reinterpret_cast<void*>(0x8032bba0));
     patch::write_nop(reinterpret_cast<void*>(0x8032bba8));
     patch::write_nop(reinterpret_cast<void*>(0x8032bbb0));

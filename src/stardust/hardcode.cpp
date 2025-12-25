@@ -93,6 +93,22 @@ void fix_stellar_bunch_indicators() {
     }
 }
 
+void moon_gravity() {
+    bool moon_active = false;
+    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+    if (mkb::sub_mode == mkb::SMD_GAME_READY_INIT || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
+        for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
+            u32 anim_id = mkb::stagedef->coli_header_list[i].anim_group_id;
+            if (anim_id == 17185) {
+                moon_active = true;
+            }
+        }
+    }
+    if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && !paused_now && moon_active) {
+        mkb::balls[mkb::curr_player_idx].vel.y += .005;
+    }
+}
+
 void init() {
     patch::hook_function(s_teleport_through_wormhole_tramp, mkb::teleport_through_wormhole, [](int ball_idx, int wormhole_idx) {
         mkb::undefined8 result = s_teleport_through_wormhole_tramp.dest(ball_idx, wormhole_idx);
@@ -544,6 +560,8 @@ void tick() {
     patch::write_nop(reinterpret_cast<void*>(0x8032bba0));
     patch::write_nop(reinterpret_cast<void*>(0x8032bba8));
     patch::write_nop(reinterpret_cast<void*>(0x8032bbb0));
+
+    moon_gravity();
 
 }// void tick
 void init_sel_ngc() {

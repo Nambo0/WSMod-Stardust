@@ -142,6 +142,14 @@ typedef undefined2 StobjType;
 
 typedef struct Vec Vec, *PVec;
 
+enum {
+    COLI_FLAG_OCCURRED=1,
+    COLI_FLAG_UNK1=2
+};
+typedef undefined4 ColiFlag;
+
+typedef struct ColiPlane ColiPlane, *PColiPlane;
+
 typedef struct GmaModel GmaModel, *PGmaModel;
 
 typedef struct S16Vec S16Vec, *PS16Vec;
@@ -237,6 +245,14 @@ struct Vec {
     float z;
 } __attribute__((__packed__));
 static_assert(sizeof(Vec) == 0xc);
+
+struct ColiPlane {
+    struct Vec point;
+    struct Vec normal;
+    u16 g_flags1;
+    u16 g_flags2;
+} __attribute__((__packed__));
+static_assert(sizeof(ColiPlane) == 0x1c);
 
 struct PhysicsBall { /* A representation of a Ball with just the physics/collision-related info */
     dword flags;
@@ -8795,7 +8811,7 @@ extern "C" {
     void stcoli_sub10(struct PhysicsBall * param_1, struct Vec * param_2);
     void g_sphere_coli_something(struct PhysicsBall * param_1, struct StagedefColiSphere * param_2);
     void g_cone_coli_something(struct PhysicsBall * param_1, struct StagedefColiCone * param_2);
-    void g_something_with_physicsball_restitution(struct PhysicsBall * physicsball, struct Vec * param_2);
+    void g_something_with_physicsball_restitution(struct PhysicsBall * physicsball, struct ColiPlane * plane);
     BOOL32 line_intersects_rect(struct Vec * lineStart, struct Vec * lineEnd, struct Rect * rect);
     void stobj_jamabar_child_coli(struct PhysicsBall * physicsball, struct Stobj * stobj);
     void raycast_stage_down(struct Vec * origin, struct RaycastHit * out_hit, struct Vec * out_vel_at_point);

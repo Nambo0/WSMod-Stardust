@@ -13,3 +13,4 @@
 #define VEC_DOT(v1, v2) ((v1).x * (v2).x + (v1).y * (v2).y + (v1).z * (v2).z)
 #define VEC_LEN_SQ(v) (VEC_DOT((v), (v)))
 #define VEC_ZERO (Vec3f{0, 0, 0})
+#define VEC_EQUAL_EXACT(v1, v2) ((v1.x == v2.x && v1.y == v2.y && v1.z == v2.z))

@@ -33,9 +33,9 @@ void tf_physicsball_to_itemgroup_space(mkb::PhysicsBall* physicsball, int dest_i
         s_clean_physicsball = *physicsball;
     }
     else {
-        //if(mkb::current_stage_id >= 91 && mkb::current_stage_id <= 100) { // Silent Supernova stage IDs
+        if(mkb::current_stage_id >= 91 && mkb::current_stage_id <= 100) { // Silent Supernova stage IDs
             *physicsball = s_clean_physicsball;
-        //}
+        }
     }
     s_tf_physicsball_tramp.dest(physicsball, dest_ig_idx);
 }

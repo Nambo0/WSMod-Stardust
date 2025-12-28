@@ -14,6 +14,12 @@ patch::Tramp<decltype(&mkb::tf_physball_to_itemgroup_space)> s_tf_physicsball_tr
 // Later ghidra updates call this function collide_ball_with_plane
 patch::Tramp<decltype(&mkb::g_something_with_physicsball_restitution)> s_collide_physicsball_tramp;
 
+// void stobj_bumper_coli(struct Stobj * stobj, struct PhysicsBall * physicsball);
+patch::Tramp<decltype(&mkb::stobj_bumper_coli)> s_stobj_bumper_coli_tramp;
+
+// void stobj_goalbag_coli(struct Stobj * stobj, struct PhysicsBall * physicsball);
+patch::Tramp<decltype(&mkb::stobj_goalbag_coli)> s_stobj_goalbag_coli_tramp;
+
 mkb::PhysicsBall s_clean_physicsball;
 
 void init_physicsball_from_ball(mkb::Ball* ball, mkb::PhysicsBall* physicsball) {
@@ -27,7 +33,9 @@ void tf_physicsball_to_itemgroup_space(mkb::PhysicsBall* physicsball, int dest_i
         s_clean_physicsball = *physicsball;
     }
     else {
-        *physicsball = s_clean_physicsball;
+        //if(mkb::current_stage_id >= 91 && mkb::current_stage_id <= 100) { // Silent Supernova stage IDs
+            *physicsball = s_clean_physicsball;
+        //}
     }
     s_tf_physicsball_tramp.dest(physicsball, dest_ig_idx);
 }
@@ -36,6 +44,28 @@ void collide_ball_with_plane(mkb::PhysicsBall* physicsball, mkb::ColiPlane* plan
     Vec prev_pos = physicsball->pos;
     Vec prev_vel = physicsball->vel;
     s_collide_physicsball_tramp.dest(physicsball, plane);
+    if (!VEC_EQUAL_EXACT(prev_pos, physicsball->pos) ||
+        !VEC_EQUAL_EXACT(prev_vel, physicsball->vel)) {
+        physicsball->flags |= COLI_FLAG_IG;
+    }
+}
+
+// Bumper collision
+void bumper_coli(mkb::Stobj* stobj, mkb::PhysicsBall * physicsball) {
+    Vec prev_pos = physicsball->pos;
+    Vec prev_vel = physicsball->vel;
+    s_stobj_bumper_coli_tramp.dest(stobj, physicsball);
+    if (!VEC_EQUAL_EXACT(prev_pos, physicsball->pos) ||
+        !VEC_EQUAL_EXACT(prev_vel, physicsball->vel)) {
+        physicsball->flags |= COLI_FLAG_IG;
+    }
+}
+
+// Party Ball collision
+void goalbag_coli(mkb::Stobj* stobj, mkb::PhysicsBall * physicsball) {
+    Vec prev_pos = physicsball->pos;
+    Vec prev_vel = physicsball->vel;
+    s_stobj_goalbag_coli_tramp.dest(stobj, physicsball);
     if (!VEC_EQUAL_EXACT(prev_pos, physicsball->pos) ||
         !VEC_EQUAL_EXACT(prev_vel, physicsball->vel)) {
         physicsball->flags |= COLI_FLAG_IG;
@@ -59,6 +89,10 @@ void init_main_loop() {
                          tf_physicsball_to_itemgroup_space);
     patch::hook_function(s_collide_physicsball_tramp, mkb::g_something_with_physicsball_restitution,
                          collide_ball_with_plane);
+    patch::hook_function(s_stobj_bumper_coli_tramp, mkb::stobj_bumper_coli,
+                         bumper_coli);
+    patch::hook_function(s_stobj_goalbag_coli_tramp, mkb::stobj_goalbag_coli,
+                         goalbag_coli);
 }
 
 }// namespace fix_spooky_action

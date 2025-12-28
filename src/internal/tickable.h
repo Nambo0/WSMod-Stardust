@@ -27,7 +27,7 @@ namespace tickable {
 
 // Capacity of the tickable manager vector, increase if needed
 // This only stores pointers, so memory impact should be low
-constexpr size_t PATCH_CAPACITY = 48;
+constexpr size_t PATCH_CAPACITY = 64;
 
 // Represents a patch, or code that ticks every frame
 struct Tickable {

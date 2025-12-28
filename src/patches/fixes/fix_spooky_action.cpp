@@ -13,12 +13,14 @@ patch::Tramp<decltype(&mkb::init_physicsball_from_ball)> s_init_physicsball_tram
 patch::Tramp<decltype(&mkb::tf_physball_to_itemgroup_space)> s_tf_physicsball_tramp;
 // Later ghidra updates call this function collide_ball_with_plane
 patch::Tramp<decltype(&mkb::g_something_with_physicsball_restitution)> s_collide_physicsball_tramp;
-
 // void stobj_bumper_coli(struct Stobj * stobj, struct PhysicsBall * physicsball);
 patch::Tramp<decltype(&mkb::stobj_bumper_coli)> s_stobj_bumper_coli_tramp;
-
 // void stobj_goalbag_coli(struct Stobj * stobj, struct PhysicsBall * physicsball);
 patch::Tramp<decltype(&mkb::stobj_goalbag_coli)> s_stobj_goalbag_coli_tramp;
+// void stobj_goaltape_coli(struct Stobj * stobj, struct PhysicsBall * physicsball);
+patch::Tramp<decltype(&mkb::stobj_goaltape_coli)> s_stobj_goaltape_coli_tramp;
+// void stobj_returngate_coli(struct Stobj * stobj, struct PhysicsBall * physicsball);
+patch::Tramp<decltype(&mkb::stobj_returngate_coli)> s_stobj_returngate_coli_tramp;
 
 mkb::PhysicsBall s_clean_physicsball;
 
@@ -72,6 +74,28 @@ void goalbag_coli(mkb::Stobj* stobj, mkb::PhysicsBall * physicsball) {
     }
 }
 
+// Goal tape resistance
+void goaltape_coli(mkb::Stobj* stobj, mkb::PhysicsBall * physicsball) {
+    Vec prev_pos = physicsball->pos;
+    Vec prev_vel = physicsball->vel;
+    s_stobj_goaltape_coli_tramp.dest(stobj, physicsball);
+    if (!VEC_EQUAL_EXACT(prev_pos, physicsball->pos) ||
+        !VEC_EQUAL_EXACT(prev_vel, physicsball->vel)) {
+        physicsball->flags |= COLI_FLAG_IG;
+    }
+}
+
+// Wormhole surface resistance
+void returngate_coli(mkb::Stobj* stobj, mkb::PhysicsBall * physicsball) {
+    Vec prev_pos = physicsball->pos;
+    Vec prev_vel = physicsball->vel;
+    s_stobj_returngate_coli_tramp.dest(stobj, physicsball);
+    if (!VEC_EQUAL_EXACT(prev_pos, physicsball->pos) ||
+        !VEC_EQUAL_EXACT(prev_vel, physicsball->vel)) {
+        physicsball->flags |= COLI_FLAG_IG;
+    }
+}
+
 }// namespace
 
 namespace fix_spooky_action {
@@ -93,6 +117,10 @@ void init_main_loop() {
                          bumper_coli);
     patch::hook_function(s_stobj_goalbag_coli_tramp, mkb::stobj_goalbag_coli,
                          goalbag_coli);
+    patch::hook_function(s_stobj_goaltape_coli_tramp, mkb::stobj_goaltape_coli,
+                         goaltape_coli);
+    patch::hook_function(s_stobj_returngate_coli_tramp, mkb::stobj_returngate_coli,
+                         returngate_coli);
 }
 
 }// namespace fix_spooky_action

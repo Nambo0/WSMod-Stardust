@@ -32,8 +32,9 @@ void init_sel_ngc() {
         // Unlock bonus modes (Challenge Mode)
         patch::write_word(reinterpret_cast<void*>(0x808ff800), 0x38000004);
         patch::write_word(reinterpret_cast<void*>(0x808ff80c), 0x38000000);
+        patch::write_word(reinterpret_cast<void*>(0x808fbe84), 0x38000009);
         // Unlock all of debug and Monuments in Practice Mode
-        patch::write_word(reinterpret_cast<void*>(0x805d48f9), 0x6201ffff);
+        patch::write_word(reinterpret_cast<void*>(0x805d48f9), 0x9416ffff);
     }
     else {
         // Lock bonus modes (Challenge Mode)

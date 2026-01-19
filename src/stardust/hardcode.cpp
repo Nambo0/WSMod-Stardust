@@ -9,6 +9,7 @@
 #include "../stardust/savedata.h"
 #include "../stardust/validate.h"
 #include "../utils/vecutil.h"
+#include "../stardust/debug_ui_hide.h"
 #include "log.h"
 
 namespace hardcode {
@@ -434,9 +435,15 @@ void tick() {
             }
             break;
         }
+        // Hey Goobz Play SMAL
+        // Allow debug binds
         case 205: {
             if (pad::button_down(mkb::PAD_TRIGGER_R) && pad::button_down(mkb::PAD_BUTTON_DOWN) && pad::button_pressed(mkb::PAD_BUTTON_B)) {
                 savedata::debug_display_mode();
+                mkb::call_SoundReqID_arg_0(14);// 1-up sound
+            }
+            if (pad::button_down(mkb::PAD_TRIGGER_R) && pad::button_down(mkb::PAD_BUTTON_DOWN) && pad::button_pressed(mkb::PAD_BUTTON_A)) {
+                debug_ui_hide::toggle_debug_ui_hide_mode();
                 mkb::call_SoundReqID_arg_0(14);// 1-up sound
             }
             break;

@@ -17,9 +17,20 @@ TICKABLE_DEFINITION((
 
 u16 stage_id = 381;
 
-void init_main_game() {
-    patch::write_word(reinterpret_cast<void*>(0x808fd958), PPC_INSTR_LI(PPC_R3, stage_id));
-    patch::write_word(reinterpret_cast<void*>(0x808fe7d8), PPC_INSTR_LI(PPC_R3, stage_id));
+static void decide_stgname() {
+    char guy42_egg_name[] = {'4', '2', 'G', 'U', 'Y'};// 42GUY
+    bool is_42guy_egg_any_file = false;
+    for (u8 file = 0; file < 3; file++) {
+        bool is_42guy_egg = true;
+        for (u8 letter = 0; letter < 5; letter++) {
+            if (mkb::storymode_save_files[file].file_name[letter] != guy42_egg_name[letter]) {
+                is_42guy_egg = false;
+            }
+        }
+        if(is_42guy_egg) is_42guy_egg_any_file = true;
+    }
+    if (is_42guy_egg_any_file) mkb::g_load_stgname_file(mkb::LOCALE_ITALIAN);
+    else mkb::g_load_stgname_file(mkb::LOCALE_ENGLISH);
 }
 
 static void decide_bg() {
@@ -107,11 +118,23 @@ static void set_main_bg() {
 }
 
 static patch::Tramp<decltype(&mkb::g_load_stage_for_menu_bg)> s_g_load_stage_for_menu_bg_tramp;
+static patch::Tramp<decltype(&mkb::g_related_to_loading_story_stageselect)> s_g_related_to_loading_story_stageselect_tramp;
+
+void init_main_game() {
+    patch::write_word(reinterpret_cast<void*>(0x808fd958), PPC_INSTR_LI(PPC_R3, stage_id));
+    patch::write_word(reinterpret_cast<void*>(0x808fe7d8), PPC_INSTR_LI(PPC_R3, stage_id));
+    
+    patch::hook_function(s_g_related_to_loading_story_stageselect_tramp, mkb::g_related_to_loading_story_stageselect, [](mkb::uint param_1) {
+        decide_stgname();
+        s_g_related_to_loading_story_stageselect_tramp.dest(param_1);
+    });
+}
 
 void init() {
     patch::hook_function(s_g_load_stage_for_menu_bg_tramp, mkb::g_load_stage_for_menu_bg, [](char param_1, int param_2) {
         decide_bg();
         set_main_bg();
+        decide_stgname();
         s_g_load_stage_for_menu_bg_tramp.dest(param_1, param_2);
     });
 }

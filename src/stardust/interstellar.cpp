@@ -38,7 +38,7 @@ static u8 this_rank = 0;                 // Rank of the current finished run
 // NOTE: Only tracks anim IDs 1-32, so I gotta remember to have all fallout-sustained switches be anim ID 1-32
 char endtext_buffer[1024];
 
-bool timer_wrap_count = 0;
+u32 timer_wrap_count = 0;
 
 // Makes ball.whatever easier to use
 mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];

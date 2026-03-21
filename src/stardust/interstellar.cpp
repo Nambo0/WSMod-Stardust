@@ -250,23 +250,11 @@ void on_stage_load(u32 stage_id) {
             }
         }
     }
-
-    // Handle frozen & increasing timers
-    if ((mkb::main_game_mode == mkb::PRACTICE_MODE && stage_id_is_stellar(stage_id)) // Stellar practice
+    // Handle frozen & increasing timers (PRACMOD HAS PRIORITY, FOR SETTING BACK TO COUNTDOWN)
+    if (!((mkb::main_game_mode == mkb::PRACTICE_MODE && stage_id_is_stellar(stage_id)) // Stellar practice
         || stage_id == 267 // Stellar W2 Draft
-        || (stage_id >= 91 && stage_id <= 100)) { // Silent Supernova
-        // time over at -60 frames (so timer is able to stop at 0.00)
-        *reinterpret_cast<u32*>(0x80297548) = 0x2c00ffa0;
-        // Add 1 to the timer each frame (increasing)
-        patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030001);
-    }
-    else if (stage_id == 77) {
-        // time over at -60 frames (so timer is able to stop at 0.00)
-        *reinterpret_cast<u32*>(0x80297548) = 0x2c00ffa0;
-        // add 0 to the timer each frame (frozen)
-        patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030000);
-    }
-    else {
+        || (stage_id >= 91 && stage_id <= 100))
+        && mkb::current_stage_id != 77) { // This big if statement is just an inverse of the one in on_spin_in()
         // time over at 0 frames
         *reinterpret_cast<u32*>(0x80297548) = 0x2c000000;
         // add -1 to timer each frame (counting down, normal)
@@ -502,6 +490,23 @@ void on_spin_in() {
             mkb::mode_info.stage_time_frames_remaining = 0;
             timer_wrap_count = 0;
         }
+    }
+
+    // Handle frozen & increasing timers (PRIORITY OVER PRACMOD)
+    u32 stage_id = mkb::current_stage_id;
+    if ((mkb::main_game_mode == mkb::PRACTICE_MODE && stage_id_is_stellar(stage_id)) // Stellar practice
+        || stage_id == 267 // Stellar W2 Draft
+        || (stage_id >= 91 && stage_id <= 100)) { // Silent Supernova
+        // time over at -60 frames (so timer is able to stop at 0.00)
+        *reinterpret_cast<u32*>(0x80297548) = 0x2c00ffa0;
+        // Add 1 to the timer each frame (increasing)
+        patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030001);
+    }
+    else if (stage_id == 77) {
+        // time over at -60 frames (so timer is able to stop at 0.00)
+        *reinterpret_cast<u32*>(0x80297548) = 0x2c00ffa0;
+        // add 0 to the timer each frame (frozen)
+        patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030000);
     }
 }
 

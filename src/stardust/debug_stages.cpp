@@ -14,8 +14,7 @@ TICKABLE_DEFINITION((
         .name = "stardust-debug-stages",
         .description = "Debug Category Features",
         .enabled = true,
-        .tick = tick,
-        .on_goal = on_goal, ))
+        .tick = tick,))
 
 void skip_stage() {
     // Cause a bonus finish
@@ -46,7 +45,21 @@ void tick() {
     }
 }
 
-void on_goal() {
+/*// SILENT SUPERNOVA STUFF
+// Displays "WORLD X-#" and "WORLD Y-#" on first spin-in
+void loadin_world_sprintf(char * buffer, char * format, ...){
+    if((mkb::mode_flags & mkb::MF_PLAYING_MASTER_NOEX_COURSE) != mkb::MF_NONE) {
+        mkb::sprintf(buffer,"WORLD X]%d", mkb::mode_info.g_selected_world_stage_idx + 1);
+    }
+    else if((mkb::mode_flags & mkb::MF_PLAYING_MASTER_EX_COURSE) != mkb::MF_NONE) {
+        mkb::sprintf(buffer,"WORLD Y]%d", mkb::mode_info.g_selected_world_stage_idx + 1);
+    }
+    else mkb::sprintf(buffer,format);
 }
+
+void init_main_game() {
+    // World X & Y code
+    patch::write_branch_bl(reinterpret_cast<void*>(0x8032BD48), reinterpret_cast<void*>(loadin_world_sprintf)); // Loadin
+}*/
 
 }// namespace debug_stages

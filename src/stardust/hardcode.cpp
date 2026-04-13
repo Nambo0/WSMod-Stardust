@@ -129,13 +129,15 @@ void init() {
             s_draw_minimap_tramp.dest();
         }
     });
-    patch::write_nop(reinterpret_cast<void*>(0x802c96d8));
-    patch::write_word(reinterpret_cast<void*>(0x803dd490), 0x38000003);
+    patch::write_nop(reinterpret_cast<void*>(0x802c96d8)); // Something with nop'ing hardcoded stage handling
+    patch::write_word(reinterpret_cast<void*>(0x803dd490), 0x38000003); // Something with challenge monkeys / life count
 }
 
 void init_main_game() {
     patch::write_word(reinterpret_cast<void*>(0x808f6274), 0x38000002);
     patch::write_word(reinterpret_cast<void*>(0x808f6284), 0x38000053);
+
+    // patch::write_word(reinterpret_cast<void*>(0x808f61a8), 0x38800001); // Bring extras back
 }
 
 void tick() {

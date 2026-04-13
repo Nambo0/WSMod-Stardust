@@ -4,6 +4,7 @@
 #include "../mkb/mkb.h"
 #include "internal/tickable.h"
 #include "utils/ppcutil.h"
+#include "savedata.h" // for 42guy easter egg
 
 namespace menu_bg {
 
@@ -17,7 +18,7 @@ TICKABLE_DEFINITION((
 
 u16 stage_id = 381;
 
-static void decide_stgname() {
+static void decide_stgname(/*int locale_index*/) {
     char guy42_egg_name[] = {'4', '2', 'G', 'U', 'Y'};// 42GUY
     bool is_42guy_egg_any_file = false;
     for (u8 file = 0; file < 3; file++) {
@@ -29,8 +30,24 @@ static void decide_stgname() {
         }
         if(is_42guy_egg) is_42guy_egg_any_file = true;
     }
-    if (is_42guy_egg_any_file) mkb::g_load_stgname_file(mkb::LOCALE_ITALIAN);
-    else mkb::g_load_stgname_file(mkb::LOCALE_ENGLISH);
+
+    // Old Method: Run function instantly
+    //if (is_42guy_egg_any_file) mkb::g_load_stgname_file(mkb::LOCALE_ITALIAN);
+    //else mkb::g_load_stgname_file(mkb::LOCALE_ENGLISH);
+
+    // New Method: Used as write-bl in original function
+    // if (is_42guy_egg_any_file) mkb::g_load_stgname_dvd_entrynum(mkb::LOCALE_ITALIAN);
+    // else mkb::g_load_stgname_dvd_entrynum(locale_index);
+
+    // Newer method: Use savedata::save()
+    bool old_egg_value = savedata::true_in_slot(savedata::GUY42_EASTER_EGG);
+    savedata::write_bool_to_slot(savedata::GUY42_EASTER_EGG, is_42guy_egg_any_file);
+    if(old_egg_value != is_42guy_egg_any_file) savedata::save();
+}
+
+static void deliver_stgname(int locale_index) {
+    if(savedata::true_in_slot(savedata::GUY42_EASTER_EGG)) mkb::g_load_stgname_file(mkb::LOCALE_ITALIAN);
+    else mkb::g_load_stgname_file(locale_index);
 }
 
 static void decide_bg() {
@@ -137,6 +154,9 @@ void init() {
         decide_stgname();
         s_g_load_stage_for_menu_bg_tramp.dest(param_1, param_2);
     });
+
+    // Decide stagename during mkb::g_load_stgname_file
+    patch::write_branch_bl(reinterpret_cast<void*>(0x802C6C10), reinterpret_cast<void*>(deliver_stgname));
 }
 
 }// namespace menu_bg

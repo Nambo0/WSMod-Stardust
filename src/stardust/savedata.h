@@ -10,6 +10,7 @@ static constexpr u32 STUNT_BADGE_START = 100;
 static constexpr u32 SWEEP_BADGE_START = 200;
 static constexpr u32 STAGE_CHALLENGES_START = 300;
 static constexpr u32 WIDESCREEN_MODE = 380;
+static constexpr u32 GUY42_EASTER_EGG = 381;
 
 void init();
 

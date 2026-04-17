@@ -19,6 +19,7 @@ namespace savedata {
 
 Specific Values:
 380 = Widescreen (for widescreen_title_fix)
+381 = 42GUY easter egg (checked in menu_bg), called "GUY42"
 */
 
 static u8 savedata[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,

@@ -102,9 +102,10 @@ void new_render_func(void) {
     }
     if (mkb::g_some_draw_var != (int*) 0x0) {
         mkb::mtxa_from_mtxb();
-        for (piVar5 = mkb::g_some_draw_var; *piVar5 != 0; piVar5 = piVar5 + 6) {
-            mkb::g_some_draw_func5((int*) piVar5[5]);
-        }
+        // Commenting this out to fix bonus wave slot, Euc's instructions
+        //for (piVar5 = mkb::g_some_draw_var; *piVar5 != 0; piVar5 = piVar5 + 6) {
+        //    mkb::g_some_draw_func5((int*) piVar5[5]);
+        //}
     }
     mkb::g_draw_collision_triangles();
     return;

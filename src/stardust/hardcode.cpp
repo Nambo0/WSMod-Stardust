@@ -131,6 +131,9 @@ void init() {
     });
     patch::write_nop(reinterpret_cast<void*>(0x802c96d8)); // Something with nop'ing hardcoded stage handling
     patch::write_word(reinterpret_cast<void*>(0x803dd490), 0x38000003); // Something with challenge monkeys / life count
+    // st092 Bonus wave fixes
+    patch::write_nop(reinterpret_cast<void*>(0x802c79b4));
+    patch::write_nop(reinterpret_cast<void*>(0x802945d8));
 }
 
 void init_main_game() {

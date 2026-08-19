@@ -2,7 +2,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-ROMHACK_DIR=/mnt/c/Users/ComplexPlane/Documents/projects/romhack
+ROMHACK_DIR=/mnt/c/Users/zache/Desktop/Ninja/GitHub/Stardust/files
 PPCINJECT=~/ppc-inject/PPCInject
 DOL_SRC=$ROMHACK_DIR/smb2imm/sys/main.dol
 DOL_DEST=$ROMHACK_DIR/smb2mut/sys/main.dol

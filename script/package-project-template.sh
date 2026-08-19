@@ -26,7 +26,7 @@ RELLOADER_SRC=relloader/iso-rel-loader-us.asm
 # Ideally you want the path to an extracted root of Super Monkey Ball 2
 # You'll probably want to replace mkb2.rel_sample.rel
 # If you change the file name, you also need to modify iso-rel-loader-us.asm accordingly
-REL_DEST=PATH/TO/YOUR/mkb2.rel_sample.rel
+REL_DEST=/mnt/c/Users/zache/Desktop/Ninja/GitHub/Stardust/files/mkb2.rel_sample.rel
 
 # Pass -i to this script to inject the main.dol file
 if [[ "${1:-}" == "-i" ]]; then

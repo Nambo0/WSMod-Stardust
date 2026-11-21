@@ -361,6 +361,8 @@ void tick() {
                 timer_wrap_count += 1;
             }
         }
+    }
+    if (stage_id_is_stellar(mkb::current_stage_id)) { 
         if (mkb::main_game_mode == mkb::CHALLENGE_MODE && mkb::mode_info.stage_time_frames_remaining <= 15 * 60 && mkb::g_current_stage_id != 267) {
             mkb::mode_info.ball_mode |= 1 << 6;
         }
